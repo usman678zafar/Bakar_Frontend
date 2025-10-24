@@ -1,60 +1,68 @@
 import apiClient from '../client'
-import { Cart, CartSummary } from '@types/cart.types'
 import { ApiResponse } from '@types/common.types'
+
+export interface CartItem {
+  item_id: string;
+  item_name: string;
+  category: string;
+  quantity: number;
+  price: number;
+  subtotal: number;
+}
+
+export interface CartSideline {
+  item_id: string;
+  item_name: string;
+  quantity: number;
+  price: number;
+  subtotal: number;
+}
+
+export interface CartSummary {
+  items: CartItem[];
+  sidelines: CartSideline[];
+  subtotal: number;
+  delivery_fee: number;
+  total: number;
+  items_count: number;
+}
 
 export const cartAPI = {
   /**
-   * Get cart for current user
-   */
-  getCart: () => 
-    apiClient.get<ApiResponse<Cart>>('/cart'),
-
-  /**
-   * Add item to cart
-   */
-  addToCart: (menuItemId: string, quantity: number, specialInstructions?: string) => 
-    apiClient.post<ApiResponse<Cart>>('/cart/items', {
-      menu_item_id: menuItemId,
-      quantity,
-      special_instructions: specialInstructions,
-    }),
-
-  /**
-   * Update cart item quantity
-   */
-  updateCartItem: (itemId: string, quantity: number) => 
-    apiClient.put<ApiResponse<Cart>>(`/cart/items/${itemId}`, { quantity }),
-
-  /**
-   * Remove item from cart
-   */
-  removeFromCart: (itemId: string) => 
-    apiClient.delete<ApiResponse<Cart>>(`/cart/items/${itemId}`),
-
-  /**
-   * Add sideline to cart
-   */
-  addSideline: (sidelineId: string, quantity: number) => 
-    apiClient.post<ApiResponse<Cart>>('/cart/sidelines', {
-      sideline_id: sidelineId,
-      quantity,
-    }),
-
-  /**
-   * Remove sideline from cart
-   */
-  removeSideline: (sidelineId: string) => 
-    apiClient.delete<ApiResponse<Cart>>(`/cart/sidelines/${sidelineId}`),
-
-  /**
-   * Get cart summary
+   * Get cart summary for current user
    */
   getCartSummary: () => 
     apiClient.get<ApiResponse<CartSummary>>('/cart/summary'),
 
   /**
+   * Add item to cart - FIXED to match backend API
+   */
+  addToCart: (item_id: string, quantity: number, is_sideline: boolean = false) => {
+    console.log('📤 Sending to /cart/add-item:', { item_id, quantity, is_sideline });
+    return apiClient.post<ApiResponse<CartSummary>>('/cart/add-item', {
+      item_id,
+      quantity,
+      is_sideline,
+    });
+  },
+
+  /**
+   * Update cart item quantity
+   */
+  updateCartItem: (item_id: string, quantity: number, is_sideline: boolean = false) => 
+    apiClient.put<ApiResponse<CartSummary>>(`/cart/update-item/${item_id}?is_sideline=${is_sideline}`, { 
+      quantity 
+    }),
+
+  /**
+   * Remove item from cart
+   */
+  removeFromCart: (item_id: string, is_sideline: boolean = false) => 
+    apiClient.delete<ApiResponse<CartSummary>>(`/cart/remove-item/${item_id}?is_sideline=${is_sideline}`),
+
+  /**
    * Clear cart
    */
   clearCart: () => 
-    apiClient.delete<ApiResponse<void>>('/cart'),
+    apiClient.post<ApiResponse<void>>('/cart/clear'),
 }

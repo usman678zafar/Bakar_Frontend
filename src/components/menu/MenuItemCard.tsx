@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MenuItem } from '@types/menu.types';
 import { useCart } from '@hooks/useCart';
+import { useAuthStore } from '@store/authStore';
 import { formatCurrency } from '@utils/formatters';
 import { getImageUrl, handleImageError } from '@utils/images';
-import { Plus, Minus, ShoppingCart, Leaf, AlertCircle } from 'lucide-react';
+import {
+  Plus,
+  Minus,
+  ShoppingCart,
+  Leaf,
+  AlertCircle,
+  LogIn,
+} from 'lucide-react';
 import Card from '@components/common/Card';
 import Button from '@components/common/Button';
 import { useToast } from '@components/common/Toast';
@@ -17,20 +26,46 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   item,
   showQuickAdd = true,
 }) => {
+  const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [showDetails, setShowDetails] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  const { addToCart } = useCart();
+  const { addToCart, isUpdating } = useCart();
+  const { isAuthenticated } = useAuthStore();
   const { showToast } = useToast();
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
+    // Debug log
+    console.log('🛒 Adding to cart - Item:', {
+      id: item.id,
+      name: item.name,
+      quantity,
+      hasId: !!item.id,
+    });
+
+    if (!item.id) {
+      console.error('❌ Item missing ID:', item);
+      showToast('Error: Item data is invalid', 'error');
+      return;
+    }
+
+    if (!isAuthenticated) {
+      showToast('Please login to add items to cart', 'warning');
+      navigate('/login');
+      return;
+    }
+
     if (quantity > 0) {
-      addToCart(item, quantity, specialInstructions);
-      setQuantity(1);
-      setSpecialInstructions('');
-      setShowDetails(false);
+      try {
+        await addToCart(item, quantity, specialInstructions);
+        setQuantity(1);
+        setSpecialInstructions('');
+        setShowDetails(false);
+      } catch (error) {
+        console.error('Failed to add to cart:', error);
+      }
     }
   };
 
@@ -50,7 +85,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
         {/* Loading skeleton */}
         {!imageLoaded && (
           <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-            <span className="text-gray-400 text-4xl">🍽️</span>
+            <Utensils className="text-gray-400" size={32} />
           </div>
         )}
 
@@ -66,9 +101,9 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
         />
 
         {/* Debug info in development */}
-        {import.meta.env.DEV && !item.image_url && (
-          <div className="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded">
-            No image_url
+        {import.meta.env.DEV && !item.id && (
+          <div className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
+            Missing ID
           </div>
         )}
 
@@ -152,16 +187,35 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
             <Button
               variant="primary"
               size="sm"
-              onClick={() => setShowDetails(true)}
+              onClick={() => {
+                if (!isAuthenticated) {
+                  showToast('Please login to add items to cart', 'warning');
+                  navigate('/login');
+                } else {
+                  setShowDetails(true);
+                }
+              }}
+              disabled={isUpdating || !item.id}
             >
-              <ShoppingCart size={16} className="mr-1" />
-              Add
+              {!isAuthenticated ? (
+                <>
+                  <LogIn size={16} className="mr-1" />
+                  Login
+                </>
+              ) : !item.id ? (
+                'Invalid'
+              ) : (
+                <>
+                  <ShoppingCart size={16} className="mr-1" />
+                  Add
+                </>
+              )}
             </Button>
           )}
         </div>
 
         {/* Expanded details */}
-        {showDetails && (
+        {showDetails && isAuthenticated && (
           <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
             {/* Quantity selector */}
             <div>
@@ -216,8 +270,11 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
                 size="sm"
                 onClick={handleAddToCart}
                 className="flex-1"
+                disabled={isUpdating || !item.id}
               >
-                Add to Cart • {formatCurrency(item.price * quantity)}
+                {isUpdating
+                  ? 'Adding...'
+                  : `Add to Cart • ${formatCurrency(item.price * quantity)}`}
               </Button>
             </div>
           </div>
@@ -226,5 +283,8 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
     </Card>
   );
 };
+
+// Add missing import
+import { Utensils } from 'lucide-react';
 
 export default MenuItemCard;

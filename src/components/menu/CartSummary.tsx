@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@hooks/useCart';
 import { useAuthStore } from '@store/authStore';
 import { formatCurrency } from '@utils/formatters';
-import { ShoppingCart, Trash2, Plus, Minus } from 'lucide-react';
+import {
+  ShoppingCart,
+  Trash2,
+  Plus,
+  Minus,
+  Loader2,
+  RefreshCw,
+} from 'lucide-react';
 import Button from '@components/common/Button';
 import Card from '@components/common/Card';
 
@@ -18,21 +25,56 @@ const CartSummary: React.FC<CartSummaryProps> = ({ sticky = true }) => {
     items,
     sidelines,
     summary,
+    isLoading,
+    isUpdating,
     updateCartQuantity,
     removeFromCart,
     clearCart,
+    refreshCart,
   } = useCart();
 
-  const handleProceedToCheckout = () => {
-    // ✅ Check if user is logged in before checkout
-    if (!isAuthenticated) {
-      // Redirect to login with return URL
-      navigate('/login', { state: { from: '/checkout' } });
-    } else {
-      navigate('/checkout');
+  // Refresh cart on mount
+  useEffect(() => {
+    if (isAuthenticated) {
+      refreshCart();
     }
-  };
+  }, [isAuthenticated]);
 
+  // Not authenticated state
+  if (!isAuthenticated) {
+    return (
+      <Card className={sticky ? 'sticky top-24' : ''} padding="lg">
+        <div className="text-center py-8">
+          <ShoppingCart className="mx-auto h-16 w-16 text-gray-300 mb-4" />
+          <h3 className="font-semibold text-gray-500 mb-2">
+            Login to view cart
+          </h3>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => navigate('/login')}
+            fullWidth
+          >
+            Login Now
+          </Button>
+        </div>
+      </Card>
+    );
+  }
+
+  // Loading state
+  if (isLoading && items.length === 0) {
+    return (
+      <Card className={sticky ? 'sticky top-24' : ''} padding="lg">
+        <div className="text-center py-8">
+          <Loader2 className="mx-auto h-8 w-8 text-primary animate-spin mb-4" />
+          <p className="text-sm text-gray-500">Loading cart...</p>
+        </div>
+      </Card>
+    );
+  }
+
+  // Empty cart
   if (items.length === 0 && sidelines.length === 0) {
     return (
       <Card className={sticky ? 'sticky top-24' : ''} padding="lg">
@@ -57,41 +99,45 @@ const CartSummary: React.FC<CartSummaryProps> = ({ sticky = true }) => {
             Your Cart
           </h3>
         </div>
-        <span className="bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">
-          {summary.item_count} {summary.item_count === 1 ? 'item' : 'items'}
-        </span>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={refreshCart}
+            className="p-1 text-gray-400 hover:text-primary transition-colors"
+            disabled={isUpdating}
+          >
+            <RefreshCw size={16} className={isUpdating ? 'animate-spin' : ''} />
+          </button>
+          <span className="bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">
+            {summary.item_count} {summary.item_count === 1 ? 'item' : 'items'}
+          </span>
+        </div>
       </div>
 
       {/* Cart items */}
       <div className="space-y-4 mb-6 max-h-96 overflow-y-auto">
-        {items.map((item) => (
+        {items.map((item: any) => (
           <div
-            key={item.menu_item._id}
+            key={item.item_id}
             className="flex items-start space-x-3 pb-4 border-b border-gray-100 last:border-0"
           >
-            {/* Image */}
-            <img
-              src={item.menu_item.image_url || '/placeholder-food.jpg'}
-              alt={item.menu_item.name}
-              className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
-            />
-
             {/* Details */}
             <div className="flex-1 min-w-0">
               <h4 className="font-semibold text-text text-sm mb-1">
-                {item.menu_item.name}
+                {item.item_name}
               </h4>
+              <p className="text-xs text-gray-500 mb-1">{item.category}</p>
               <p className="text-primary font-semibold text-sm mb-2">
-                {formatCurrency(item.menu_item.price)}
+                {formatCurrency(item.price)}
               </p>
 
               {/* Quantity controls */}
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() =>
-                    updateCartQuantity(item.menu_item._id, item.quantity - 1)
+                    updateCartQuantity(item.item_id, item.quantity - 1)
                   }
-                  className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded hover:border-primary transition-colors"
+                  disabled={isUpdating}
+                  className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded hover:border-primary transition-colors disabled:opacity-50"
                 >
                   <Minus size={12} />
                 </button>
@@ -100,25 +146,21 @@ const CartSummary: React.FC<CartSummaryProps> = ({ sticky = true }) => {
                 </span>
                 <button
                   onClick={() =>
-                    updateCartQuantity(item.menu_item._id, item.quantity + 1)
+                    updateCartQuantity(item.item_id, item.quantity + 1)
                   }
-                  className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded hover:border-primary transition-colors"
+                  disabled={isUpdating}
+                  className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded hover:border-primary transition-colors disabled:opacity-50"
                 >
                   <Plus size={12} />
                 </button>
               </div>
-
-              {item.special_instructions && (
-                <p className="text-xs text-gray-500 mt-1 italic">
-                  {item.special_instructions}
-                </p>
-              )}
             </div>
 
             {/* Remove button */}
             <button
-              onClick={() => removeFromCart(item.menu_item._id)}
-              className="text-red-500 hover:text-red-700 transition-colors flex-shrink-0"
+              onClick={() => removeFromCart(item.item_id)}
+              disabled={isUpdating}
+              className="text-red-500 hover:text-red-700 transition-colors flex-shrink-0 disabled:opacity-50"
             >
               <Trash2 size={16} />
             </button>
@@ -131,22 +173,57 @@ const CartSummary: React.FC<CartSummaryProps> = ({ sticky = true }) => {
             <div className="pt-2 mt-2 border-t-2 border-gray-200">
               <h4 className="font-semibold text-text text-sm mb-3">Add-ons:</h4>
             </div>
-            {sidelines.map((sideline) => (
+            {sidelines.map((sideline: any) => (
               <div
-                key={sideline.sideline._id}
+                key={sideline.item_id}
                 className="flex items-center justify-between py-2"
               >
                 <div className="flex-1">
                   <p className="font-medium text-text text-sm">
-                    {sideline.sideline.name}
+                    {sideline.item_name}
                   </p>
-                  <p className="text-xs text-gray-500">
-                    Qty: {sideline.quantity}
-                  </p>
+                  <div className="flex items-center space-x-2 mt-1">
+                    <button
+                      onClick={() =>
+                        updateCartQuantity(
+                          sideline.item_id,
+                          sideline.quantity - 1,
+                          true
+                        )
+                      }
+                      disabled={isUpdating}
+                      className="w-5 h-5 flex items-center justify-center border border-gray-300 rounded hover:border-primary transition-colors disabled:opacity-50"
+                    >
+                      <Minus size={10} />
+                    </button>
+                    <span className="text-xs">Qty: {sideline.quantity}</span>
+                    <button
+                      onClick={() =>
+                        updateCartQuantity(
+                          sideline.item_id,
+                          sideline.quantity + 1,
+                          true
+                        )
+                      }
+                      disabled={isUpdating}
+                      className="w-5 h-5 flex items-center justify-center border border-gray-300 rounded hover:border-primary transition-colors disabled:opacity-50"
+                    >
+                      <Plus size={10} />
+                    </button>
+                  </div>
                 </div>
-                <span className="text-primary font-semibold text-sm">
-                  {formatCurrency(sideline.sideline.price * sideline.quantity)}
-                </span>
+                <div className="text-right">
+                  <span className="text-primary font-semibold text-sm">
+                    {formatCurrency(sideline.subtotal)}
+                  </span>
+                  <button
+                    onClick={() => removeFromCart(sideline.item_id, true)}
+                    disabled={isUpdating}
+                    className="ml-2 text-red-500 hover:text-red-700 disabled:opacity-50"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
               </div>
             ))}
           </>
@@ -192,28 +269,26 @@ const CartSummary: React.FC<CartSummaryProps> = ({ sticky = true }) => {
           variant="primary"
           fullWidth
           size="lg"
-          onClick={handleProceedToCheckout}
+          onClick={() => navigate('/checkout')}
+          disabled={isUpdating}
         >
-          {/* ✅ Show appropriate text based on auth status */}
-          {isAuthenticated ? 'Proceed to Checkout' : 'Login to Checkout'}
+          {isUpdating ? (
+            <>
+              <Loader2 className="animate-spin mr-2" size={18} />
+              Updating...
+            </>
+          ) : (
+            'Proceed to Checkout'
+          )}
         </Button>
 
         <button
           onClick={clearCart}
-          className="w-full text-sm text-gray-600 hover:text-red-500 transition-colors py-2"
+          disabled={isUpdating}
+          className="w-full text-sm text-gray-600 hover:text-red-500 transition-colors py-2 disabled:opacity-50"
         >
           Clear Cart
         </button>
-
-        {/* ✅ Show info message if not logged in */}
-        {!isAuthenticated && items.length > 0 && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-3">
-            <p className="text-xs text-blue-800">
-              <strong>Note:</strong> You need to login or create an account to
-              complete your order.
-            </p>
-          </div>
-        )}
       </div>
     </Card>
   );

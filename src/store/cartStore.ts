@@ -1,215 +1,352 @@
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-import { Cart, CartItem, CartSideline, CartSummary } from '@types/cart.types'
-import { MenuItem, Sideline } from '@types/menu.types'
-import { Address } from '@types/auth.types'
-import { TAX_RATE, DELIVERY_FEE_PER_KM, FREE_DELIVERY_THRESHOLD } from '@utils/constants'
+import { create } from 'zustand';
+import { cartAPI, CartSummary } from '@api/endpoints/cart';
+import { MenuItem, Sideline } from '@types/menu.types';
 
-interface CartState extends Cart {
-  // Computed values
-  summary: CartSummary
+// Define the structure for cart items stored locally
+interface LocalCartItem {
+  menu_item: MenuItem;
+  quantity: number;
+  special_instructions?: string;
+}
+
+interface LocalSidelineItem {
+  sideline: Sideline;
+  quantity: number;
+}
+
+interface CartStore {
+  // Cart data from backend
+  cartSummary: CartSummary | null;
+  
+  // Local cart data (for unauthenticated users)
+  localItems: LocalCartItem[];
+  localSidelines: LocalSidelineItem[];
+  
+  // Loading states
+  isLoading: boolean;
+  isUpdating: boolean;
+  error: string | null;
+  
+  // Order type and delivery option (local state)
+  orderType: 'daily_menu' | 'weekly_subscription' | 'special_catering' | null;
+  deliveryOption: 'delivery' | 'pickup';
   
   // Actions
-  addItem: (menuItem: MenuItem, quantity: number, specialInstructions?: string) => void
-  removeItem: (menuItemId: string) => void
-  updateQuantity: (menuItemId: string, quantity: number) => void
-  addSideline: (sideline: Sideline, quantity: number) => void
-  removeSideline: (sidelineId: string) => void
-  updateSidelineQuantity: (sidelineId: string, quantity: number) => void
-  setOrderType: (orderType: 'daily_menu' | 'weekly_subscription' | 'special_catering') => void
-  setDeliveryOption: (option: 'pickup' | 'delivery') => void
-  setSelectedAddress: (address: Address | undefined) => void
-  setDeliveryDate: (date: string) => void
-  setDeliveryTimeSlot: (slot: string) => void
-  setSpecialInstructions: (instructions: string) => void
-  calculateSummary: () => void
-  clearCart: () => void
+  fetchCart: () => Promise<void>;
+  addItem: (item: MenuItem, quantity: number, specialInstructions?: string) => Promise<void>;
+  addSideline: (sideline: Sideline, quantity: number) => Promise<void>;
+  updateQuantity: (itemId: string, quantity: number, isSideline?: boolean) => Promise<void>;
+  removeItem: (itemId: string, isSideline?: boolean) => Promise<void>;
+  clearCart: () => Promise<void>;
+  
+  // Local state setters
+  setOrderType: (type: 'daily_menu' | 'weekly_subscription' | 'special_catering') => void;
+  setDeliveryOption: (option: 'delivery' | 'pickup') => void;
+  clearError: () => void;
+
+  // Local cart operations (for unauthenticated users)
+  addLocalItem: (item: MenuItem, quantity: number, specialInstructions?: string) => void;
+  removeLocalItem: (itemId: string) => void;
+  updateLocalQuantity: (itemId: string, quantity: number) => void;
+  clearLocalCart: () => void;
+
+  // Computed values for local cart
+  getLocalSummary: () => CartSummary;
 }
 
-const calculateCartSummary = (
-  items: CartItem[],
-  sidelines: CartSideline[],
-  deliveryOption: 'pickup' | 'delivery',
-  distanceKm: number = 0
-): CartSummary => {
-  // Calculate subtotal
-  const itemsSubtotal = items.reduce((sum, item) => sum + item.menu_item.price * item.quantity, 0)
-  const sidelinesSubtotal = sidelines.reduce((sum, sideline) => sum + sideline.sideline.price * sideline.quantity, 0)
-  const subtotal = itemsSubtotal + sidelinesSubtotal
+export const useCartStore = create<CartStore>((set, get) => ({
+  cartSummary: null,
+  localItems: [],
+  localSidelines: [],
+  isLoading: false,
+  isUpdating: false,
+  error: null,
+  orderType: null,
+  deliveryOption: 'delivery',
 
-  // Calculate delivery fee
-  let delivery_fee = 0
-  if (deliveryOption === 'delivery') {
-    if (subtotal < FREE_DELIVERY_THRESHOLD) {
-      delivery_fee = distanceKm * DELIVERY_FEE_PER_KM
-    }
-  }
-
-  // Calculate tax
-  const tax = (subtotal + delivery_fee) * TAX_RATE
-
-  // Calculate total
-  const total = subtotal + delivery_fee + tax
-
-  // Count items
-  const item_count = items.reduce((sum, item) => sum + item.quantity, 0) +
-    sidelines.reduce((sum, sideline) => sum + sideline.quantity, 0)
-
-  return {
-    subtotal,
-    delivery_fee,
-    tax,
-    total,
-    item_count,
-  }
-}
-
-export const useCartStore = create<CartState>()(
-  persist(
-    (set, get) => ({
-      items: [],
-      sidelines: [],
-      order_type: 'daily_menu',
-      delivery_option: 'pickup',
-      selected_address: undefined,
-      delivery_date: undefined,
-      delivery_time_slot: undefined,
-      special_instructions: undefined,
-      summary: {
-        subtotal: 0,
-        delivery_fee: 0,
-        tax: 0,
-        total: 0,
-        item_count: 0,
-      },
-
-      addItem: (menuItem: MenuItem, quantity: number, specialInstructions?: string) => {
-        const { items } = get()
-        const existingItemIndex = items.findIndex(item => item.menu_item._id === menuItem._id)
-
-        if (existingItemIndex > -1) {
-          // Update quantity if item exists
-          const newItems = [...items]
-          newItems[existingItemIndex].quantity += quantity
-          set({ items: newItems })
-        } else {
-          // Add new item
-          set({ items: [...items, { menu_item: menuItem, quantity, special_instructions: specialInstructions }] })
-        }
-        get().calculateSummary()
-      },
-
-      removeItem: (menuItemId: string) => {
-        const { items } = get()
-        set({ items: items.filter(item => item.menu_item._id !== menuItemId) })
-        get().calculateSummary()
-      },
-
-      updateQuantity: (menuItemId: string, quantity: number) => {
-        const { items } = get()
-        if (quantity <= 0) {
-          get().removeItem(menuItemId)
-          return
-        }
-        const newItems = items.map(item =>
-          item.menu_item._id === menuItemId ? { ...item, quantity } : item
-        )
-        set({ items: newItems })
-        get().calculateSummary()
-      },
-
-      addSideline: (sideline: Sideline, quantity: number) => {
-        const { sidelines } = get()
-        const existingIndex = sidelines.findIndex(s => s.sideline._id === sideline._id)
-
-        if (existingIndex > -1) {
-          const newSidelines = [...sidelines]
-          newSidelines[existingIndex].quantity += quantity
-          set({ sidelines: newSidelines })
-        } else {
-          set({ sidelines: [...sidelines, { sideline, quantity }] })
-        }
-        get().calculateSummary()
-      },
-
-      removeSideline: (sidelineId: string) => {
-        const { sidelines } = get()
-        set({ sidelines: sidelines.filter(s => s.sideline._id !== sidelineId) })
-        get().calculateSummary()
-      },
-
-      updateSidelineQuantity: (sidelineId: string, quantity: number) => {
-        const { sidelines } = get()
-        if (quantity <= 0) {
-          get().removeSideline(sidelineId)
-          return
-        }
-        const newSidelines = sidelines.map(s =>
-          s.sideline._id === sidelineId ? { ...s, quantity } : s
-        )
-        set({ sidelines: newSidelines })
-        get().calculateSummary()
-      },
-
-      setOrderType: (orderType) => {
-        set({ order_type: orderType })
-      },
-
-      setDeliveryOption: (option) => {
-        set({ delivery_option: option })
-        get().calculateSummary()
-      },
-
-      setSelectedAddress: (address) => {
-        set({ selected_address: address })
-        get().calculateSummary()
-      },
-
-      setDeliveryDate: (date) => {
-        set({ delivery_date: date })
-      },
-
-      setDeliveryTimeSlot: (slot) => {
-        set({ delivery_time_slot: slot })
-      },
-
-      setSpecialInstructions: (instructions) => {
-        set({ special_instructions: instructions })
-      },
-
-      calculateSummary: () => {
-        const { items, sidelines, delivery_option, selected_address } = get()
-        // TODO: Calculate actual distance from selected address
-        const distanceKm = 5 // Placeholder
-        const summary = calculateCartSummary(items, sidelines, delivery_option, distanceKm)
-        set({ summary })
-      },
-
-      clearCart: () => {
+  /**
+   * Fetch cart from backend
+   */
+  fetchCart: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await cartAPI.getCartSummary();
+      set({
+        cartSummary: response.data.data,
+        isLoading: false,
+      });
+    } catch (error: any) {
+      console.error('Failed to fetch cart:', error);
+      // Don't set error for 404 (empty cart)
+      if (error.response?.status !== 404) {
         set({
-          items: [],
-          sidelines: [],
-          delivery_date: undefined,
-          delivery_time_slot: undefined,
-          special_instructions: undefined,
-          summary: {
-            subtotal: 0,
-            delivery_fee: 0,
-            tax: 0,
-            total: 0,
-            item_count: 0,
-          },
-        })
-      },
-    }),
-    {
-      name: 'bakars-cart',
-      partialize: (state) => ({
-        items: state.items,
-        sidelines: state.sidelines,
-        order_type: state.order_type,
-        delivery_option: state.delivery_option,
-      }),
+          error: error.response?.data?.message || 'Failed to fetch cart',
+          isLoading: false,
+        });
+      } else {
+        set({ isLoading: false });
+      }
     }
-  )
-)
+  },
+
+  /**
+   * Add menu item to cart - FIXED to use item.id
+   */
+  addItem: async (item: MenuItem, quantity: number, specialInstructions?: string) => {
+    set({ isUpdating: true, error: null });
+    
+    // Validate item has an ID
+    if (!item.id) {
+      console.error('❌ Item missing ID:', item);
+      set({
+        error: 'Invalid item: missing ID',
+        isUpdating: false,
+      });
+      throw new Error('Invalid item: missing ID');
+    }
+
+    try {
+      console.log('🛒 Adding item to cart:', { itemId: item.id, quantity });
+      const response = await cartAPI.addToCart(item.id, quantity, false);
+      console.log('✅ Item added successfully:', response.data);
+      
+      set({
+        cartSummary: response.data.data,
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      console.error('❌ Failed to add item:', error);
+      console.error('Error response:', error.response?.data);
+      
+      // If not authenticated, add to local cart
+      if (error.response?.status === 401) {
+        get().addLocalItem(item, quantity, specialInstructions);
+        set({ isUpdating: false });
+      } else {
+        set({
+          error: error.response?.data?.message || 'Failed to add item to cart',
+          isUpdating: false,
+        });
+        throw error;
+      }
+    }
+  },
+
+  /**
+   * Add sideline to cart - FIXED to use sideline.id
+   */
+  addSideline: async (sideline: Sideline, quantity: number) => {
+    set({ isUpdating: true, error: null });
+    
+    if (!sideline.id) {
+      console.error('❌ Sideline missing ID:', sideline);
+      set({
+        error: 'Invalid sideline: missing ID',
+        isUpdating: false,
+      });
+      throw new Error('Invalid sideline: missing ID');
+    }
+
+    try {
+      const response = await cartAPI.addToCart(sideline.id, quantity, true);
+      set({
+        cartSummary: response.data.data,
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      console.error('Failed to add sideline:', error);
+      set({
+        error: error.response?.data?.message || 'Failed to add sideline to cart',
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
+  /**
+   * Update item quantity in cart
+   */
+  updateQuantity: async (itemId: string, quantity: number, isSideline: boolean = false) => {
+    if (quantity <= 0) {
+      await get().removeItem(itemId, isSideline);
+      return;
+    }
+
+    set({ isUpdating: true, error: null });
+    try {
+      const response = await cartAPI.updateCartItem(itemId, quantity, isSideline);
+      set({
+        cartSummary: response.data.data,
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      console.error('Failed to update quantity:', error);
+      // If not authenticated, update local cart
+      if (error.response?.status === 401) {
+        get().updateLocalQuantity(itemId, quantity);
+        set({ isUpdating: false });
+      } else {
+        set({
+          error: error.response?.data?.message || 'Failed to update quantity',
+          isUpdating: false,
+        });
+        throw error;
+      }
+    }
+  },
+
+  /**
+   * Remove item from cart
+   */
+  removeItem: async (itemId: string, isSideline: boolean = false) => {
+    set({ isUpdating: true, error: null });
+    try {
+      const response = await cartAPI.removeFromCart(itemId, isSideline);
+      set({
+        cartSummary: response.data.data,
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      console.error('Failed to remove item:', error);
+      // If not authenticated, remove from local cart
+      if (error.response?.status === 401) {
+        get().removeLocalItem(itemId);
+        set({ isUpdating: false });
+      } else {
+        set({
+          error: error.response?.data?.message || 'Failed to remove item',
+          isUpdating: false,
+        });
+        throw error;
+      }
+    }
+  },
+
+  /**
+   * Clear entire cart
+   */
+  clearCart: async () => {
+    set({ isUpdating: true, error: null });
+    try {
+      await cartAPI.clearCart();
+      set({
+        cartSummary: null,
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      console.error('Failed to clear cart:', error);
+      // If not authenticated, clear local cart
+      if (error.response?.status === 401) {
+        get().clearLocalCart();
+        set({ isUpdating: false });
+      } else {
+        set({
+          error: error.response?.data?.message || 'Failed to clear cart',
+          isUpdating: false,
+        });
+        throw error;
+      }
+    }
+  },
+
+  /**
+   * Local cart operations (for unauthenticated users)
+   */
+  addLocalItem: (item: MenuItem, quantity: number, specialInstructions?: string) => {
+    const currentItems = get().localItems;
+    const existingItem = currentItems.find(i => i.menu_item.id === item.id);
+    
+    if (existingItem) {
+      set({
+        localItems: currentItems.map(i =>
+          i.menu_item.id === item.id
+            ? { ...i, quantity: i.quantity + quantity }
+            : i
+        ),
+      });
+    } else {
+      set({
+        localItems: [...currentItems, { menu_item: item, quantity, special_instructions: specialInstructions }],
+      });
+    }
+  },
+
+  removeLocalItem: (itemId: string) => {
+    set({
+      localItems: get().localItems.filter(i => i.menu_item.id !== itemId),
+    });
+  },
+
+  updateLocalQuantity: (itemId: string, quantity: number) => {
+    if (quantity <= 0) {
+      get().removeLocalItem(itemId);
+      return;
+    }
+    set({
+      localItems: get().localItems.map(i =>
+        i.menu_item.id === itemId ? { ...i, quantity } : i
+      ),
+    });
+  },
+
+  clearLocalCart: () => {
+    set({ localItems: [], localSidelines: [] });
+  },
+
+  getLocalSummary: () => {
+    const items = get().localItems;
+    const sidelines = get().localSidelines;
+    const deliveryOption = get().deliveryOption;
+    
+    const subtotal = items.reduce((sum, item) => sum + (item.menu_item.price * item.quantity), 0) +
+                    sidelines.reduce((sum, item) => sum + (item.sideline.price * item.quantity), 0);
+    
+    const delivery_fee = deliveryOption === 'pickup' ? 0 : subtotal >= 50 ? 0 : 10;
+    const total = subtotal + delivery_fee;
+    const items_count = items.reduce((sum, item) => sum + item.quantity, 0) +
+                       sidelines.reduce((sum, item) => sum + item.quantity, 0);
+    
+    return {
+      items: items.map(i => ({
+        item_id: i.menu_item.id,
+        item_name: i.menu_item.name,
+        category: i.menu_item.category,
+        quantity: i.quantity,
+        price: i.menu_item.price,
+        subtotal: i.menu_item.price * i.quantity,
+      })),
+      sidelines: sidelines.map(s => ({
+        item_id: s.sideline.id,
+        item_name: s.sideline.name,
+        quantity: s.quantity,
+        price: s.sideline.price,
+        subtotal: s.sideline.price * s.quantity,
+      })),
+      subtotal,
+      delivery_fee,
+      total,
+      items_count,
+    };
+  },
+
+  /**
+   * Set order type (local state)
+   */
+  setOrderType: (type: 'daily_menu' | 'weekly_subscription' | 'special_catering') => {
+    set({ orderType: type });
+  },
+
+  /**
+   * Set delivery option (local state)
+   */
+  setDeliveryOption: (option: 'delivery' | 'pickup') => {
+    set({ deliveryOption: option });
+  },
+
+  /**
+   * Clear error
+   */
+  clearError: () => {
+    set({ error: null });
+  },
+}));

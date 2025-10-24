@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, ShoppingCart, User, LogOut, Settings } from 'lucide-react';
 import { useAuthStore } from '@store/authStore';
@@ -11,9 +11,19 @@ const Header: React.FC = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   const { isAuthenticated, user, logout } = useAuthStore();
-  const { summary } = useCartStore();
+  const cartStore = useCartStore();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Fetch cart on mount if authenticated
+  useEffect(() => {
+    if (isAuthenticated && !cartStore.cartSummary && !cartStore.isLoading) {
+      cartStore.fetchCart().catch(console.error);
+    }
+  }, [isAuthenticated]);
+
+  // Calculate cart count safely
+  const cartItemCount = cartStore.cartSummary?.items_count || 0;
 
   const handleLogout = () => {
     logout();
@@ -58,16 +68,16 @@ const Header: React.FC = () => {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
-            {/* Cart Icon */}
+            {/* Cart Icon - Only show if authenticated */}
             {isAuthenticated && (
               <button
                 onClick={() => navigate('/checkout')}
                 className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
                 <ShoppingCart size={24} className="text-text" />
-                {summary.item_count > 0 && (
+                {cartItemCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                    {summary.item_count}
+                    {cartItemCount > 99 ? '99+' : cartItemCount}
                   </span>
                 )}
               </button>
@@ -81,10 +91,12 @@ const Header: React.FC = () => {
                   className="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-semibold">
-                    {user?.full_name?.charAt(0).toUpperCase()}
+                    {user?.first_name?.charAt(0)?.toUpperCase() ||
+                      user?.email?.charAt(0)?.toUpperCase() ||
+                      'U'}
                   </div>
                   <span className="hidden lg:block font-medium text-text">
-                    {user?.full_name}
+                    {user?.first_name || user?.email?.split('@')[0] || 'User'}
                   </span>
                 </button>
 
