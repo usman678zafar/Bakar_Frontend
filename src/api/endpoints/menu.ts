@@ -14,6 +14,11 @@ export const menuAPI = {
     if (filters?.is_vegan !== undefined)
       params.append('is_vegan', String(filters.is_vegan));
     if (filters?.search) params.append('search', filters.search);
+    
+    // Add filter for weekly available items
+    if (filters?.order_type === 'weekly_subscription') {
+      params.append('is_available_for_weekly', 'true');
+    }
 
     return apiClient.get<ApiResponse<MenuItem[]>>(
       `/menu/daily?${params.toString()}`
@@ -21,22 +26,46 @@ export const menuAPI = {
   },
 
   /**
-   * Get weekly menu items
-   * ✅ FIX: Provide default delivery_date if not specified
+   * Get weekly menu items with improved error handling
    */
   getWeeklyMenu: (delivery_date?: string) => {
     // If no date provided, use next Monday
     if (!delivery_date) {
       const today = new Date();
       const dayOfWeek = today.getDay();
-      const daysUntilMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek; // If Sunday, add 1 day, else calculate days to next Monday
+      const daysUntilMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek;
       const nextMonday = new Date(today);
       nextMonday.setDate(today.getDate() + daysUntilMonday);
-      delivery_date = nextMonday.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+      delivery_date = nextMonday.toISOString().split('T')[0];
     }
 
     const params = `?delivery_date=${delivery_date}`;
-    return apiClient.get<ApiResponse<any>>(`/menu/weekly${params}`);
+    
+    console.log('🔍 Fetching weekly menu for date:', delivery_date);
+    
+    return apiClient.get<ApiResponse<any>>(`/menu/weekly${params}`).catch((error) => {
+      // If 404, don't throw - let the component handle it
+      if (error.response?.status === 404) {
+        console.log('📝 No weekly menu found for date:', delivery_date);
+        // Return a valid but empty response structure
+        return {
+          data: {
+            success: true,
+            data: { 
+              delivery_date,
+              menu_rotation: null,
+              items: []
+            }
+          },
+          status: 404,
+          statusText: 'Not Found',
+          headers: {},
+          config: error.config
+        };
+      }
+      // Re-throw other errors
+      throw error;
+    });
   },
 
   /**

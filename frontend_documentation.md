@@ -1,12 +1,13 @@
 # Frontend Project Documentation
 
-*Generated on: 2025-10-25 01:01:27*
+_Generated on: 2025-10-25 16:38:59_
 
 ---
 
 # Table of Contents
 
 ### 📁 Root Files
+
 - [.env.example](#envexample)
 - [package.json](#packagejson)
 - [App.tsx](#src\apptsx)
@@ -109,6 +110,7 @@
 - [order.types.ts](#src\types\ordertypests)
 - [constants.ts](#src\utils\constantsts)
 - [formatters.ts](#src\utils\formattersts)
+- [images.ts](#src\utils\imagests)
 - [storage.ts](#src\utils\storagets)
 - [validators.ts](#src\utils\validatorsts)
 - [tailwind.config.js](#tailwindconfigjs)
@@ -117,41 +119,75 @@
 
 ---
 
-## 📄 vite.config.ts
+## 📄 tailwind.config.js
 
-*Path: `vite.config.ts`*
+_Path: `tailwind.config.js`_
 
-```typescript
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
-
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-      '@components': path.resolve(__dirname, './src/components'),
-      '@pages': path.resolve(__dirname, './src/pages'),
-      '@store': path.resolve(__dirname, './src/store'),
-      '@api': path.resolve(__dirname, './src/api'),
-      '@hooks': path.resolve(__dirname, './src/hooks'),
-      '@models': path.resolve(__dirname, './src/types'),
-      '@utils': path.resolve(__dirname, './src/utils'),
-      '@assets': path.resolve(__dirname, './src/assets'),
-    },
-  },
-  server: {
-    port: 5173,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:8000',
-        changeOrigin: true,
+```javascript
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          DEFAULT: '#FF6B35',
+          50: '#FFE8E0',
+          100: '#FFD5C6',
+          200: '#FFAF93',
+          300: '#FF8A60',
+          400: '#FF6B35',
+          500: '#FF4800',
+          600: '#CC3A00',
+          700: '#992B00',
+          800: '#661D00',
+          900: '#330E00',
+        },
+        secondary: {
+          DEFAULT: '#4B6043',
+          50: '#E8EBE6',
+          100: '#D1D7CD',
+          200: '#A3AF9B',
+          300: '#758769',
+          400: '#4B6043',
+          500: '#3D4D36',
+          600: '#2F3A29',
+          700: '#21271C',
+          800: '#13140F',
+          900: '#050602',
+        },
+        background: '#F9F9F9',
+        text: '#2E2E2E',
+      },
+      fontFamily: {
+        heading: ['Playfair Display', 'serif'],
+        body: ['Montserrat', 'sans-serif'],
+      },
+      borderRadius: {
+        lg: '0.75rem',
+        xl: '1rem',
       },
     },
   },
-})
+  plugins: [],
+};
+```
+
+---
+
+## 📄 .env.example
+
+_Path: `.env.example`_
+
+```bash
+VITE_API_URL=http://localhost:8000/api/v1
+VITE_API_BASE_URL=http://localhost:8000
+VITE_APP_NAME=Bakars
+VITE_STRIPE_PUBLIC_KEY=
+VITE_GOOGLE_MAPS_API_KEY=AIzaSyBzu9lXawVMs341W_6k2kk2wpJLEdljSWY
+# Cloudflare R2 Public URL (for images)
+VITE_R2_PUBLIC_URL=https://6f63dc6260a584c1fd2d7f64d8d5b8d7.r2.cloudflarestorage.com
+VITE_CDN_URL=https://6f63dc6260a584c1fd2d7f64d8d5b8d7.r2.cloudflarestorage.com
 
 ```
 
@@ -159,7 +195,7 @@ export default defineConfig({
 
 ## 📄 tsconfig.json
 
-*Path: `tsconfig.json`*
+_Path: `tsconfig.json`_
 
 ```json
 {
@@ -206,74 +242,13 @@ export default defineConfig({
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
-
-```
-
----
-
-## 📄 tailwind.config.js
-
-*Path: `tailwind.config.js`*
-
-```javascript
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
-  theme: {
-    extend: {
-      colors: {
-        primary: {
-          DEFAULT: '#FF6B35',
-          50: '#FFE8E0',
-          100: '#FFD5C6',
-          200: '#FFAF93',
-          300: '#FF8A60',
-          400: '#FF6B35',
-          500: '#FF4800',
-          600: '#CC3A00',
-          700: '#992B00',
-          800: '#661D00',
-          900: '#330E00',
-        },
-        secondary: {
-          DEFAULT: '#4B6043',
-          50: '#E8EBE6',
-          100: '#D1D7CD',
-          200: '#A3AF9B',
-          300: '#758769',
-          400: '#4B6043',
-          500: '#3D4D36',
-          600: '#2F3A29',
-          700: '#21271C',
-          800: '#13140F',
-          900: '#050602',
-        },
-        background: '#F9F9F9',
-        text: '#2E2E2E',
-      },
-      fontFamily: {
-        heading: ['Playfair Display', 'serif'],
-        body: ['Montserrat', 'sans-serif'],
-      },
-      borderRadius: {
-        'lg': '0.75rem',
-        'xl': '1rem',
-      },
-    },
-  },
-  plugins: [],
-}
-
 ```
 
 ---
 
 ## 📄 package.json
 
-*Path: `package.json`*
+_Path: `package.json`_
 
 ```json
 {
@@ -321,28 +296,52 @@ export default {
     "vite": "^5.4.8"
   }
 }
-
 ```
 
 ---
 
-## 📄 .env.example
+## 📄 vite.config.ts
 
-*Path: `.env.example`*
+_Path: `vite.config.ts`_
 
-```bash
-VITE_API_URL=http://localhost:3000/api
-VITE_APP_NAME=Bakars
-VITE_STRIPE_PUBLIC_KEY=
-VITE_GOOGLE_MAPS_API_KEY=
+```typescript
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      '@components': path.resolve(__dirname, './src/components'),
+      '@pages': path.resolve(__dirname, './src/pages'),
+      '@store': path.resolve(__dirname, './src/store'),
+      '@api': path.resolve(__dirname, './src/api'),
+      '@hooks': path.resolve(__dirname, './src/hooks'),
+      '@models': path.resolve(__dirname, './src/types'),
+      '@utils': path.resolve(__dirname, './src/utils'),
+      '@assets': path.resolve(__dirname, './src/assets'),
+    },
+  },
+  server: {
+    port: 5173,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      },
+    },
+  },
+});
 ```
 
 ---
 
 ## 📄 src\api\endpoints\admin.ts
 
-*Path: `src\api\endpoints\admin.ts`*
+_Path: `src\api\endpoints\admin.ts`_
 
 ```typescript
 import apiClient from '../client';
@@ -354,18 +353,23 @@ export const adminAPI = {
   /**
    * Get dashboard statistics
    */
-  getDashboardStats: () =>
-    apiClient.get<ApiResponse<any>>('/admin/dashboard'),
+  getDashboardStats: () => apiClient.get<ApiResponse<any>>('/admin/dashboard'),
 
   /**
    * Get all orders
    */
-  getAllOrders: (filters?: { status?: string; date_from?: string; date_to?: string }) => {
+  getAllOrders: (filters?: {
+    status?: string;
+    date_from?: string;
+    date_to?: string;
+  }) => {
     const params = new URLSearchParams();
     if (filters?.status) params.append('status', filters.status);
     if (filters?.date_from) params.append('date_from', filters.date_from);
     if (filters?.date_to) params.append('date_to', filters.date_to);
-    return apiClient.get<ApiResponse<Order[]>>(`/admin/orders?${params.toString()}`);
+    return apiClient.get<ApiResponse<Order[]>>(
+      `/admin/orders?${params.toString()}`
+    );
   },
 
   /**
@@ -411,9 +415,13 @@ export const adminAPI = {
    * Update sideline
    */
   updateSideline: (sidelineId: string, data: FormData) =>
-    apiClient.put<ApiResponse<Sideline>>(`/admin/sidelines/${sidelineId}`, data, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    }),
+    apiClient.put<ApiResponse<Sideline>>(
+      `/admin/sidelines/${sidelineId}`,
+      data,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    ),
 
   /**
    * Delete sideline
@@ -433,176 +441,207 @@ export const adminAPI = {
   getAllSidelines: () =>
     apiClient.get<ApiResponse<Sideline[]>>('/admin/sidelines'),
 };
-
 ```
 
 ---
 
 ## 📄 src\api\endpoints\auth.ts
 
-*Path: `src\api\endpoints\auth.ts`*
+_Path: `src\api\endpoints\auth.ts`_
 
 ```typescript
-import apiClient from '../client'
-import { LoginCredentials, RegisterData, AuthResponse, User } from '@types/auth.types'
+import apiClient from '../client';
+import {
+  LoginCredentials,
+  RegisterData,
+  AuthResponse,
+  User,
+} from '@types/auth.types';
 
 export const authAPI = {
-  login: (credentials: LoginCredentials) => 
+  login: (credentials: LoginCredentials) =>
     apiClient.post<AuthResponse>('/auth/login', credentials),
-  
-  register: (data: RegisterData) => 
-    apiClient.post<AuthResponse>('/auth/register', data),
-  
-  getProfile: () => 
-    apiClient.get<User>('/auth/profile'),
-  
-  updateProfile: (data: Partial<User>) => 
-    apiClient.put<User>('/auth/profile', data),
-  
-  logout: () => 
-    apiClient.post('/auth/logout'),
-}
 
+  register: (data: RegisterData) =>
+    apiClient.post<AuthResponse>('/auth/register', data),
+
+  getProfile: () => apiClient.get<User>('/auth/profile'),
+
+  updateProfile: (data: Partial<User>) =>
+    apiClient.put<User>('/auth/profile', data),
+
+  logout: () => apiClient.post('/auth/logout'),
+};
 ```
 
 ---
 
 ## 📄 src\api\endpoints\cart.ts
 
-*Path: `src\api\endpoints\cart.ts`*
+_Path: `src\api\endpoints\cart.ts`_
 
 ```typescript
-import apiClient from '../client'
-import { Cart, CartSummary } from '@types/cart.types'
-import { ApiResponse } from '@types/common.types'
+import apiClient from '../client';
+import { ApiResponse } from '@types/common.types';
+
+export interface CartItem {
+  item_id: string;
+  item_name: string;
+  category: string;
+  quantity: number;
+  price: number;
+  subtotal: number;
+}
+
+export interface CartSideline {
+  item_id: string;
+  item_name: string;
+  quantity: number;
+  price: number;
+  subtotal: number;
+}
+
+export interface CartSummary {
+  items: CartItem[];
+  sidelines: CartSideline[];
+  subtotal: number;
+  delivery_fee: number;
+  total: number;
+  items_count: number;
+}
 
 export const cartAPI = {
   /**
-   * Get cart for current user
+   * Get cart summary for current user
    */
-  getCart: () => 
-    apiClient.get<ApiResponse<Cart>>('/cart'),
+  getCartSummary: () =>
+    apiClient.get<ApiResponse<CartSummary>>('/cart/summary'),
 
   /**
-   * Add item to cart
+   * Add item to cart - FIXED to match backend API
    */
-  addToCart: (menuItemId: string, quantity: number, specialInstructions?: string) => 
-    apiClient.post<ApiResponse<Cart>>('/cart/items', {
-      menu_item_id: menuItemId,
+  addToCart: (
+    item_id: string,
+    quantity: number,
+    is_sideline: boolean = false
+  ) => {
+    console.log('📤 Sending to /cart/add-item:', {
+      item_id,
       quantity,
-      special_instructions: specialInstructions,
-    }),
+      is_sideline,
+    });
+    return apiClient.post<ApiResponse<CartSummary>>('/cart/add-item', {
+      item_id,
+      quantity,
+      is_sideline,
+    });
+  },
 
   /**
    * Update cart item quantity
    */
-  updateCartItem: (itemId: string, quantity: number) => 
-    apiClient.put<ApiResponse<Cart>>(`/cart/items/${itemId}`, { quantity }),
+  updateCartItem: (
+    item_id: string,
+    quantity: number,
+    is_sideline: boolean = false
+  ) =>
+    apiClient.put<ApiResponse<CartSummary>>(
+      `/cart/update-item/${item_id}?is_sideline=${is_sideline}`,
+      {
+        quantity,
+      }
+    ),
 
   /**
    * Remove item from cart
    */
-  removeFromCart: (itemId: string) => 
-    apiClient.delete<ApiResponse<Cart>>(`/cart/items/${itemId}`),
-
-  /**
-   * Add sideline to cart
-   */
-  addSideline: (sidelineId: string, quantity: number) => 
-    apiClient.post<ApiResponse<Cart>>('/cart/sidelines', {
-      sideline_id: sidelineId,
-      quantity,
-    }),
-
-  /**
-   * Remove sideline from cart
-   */
-  removeSideline: (sidelineId: string) => 
-    apiClient.delete<ApiResponse<Cart>>(`/cart/sidelines/${sidelineId}`),
-
-  /**
-   * Get cart summary
-   */
-  getCartSummary: () => 
-    apiClient.get<ApiResponse<CartSummary>>('/cart/summary'),
+  removeFromCart: (item_id: string, is_sideline: boolean = false) =>
+    apiClient.delete<ApiResponse<CartSummary>>(
+      `/cart/remove-item/${item_id}?is_sideline=${is_sideline}`
+    ),
 
   /**
    * Clear cart
    */
-  clearCart: () => 
-    apiClient.delete<ApiResponse<void>>('/cart'),
-}
-
+  clearCart: () => apiClient.post<ApiResponse<void>>('/cart/clear'),
+};
 ```
 
 ---
 
 ## 📄 src\api\endpoints\delivery.ts
 
-*Path: `src\api\endpoints\delivery.ts`*
+_Path: `src\api\endpoints\delivery.ts`_
 
 ```typescript
-import apiClient from '../client'
-import { Address, CreateAddressPayload, DeliveryValidation } from '@types/address.types'
-import { ApiResponse } from '@types/common.types'
+import apiClient from '../client';
+import {
+  Address,
+  CreateAddressPayload,
+  DeliveryValidation,
+} from '@types/address.types';
+import { ApiResponse } from '@types/common.types';
 
 export const deliveryAPI = {
   /**
    * Get all addresses for user
    */
-  getAddresses: () => 
-    apiClient.get<ApiResponse<Address[]>>('/addresses'),
+  getAddresses: () => apiClient.get<ApiResponse<Address[]>>('/addresses'),
 
   /**
    * Get address by ID
    */
-  getAddressById: (addressId: string) => 
+  getAddressById: (addressId: string) =>
     apiClient.get<ApiResponse<Address>>(`/addresses/${addressId}`),
 
   /**
    * Create new address
    */
-  createAddress: (payload: CreateAddressPayload) => 
+  createAddress: (payload: CreateAddressPayload) =>
     apiClient.post<ApiResponse<Address>>('/addresses', payload),
 
   /**
    * Update address
    */
-  updateAddress: (addressId: string, payload: Partial<CreateAddressPayload>) => 
+  updateAddress: (addressId: string, payload: Partial<CreateAddressPayload>) =>
     apiClient.put<ApiResponse<Address>>(`/addresses/${addressId}`, payload),
 
   /**
    * Delete address
    */
-  deleteAddress: (addressId: string) => 
+  deleteAddress: (addressId: string) =>
     apiClient.delete<ApiResponse<void>>(`/addresses/${addressId}`),
 
   /**
    * Set default address
    */
-  setDefaultAddress: (addressId: string) => 
+  setDefaultAddress: (addressId: string) =>
     apiClient.put<ApiResponse<Address>>(`/addresses/${addressId}/default`),
 
   /**
    * Validate delivery address
    */
-  validateDelivery: (addressId: string) => 
-    apiClient.post<ApiResponse<DeliveryValidation>>('/delivery/validate', { address_id: addressId }),
+  validateDelivery: (addressId: string) =>
+    apiClient.post<ApiResponse<DeliveryValidation>>('/delivery/validate', {
+      address_id: addressId,
+    }),
 
   /**
    * Calculate delivery fee
    */
-  calculateDeliveryFee: (addressId: string) => 
-    apiClient.post<ApiResponse<{ fee: number; distance_km: number }>>('/delivery/calculate', { address_id: addressId }),
-}
-
+  calculateDeliveryFee: (addressId: string) =>
+    apiClient.post<ApiResponse<{ fee: number; distance_km: number }>>(
+      '/delivery/calculate',
+      { address_id: addressId }
+    ),
+};
 ```
 
 ---
 
 ## 📄 src\api\endpoints\menu.ts
 
-*Path: `src\api\endpoints\menu.ts`*
+_Path: `src\api\endpoints\menu.ts`_
 
 ```typescript
 import apiClient from '../client';
@@ -686,62 +725,60 @@ export const menuAPI = {
     );
   },
 };
-
 ```
 
 ---
 
 ## 📄 src\api\endpoints\notifications.ts
 
-*Path: `src\api\endpoints\notifications.ts`*
+_Path: `src\api\endpoints\notifications.ts`_
 
 ```typescript
-import apiClient from '../client'
-import { ApiResponse } from '@types/common.types'
+import apiClient from '../client';
+import { ApiResponse } from '@types/common.types';
 
 export interface Notification {
-  id: string
-  user_id: string
-  type: 'order_update' | 'promotion' | 'system'
-  title: string
-  message: string
-  read: boolean
-  created_at: string
+  id: string;
+  user_id: string;
+  type: 'order_update' | 'promotion' | 'system';
+  title: string;
+  message: string;
+  read: boolean;
+  created_at: string;
 }
 
 export const notificationsAPI = {
   /**
    * Get user notifications
    */
-  getNotifications: () => 
+  getNotifications: () =>
     apiClient.get<ApiResponse<Notification[]>>('/notifications'),
 
   /**
    * Mark notification as read
    */
-  markAsRead: (notificationId: string) => 
+  markAsRead: (notificationId: string) =>
     apiClient.put<ApiResponse<void>>(`/notifications/${notificationId}/read`),
 
   /**
    * Mark all notifications as read
    */
-  markAllAsRead: () => 
+  markAllAsRead: () =>
     apiClient.put<ApiResponse<void>>('/notifications/read-all'),
 
   /**
    * Delete notification
    */
-  deleteNotification: (notificationId: string) => 
+  deleteNotification: (notificationId: string) =>
     apiClient.delete<ApiResponse<void>>(`/notifications/${notificationId}`),
-}
-
+};
 ```
 
 ---
 
 ## 📄 src\api\endpoints\orders.ts
 
-*Path: `src\api\endpoints\orders.ts`*
+_Path: `src\api\endpoints\orders.ts`_
 
 ```typescript
 import apiClient from '../client';
@@ -771,9 +808,14 @@ export const ordersAPI = {
    * Get user's order history
    */
   getOrderHistory: (page: number = 1, page_size: number = 20) =>
-    apiClient.get<ApiResponse<{ orders: Order[]; total: number; page: number; page_size: number }>>(
-      `/orders/my-orders?page=${page}&page_size=${page_size}`
-    ),
+    apiClient.get<
+      ApiResponse<{
+        orders: Order[];
+        total: number;
+        page: number;
+        page_size: number;
+      }>
+    >(`/orders/my-orders?page=${page}&page_size=${page_size}`),
 
   /**
    * Get order by ID
@@ -797,65 +839,79 @@ export const ordersAPI = {
    * Update order status (admin)
    */
   updateOrderStatus: (orderId: string, status: string) =>
-    apiClient.patch<ApiResponse<Order>>(`/admin/orders/${orderId}/status`, { status }),
+    apiClient.patch<ApiResponse<Order>>(`/admin/orders/${orderId}/status`, {
+      status,
+    }),
 };
-
 ```
 
 ---
 
 ## 📄 src\api\endpoints\payments.ts
 
-*Path: `src\api\endpoints\payments.ts`*
+_Path: `src\api\endpoints\payments.ts`_
 
 ```typescript
-import apiClient from '../client'
-import { ApiResponse } from '@types/common.types'
+import apiClient from '../client';
+import { ApiResponse } from '@types/common.types';
 
 export interface PaymentIntent {
-  client_secret: string
-  payment_intent_id: string
-  amount: number
+  client_secret: string;
+  payment_intent_id: string;
+  amount: number;
 }
 
 export const paymentsAPI = {
   /**
    * Create payment intent for order
    */
-  createPaymentIntent: (orderId: string) => 
-    apiClient.post<ApiResponse<PaymentIntent>>('/payments/create-intent', { order_id: orderId }),
+  createPaymentIntent: (orderId: string) =>
+    apiClient.post<ApiResponse<PaymentIntent>>('/payments/create-intent', {
+      order_id: orderId,
+    }),
 
   /**
    * Confirm payment
    */
-  confirmPayment: (paymentIntentId: string) => 
-    apiClient.post<ApiResponse<void>>('/payments/confirm', { payment_intent_id: paymentIntentId }),
+  confirmPayment: (paymentIntentId: string) =>
+    apiClient.post<ApiResponse<void>>('/payments/confirm', {
+      payment_intent_id: paymentIntentId,
+    }),
 
   /**
    * Get payment status
    */
-  getPaymentStatus: (paymentIntentId: string) => 
-    apiClient.get<ApiResponse<{ status: string }>>(`/payments/${paymentIntentId}/status`),
+  getPaymentStatus: (paymentIntentId: string) =>
+    apiClient.get<ApiResponse<{ status: string }>>(
+      `/payments/${paymentIntentId}/status`
+    ),
 
   /**
    * Request refund
    */
-  requestRefund: (orderId: string, reason: string) => 
-    apiClient.post<ApiResponse<void>>('/payments/refund', { order_id: orderId, reason }),
-}
-
+  requestRefund: (orderId: string, reason: string) =>
+    apiClient.post<ApiResponse<void>>('/payments/refund', {
+      order_id: orderId,
+      reason,
+    }),
+};
 ```
 
 ---
 
 ## 📄 src\api\client.ts
 
-*Path: `src\api\client.ts`*
+_Path: `src\api\client.ts`_
 
 ```typescript
-import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosError } from 'axios';
+import axios, {
+  AxiosInstance,
+  InternalAxiosRequestConfig,
+  AxiosError,
+} from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -890,34 +946,32 @@ apiClient.interceptors.response.use(
 );
 
 export default apiClient;
-
 ```
 
 ---
 
 ## 📄 src\api\index.ts
 
-*Path: `src\api\index.ts`*
+_Path: `src\api\index.ts`_
 
 ```typescript
-export { authAPI } from './endpoints/auth'
-export { menuAPI } from './endpoints/menu'
-export { ordersAPI } from './endpoints/orders'
-export { cartAPI } from './endpoints/cart'
-export { deliveryAPI } from './endpoints/delivery'
-export { paymentsAPI } from './endpoints/payments'
-export { notificationsAPI } from './endpoints/notifications'
-export { adminAPI } from './endpoints/admin'
+export { authAPI } from './endpoints/auth';
+export { menuAPI } from './endpoints/menu';
+export { ordersAPI } from './endpoints/orders';
+export { cartAPI } from './endpoints/cart';
+export { deliveryAPI } from './endpoints/delivery';
+export { paymentsAPI } from './endpoints/payments';
+export { notificationsAPI } from './endpoints/notifications';
+export { adminAPI } from './endpoints/admin';
 
-export { default as apiClient } from './client'
-
+export { default as apiClient } from './client';
 ```
 
 ---
 
 ## 📄 src\components\admin\dashboard\OrderStats.tsx
 
-*Path: `src\components\admin\dashboard\OrderStats.tsx`*
+_Path: `src\components\admin\dashboard\OrderStats.tsx`_
 
 ```tsx
 import React from 'react';
@@ -991,14 +1045,13 @@ export const OrderStats: React.FC = () => {
     </Card>
   );
 };
-
 ```
 
 ---
 
 ## 📄 src\components\admin\dashboard\RecentOrders.tsx
 
-*Path: `src\components\admin\dashboard\RecentOrders.tsx`*
+_Path: `src\components\admin\dashboard\RecentOrders.tsx`_
 
 ```tsx
 import React, { useEffect } from 'react';
@@ -1137,14 +1190,13 @@ export const RecentOrders: React.FC = () => {
     </Card>
   );
 };
-
 ```
 
 ---
 
 ## 📄 src\components\admin\dashboard\RevenueChart.tsx
 
-*Path: `src\components\admin\dashboard\RevenueChart.tsx`*
+_Path: `src\components\admin\dashboard\RevenueChart.tsx`_
 
 ```tsx
 import React from 'react';
@@ -1235,14 +1287,13 @@ export const RevenueChart: React.FC = () => {
     </Card>
   );
 };
-
 ```
 
 ---
 
 ## 📄 src\components\admin\menu\AddMenuItem.tsx
 
-*Path: `src\components\admin\menu\AddMenuItem.tsx`*
+_Path: `src\components\admin\menu\AddMenuItem.tsx`_
 
 ```tsx
 import React, { useState, useEffect } from 'react';
@@ -1261,8 +1312,12 @@ export const AddMenuItem: React.FC<AddMenuItemProps> = ({
   onSuccess,
   onCancel,
 }) => {
-  const { managedCategories, fetchManagedCategories, isUpdating } =
-    useAdminStore();
+  const {
+    createMenuItem,
+    managedCategories,
+    fetchManagedCategories,
+    isUpdating,
+  } = useAdminStore();
   const { showToast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -1272,7 +1327,7 @@ export const AddMenuItem: React.FC<AddMenuItemProps> = ({
     description: '',
     is_available_for_daily: true,
     is_available_for_weekly: true,
-    is_available_for_catering: true,
+    is_available_for_catering: false,
     max_boxes_per_menu: 2,
     allergens: '',
     spice_level: '',
@@ -1284,7 +1339,9 @@ export const AddMenuItem: React.FC<AddMenuItemProps> = ({
   const [imagePreview, setImagePreview] = useState<string>('');
 
   useEffect(() => {
-    fetchManagedCategories();
+    if (managedCategories.length === 0) {
+      fetchManagedCategories();
+    }
   }, []);
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1294,6 +1351,11 @@ export const AddMenuItem: React.FC<AddMenuItemProps> = ({
         showToast('Please select a valid image file', 'error');
         return;
       }
+      if (file.size > 5 * 1024 * 1024) {
+        // 5MB limit
+        showToast('Image size should be less than 5MB', 'error');
+        return;
+      }
       setImageFile(file);
       setImagePreview(URL.createObjectURL(file));
     }
@@ -1301,6 +1363,12 @@ export const AddMenuItem: React.FC<AddMenuItemProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validation
+    if (!formData.name || !formData.category || !formData.price) {
+      showToast('Please fill in all required fields', 'error');
+      return;
+    }
 
     try {
       const formDataToSend = new FormData();
@@ -1328,10 +1396,12 @@ export const AddMenuItem: React.FC<AddMenuItemProps> = ({
         String(formData.max_boxes_per_menu)
       );
 
-      if (formData.allergens)
+      if (formData.allergens) {
         formDataToSend.append('allergens', formData.allergens);
-      if (formData.spice_level)
+      }
+      if (formData.spice_level) {
         formDataToSend.append('spice_level', formData.spice_level);
+      }
 
       formDataToSend.append('is_vegetarian', String(formData.is_vegetarian));
       formDataToSend.append('is_halal', String(formData.is_halal));
@@ -1341,18 +1411,19 @@ export const AddMenuItem: React.FC<AddMenuItemProps> = ({
         formDataToSend.append('image', imageFile);
       }
 
-      // Call API (you'll need to implement this in adminStore)
-      // await createMenuItem(formDataToSend);
-
+      await createMenuItem(formDataToSend);
       showToast('Menu item created successfully', 'success');
       onSuccess();
-    } catch (error) {
-      showToast('Failed to create menu item', 'error');
+    } catch (error: any) {
+      showToast(error.message || 'Failed to create menu item', 'error');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 max-h-[70vh] overflow-y-auto pr-2"
+    >
       {/* Image Upload */}
       <div>
         <label className="block text-sm font-medium text-text mb-2">
@@ -1381,6 +1452,7 @@ export const AddMenuItem: React.FC<AddMenuItemProps> = ({
           <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-primary transition-colors">
             <Upload size={32} className="text-gray-400 mb-2" />
             <span className="text-sm text-gray-500">Click to upload image</span>
+            <span className="text-xs text-gray-400 mt-1">Max 5MB</span>
             <input
               type="file"
               accept="image/*"
@@ -1397,7 +1469,7 @@ export const AddMenuItem: React.FC<AddMenuItemProps> = ({
         label="Item Name"
         value={formData.name}
         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-        placeholder="Butter Chicken"
+        placeholder="e.g., Butter Chicken"
         required
       />
 
@@ -1415,11 +1487,21 @@ export const AddMenuItem: React.FC<AddMenuItemProps> = ({
           required
         >
           <option value="">Select category</option>
-          {managedCategories.map((cat) => (
-            <option key={cat._id} value={cat.name}>
-              {cat.display_name}
-            </option>
-          ))}
+          <option value="rice">Rice Dishes</option>
+          <option value="curry">Curry</option>
+          <option value="bbq">BBQ</option>
+          <option value="sweets">Sweets</option>
+          <option value="drinks">Drinks</option>
+          {managedCategories
+            .filter(
+              (cat) =>
+                !['rice', 'curry', 'bbq', 'sweets', 'drinks'].includes(cat.name)
+            )
+            .map((cat) => (
+              <option key={cat.name} value={cat.name}>
+                {cat.display_name || cat.name}
+              </option>
+            ))}
         </select>
       </div>
 
@@ -1432,6 +1514,7 @@ export const AddMenuItem: React.FC<AddMenuItemProps> = ({
         onChange={(e) => setFormData({ ...formData, price: e.target.value })}
         placeholder="15.99"
         required
+        min="0"
       />
 
       {/* Description */}
@@ -1446,7 +1529,7 @@ export const AddMenuItem: React.FC<AddMenuItemProps> = ({
           }
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
           rows={4}
-          placeholder="Creamy butter chicken with aromatic spices..."
+          placeholder="Describe your dish..."
         />
       </div>
 
@@ -1500,7 +1583,7 @@ export const AddMenuItem: React.FC<AddMenuItemProps> = ({
         </label>
       </div>
 
-      {/* Max Boxes Per Menu */}
+      {/* Max Boxes Per Menu (for weekly) */}
       {formData.is_available_for_weekly && (
         <Input
           type="number"
@@ -1599,13 +1682,14 @@ export const AddMenuItem: React.FC<AddMenuItemProps> = ({
   );
 };
 
+export default AddMenuItem;
 ```
 
 ---
 
 ## 📄 src\components\admin\menu\EditMenuItem.tsx
 
-*Path: `src\components\admin\menu\EditMenuItem.tsx`*
+_Path: `src\components\admin\menu\EditMenuItem.tsx`_
 
 ```tsx
 import React, { useState, useEffect } from 'react';
@@ -2016,19 +2100,19 @@ export const EditMenuItem: React.FC<EditMenuItemProps> = ({
 };
 
 export default EditMenuItem;
-
 ```
 
 ---
 
 ## 📄 src\components\admin\menu\MenuItemsList.tsx
 
-*Path: `src\components\admin\menu\MenuItemsList.tsx`*
+_Path: `src\components\admin\menu\MenuItemsList.tsx`_
 
 ```tsx
-import React from 'react';
+import React, { useState } from 'react';
 import { MenuItem } from '@types/menu.types';
 import { formatCurrency } from '@utils/formatters';
+import { getImageUrl, handleImageError } from '@utils/images';
 import Button from '@components/common/Button';
 import Card from '@components/common/Card';
 import LoadingSpinner from '@components/common/LoadingSpinner';
@@ -2040,6 +2124,7 @@ import {
   Leaf,
   CheckCircle,
   XCircle,
+  Image as ImageIcon,
 } from 'lucide-react';
 
 interface MenuItemsListProps {
@@ -2055,6 +2140,14 @@ export const MenuItemsList: React.FC<MenuItemsListProps> = ({
   onDelete,
   isLoading,
 }) => {
+  const [imageLoadStates, setImageLoadStates] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+  const handleImageLoad = (itemId: string) => {
+    setImageLoadStates((prev) => ({ ...prev, [itemId]: true }));
+  };
+
   if (isLoading) {
     return (
       <Card padding="lg">
@@ -2078,149 +2171,178 @@ export const MenuItemsList: React.FC<MenuItemsListProps> = ({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {items.map((item) => (
-        <Card key={item._id} padding="none" className="overflow-hidden">
-          {/* Image */}
-          <div className="relative h-48 bg-gray-100">
-            {item.image_url ? (
+      {items.map((item) => {
+        const imageUrl = getImageUrl(item.image_url);
+        const isImageLoaded = imageLoadStates[item._id] || false;
+
+        return (
+          <Card key={item._id} padding="none" className="overflow-hidden">
+            {/* Image */}
+            <div className="relative h-48 bg-gray-100">
+              {/* Loading state */}
+              {!isImageLoaded && (
+                <div className="absolute inset-0 bg-gray-200 animate-pulse flex flex-col items-center justify-center">
+                  <ImageIcon className="text-gray-400 mb-2" size={32} />
+                  <span className="text-gray-400 text-sm">
+                    Loading image...
+                  </span>
+                </div>
+              )}
+
               <img
-                src={item.image_url}
+                src={imageUrl}
                 alt={item.name}
-                className="w-full h-full object-cover"
+                className={`w-full h-full object-cover transition-opacity duration-300 ${
+                  isImageLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
+                onLoad={() => handleImageLoad(item._id)}
+                onError={handleImageError}
+                loading="lazy"
               />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                <span className="text-gray-400 text-4xl">🍽️</span>
-              </div>
-            )}
 
-            {/* Availability Badge */}
-            <div className="absolute top-3 right-3">
-              {item.is_available ? (
-                <div className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center space-x-1">
-                  <CheckCircle size={14} />
-                  <span>Available</span>
-                </div>
-              ) : (
-                <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center space-x-1">
-                  <XCircle size={14} />
-                  <span>Unavailable</span>
+              {/* Debug info for missing images in development */}
+              {import.meta.env.DEV && !item.image_url && (
+                <div className="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded shadow">
+                  No image_url in data
                 </div>
               )}
-            </div>
 
-            {/* Dietary Badges */}
-            <div className="absolute top-3 left-3 flex flex-col space-y-2">
-              {item.is_vegetarian && (
-                <div className="bg-green-500 text-white p-1.5 rounded-full">
-                  <Leaf size={14} />
-                </div>
-              )}
-              {item.is_vegan && (
-                <div className="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-bold">
-                  VEGAN
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="p-4">
-            {/* Category */}
-            <span className="inline-block px-3 py-1 bg-primary-50 text-primary text-xs font-bold rounded-full mb-2">
-              {item.category}
-            </span>
-
-            {/* Name */}
-            <h3 className="font-heading text-xl font-bold text-text mb-2 line-clamp-1">
-              {item.name}
-            </h3>
-
-            {/* Description */}
-            <p className="text-sm text-gray-600 mb-4 line-clamp-2 min-h-[40px]">
-              {item.description}
-            </p>
-
-            {/* Availability Info */}
-            <div className="space-y-2 mb-4 text-xs text-gray-600">
-              <div className="flex items-center space-x-2">
-                {item.is_available_for_daily && (
-                  <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                    Daily
-                  </span>
-                )}
-                {item.is_available_for_weekly && (
-                  <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded">
-                    Weekly
-                  </span>
-                )}
-                {item.is_available_for_catering && (
-                  <span className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded">
-                    Catering
-                  </span>
+              {/* Availability Badge */}
+              <div className="absolute top-3 right-3">
+                {item.is_available ? (
+                  <div className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center space-x-1 shadow-lg">
+                    <CheckCircle size={14} />
+                    <span>Available</span>
+                  </div>
+                ) : (
+                  <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center space-x-1 shadow-lg">
+                    <XCircle size={14} />
+                    <span>Unavailable</span>
+                  </div>
                 )}
               </div>
 
+              {/* Dietary Badges */}
+              <div className="absolute top-3 left-3 flex flex-col space-y-2">
+                {item.is_vegetarian && (
+                  <div className="bg-green-500 text-white p-1.5 rounded-full shadow-lg">
+                    <Leaf size={14} />
+                  </div>
+                )}
+                {item.is_vegan && (
+                  <div className="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
+                    VEGAN
+                  </div>
+                )}
+                {item.is_halal && (
+                  <div className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
+                    HALAL
+                  </div>
+                )}
+              </div>
+
+              {/* Spice level */}
               {item.spice_level && (
-                <p>
-                  🌶️ Spice:{' '}
-                  <span className="font-semibold">{item.spice_level}</span>
-                </p>
-              )}
-
-              {item.allergens && item.allergens.length > 0 && (
-                <p className="text-red-600">
-                  ⚠️ Allergens: {item.allergens.join(', ')}
-                </p>
+                <div className="absolute bottom-3 left-3 bg-white px-2 py-1 rounded-full shadow-md text-xs font-semibold">
+                  {item.spice_level === 'mild' && '🌶️ Mild'}
+                  {item.spice_level === 'medium' && '🌶️🌶️ Medium'}
+                  {item.spice_level === 'hot' && '🌶️🌶️🌶️ Hot'}
+                </div>
               )}
             </div>
 
-            {/* Price */}
-            <div className="flex items-center justify-between mb-4">
-              <span className="font-heading text-2xl font-bold text-primary">
-                {formatCurrency(item.price)}
+            {/* Content */}
+            <div className="p-4">
+              {/* Category */}
+              <span className="inline-block px-3 py-1 bg-primary-50 text-primary text-xs font-bold rounded-full mb-2">
+                {item.category}
               </span>
-              {item.max_boxes_per_menu && (
-                <span className="text-xs text-gray-500">
-                  Max {item.max_boxes_per_menu} boxes
-                </span>
-              )}
-            </div>
 
-            {/* Actions */}
-            <div className="flex space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onEdit(item)}
-                className="flex-1"
-              >
-                <Edit2 size={16} className="mr-1" />
-                Edit
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onDelete(item._id)}
-                className="text-red-600 hover:bg-red-50"
-              >
-                <Trash2 size={16} />
-              </Button>
+              {/* Name */}
+              <h3 className="font-heading text-xl font-bold text-text mb-2 line-clamp-1">
+                {item.name}
+              </h3>
+
+              {/* Description */}
+              <p className="text-sm text-gray-600 mb-4 line-clamp-2 min-h-[40px]">
+                {item.description}
+              </p>
+
+              {/* Availability Info */}
+              <div className="space-y-2 mb-4 text-xs text-gray-600">
+                <div className="flex items-center space-x-2">
+                  {item.is_available_for_daily && (
+                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                      Daily
+                    </span>
+                  )}
+                  {item.is_available_for_weekly && (
+                    <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                      Weekly
+                    </span>
+                  )}
+                  {item.is_available_for_catering && (
+                    <span className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded">
+                      Catering
+                    </span>
+                  )}
+                </div>
+
+                {item.allergens && item.allergens.length > 0 && (
+                  <p className="text-red-600">
+                    ⚠️ Allergens: {item.allergens.join(', ')}
+                  </p>
+                )}
+              </div>
+
+              {/* Price */}
+              <div className="flex items-center justify-between mb-4">
+                <span className="font-heading text-2xl font-bold text-primary">
+                  {formatCurrency(item.price)}
+                </span>
+                {item.max_boxes_per_menu && (
+                  <span className="text-xs text-gray-500">
+                    Max {item.max_boxes_per_menu} boxes
+                  </span>
+                )}
+              </div>
+
+              {/* Actions */}
+              <div className="flex space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onEdit(item)}
+                  className="flex-1"
+                >
+                  <Edit2 size={16} className="mr-1" />
+                  Edit
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onDelete(item._id)}
+                  className="text-red-600 hover:bg-red-50"
+                >
+                  <Trash2 size={16} />
+                </Button>
+              </div>
             </div>
-          </div>
-        </Card>
-      ))}
+          </Card>
+        );
+      })}
     </div>
   );
 };
 
+export default MenuItemsList;
 ```
 
 ---
 
 ## 📄 src\components\admin\orders\OrderActions.tsx
 
-*Path: `src\components\admin\orders\OrderActions.tsx`*
+_Path: `src\components\admin\orders\OrderActions.tsx`_
 
 ```tsx
 import React from 'react';
@@ -2230,20 +2352,15 @@ interface OrderActionsProps {
 }
 
 export const OrderActions: React.FC<OrderActionsProps> = (props) => {
-  return (
-    <div>
-      {/* OrderActions Component */}
-    </div>
-  );
+  return <div>{/* OrderActions Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\admin\orders\OrderDetails.tsx
 
-*Path: `src\components\admin\orders\OrderDetails.tsx`*
+_Path: `src\components\admin\orders\OrderDetails.tsx`_
 
 ```tsx
 import React from 'react';
@@ -2564,14 +2681,13 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
     </div>
   );
 };
-
 ```
 
 ---
 
 ## 📄 src\components\admin\orders\OrdersList.tsx
 
-*Path: `src\components\admin\orders\OrdersList.tsx`*
+_Path: `src\components\admin\orders\OrdersList.tsx`_
 
 ```tsx
 import React from 'react';
@@ -2778,14 +2894,13 @@ export const OrdersList: React.FC<OrdersListProps> = ({
     </div>
   );
 };
-
 ```
 
 ---
 
 ## 📄 src\components\admin\sidelines\AddSideline.tsx
 
-*Path: `src\components\admin\sidelines\AddSideline.tsx`*
+_Path: `src\components\admin\sidelines\AddSideline.tsx`_
 
 ```tsx
 import React, { useState } from 'react';
@@ -3025,14 +3140,13 @@ export const AddSideline: React.FC<AddSidelineProps> = ({
 };
 
 export default AddSideline;
-
 ```
 
 ---
 
 ## 📄 src\components\admin\sidelines\EditSideline.tsx
 
-*Path: `src\components\admin\sidelines\EditSideline.tsx`*
+_Path: `src\components\admin\sidelines\EditSideline.tsx`_
 
 ```tsx
 import React, { useState } from 'react';
@@ -3281,14 +3395,13 @@ export const EditSideline: React.FC<EditSidelineProps> = ({
 };
 
 export default EditSideline;
-
 ```
 
 ---
 
 ## 📄 src\components\admin\sidelines\SidelinesList.tsx
 
-*Path: `src\components\admin\sidelines\SidelinesList.tsx`*
+_Path: `src\components\admin\sidelines\SidelinesList.tsx`_
 
 ```tsx
 import React from 'react';
@@ -3421,18 +3534,17 @@ export const SidelinesList: React.FC<SidelinesListProps> = ({
 };
 
 export default SidelinesList;
-
 ```
 
 ---
 
 ## 📄 src\components\auth\LoginForm.tsx
 
-*Path: `src\components\auth\LoginForm.tsx`*
+_Path: `src\components\auth\LoginForm.tsx`_
 
 ```tsx
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@hooks/useAuth';
 import { useToast } from '@components/common/Toast';
 import Input from '@components/common/Input';
@@ -3441,8 +3553,12 @@ import { Mail, Lock, Loader2 } from 'lucide-react';
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
   const { showToast } = useToast();
+
+  // ✅ Get the return URL from state or default to home
+  const from = location.state?.from || '/';
 
   const [formData, setFormData] = useState({
     email: '',
@@ -3459,7 +3575,9 @@ const LoginForm: React.FC = () => {
     try {
       await login(formData);
       showToast('Login successful!', 'success');
-      navigate('/');
+
+      // ✅ Navigate to the intended page or home
+      navigate(from, { replace: true });
     } catch (error: any) {
       const errorMessage = error.response?.data?.detail || 'Login failed';
       showToast(errorMessage, 'error');
@@ -3476,6 +3594,15 @@ const LoginForm: React.FC = () => {
           Welcome Back
         </h2>
         <p className="text-gray-600">Sign in to your account to continue</p>
+
+        {/* ✅ Show info if redirected from a protected page */}
+        {from !== '/' && from !== '/login' && (
+          <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <p className="text-sm text-blue-800">
+              Please login to access that page
+            </p>
+          </div>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -3557,14 +3684,13 @@ const LoginForm: React.FC = () => {
 };
 
 export default LoginForm;
-
 ```
 
 ---
 
 ## 📄 src\components\auth\ProtectedRoute.tsx
 
-*Path: `src\components\auth\ProtectedRoute.tsx`*
+_Path: `src\components\auth\ProtectedRoute.tsx`_
 
 ```tsx
 import React from 'react';
@@ -3593,14 +3719,13 @@ const ProtectedRoute: React.FC<{ children?: React.ReactNode }> = ({
 };
 
 export default ProtectedRoute;
-
 ```
 
 ---
 
 ## 📄 src\components\auth\RegisterForm.tsx
 
-*Path: `src\components\auth\RegisterForm.tsx`*
+_Path: `src\components\auth\RegisterForm.tsx`_
 
 ```tsx
 import React, { useState } from 'react';
@@ -3609,7 +3734,7 @@ import { useAuth } from '@hooks/useAuth';
 import { useToast } from '@components/common/Toast';
 import Input from '@components/common/Input';
 import Button from '@components/common/Button';
-import { RegisterData } from '@models/auth.types'; // ✅ Changed from @types
+import { RegisterData } from '@models/auth.types';
 import {
   Mail,
   Lock,
@@ -3630,7 +3755,8 @@ interface RegisterFormProps {
 }
 
 interface FormData {
-  full_name: string;
+  first_name: string;
+  last_name: string;
   email: string;
   phone: string;
   password: string;
@@ -3639,7 +3765,8 @@ interface FormData {
 }
 
 interface FormErrors {
-  full_name?: string;
+  first_name?: string;
+  last_name?: string;
   email?: string;
   phone?: string;
   password?: string;
@@ -3660,7 +3787,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   const { showToast } = useToast();
 
   const [formData, setFormData] = useState<FormData>({
-    full_name: '',
+    first_name: '',
+    last_name: '',
     email: '',
     phone: '',
     password: '',
@@ -3697,7 +3825,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     }
   };
 
-  // ✅ Format phone number to backend-expected format
+  // Format phone number to backend-expected format
   const formatPhoneForBackend = (phone: string): string => {
     // Remove all non-digits
     let cleaned = phone.replace(/\D/g, '');
@@ -3726,13 +3854,22 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
-    // Full Name validation
-    if (!formData.full_name.trim()) {
-      newErrors.full_name = 'Full name is required';
-    } else if (formData.full_name.trim().length < 2) {
-      newErrors.full_name = 'Full name must be at least 2 characters';
-    } else if (formData.full_name.trim().length > 100) {
-      newErrors.full_name = 'Full name must be less than 100 characters';
+    // First Name validation
+    if (!formData.first_name.trim()) {
+      newErrors.first_name = 'First name is required';
+    } else if (formData.first_name.trim().length < 2) {
+      newErrors.first_name = 'First name must be at least 2 characters';
+    } else if (formData.first_name.trim().length > 50) {
+      newErrors.first_name = 'First name must be less than 50 characters';
+    }
+
+    // Last Name validation
+    if (!formData.last_name.trim()) {
+      newErrors.last_name = 'Last name is required';
+    } else if (formData.last_name.trim().length < 2) {
+      newErrors.last_name = 'Last name must be at least 2 characters';
+    } else if (formData.last_name.trim().length > 50) {
+      newErrors.last_name = 'Last name must be less than 50 characters';
     }
 
     // Email validation
@@ -3787,7 +3924,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  // ✅ Parse FastAPI validation errors with JSON.stringify
+  // Parse FastAPI validation errors
   const parseBackendErrors = (error: any): string[] => {
     const errorMessages: string[] = [];
 
@@ -3799,7 +3936,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       '╠═══════════════════════════════════════════════════════════════'
     );
 
-    // ✅ Use JSON.stringify to properly log objects
     console.log('║ Full Error Object (stringified):');
     console.log(JSON.stringify(error, null, 2));
 
@@ -3842,7 +3978,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
           // Map field names to user-friendly names
           const fieldNames: Record<string, string> = {
-            full_name: 'Full Name',
+            first_name: 'First Name',
+            last_name: 'Last Name',
             email: 'Email',
             phone: 'Phone Number',
             password: 'Password',
@@ -3906,13 +4043,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     setIsLoading(true);
 
     try {
-      // ✅ Format data for backend with proper TypeScript typing
-      const registrationData: RegisterData = {
-        full_name: formData.full_name.trim(),
+      // Format data for backend API
+      const registrationData = {
+        first_name: formData.first_name.trim(),
+        last_name: formData.last_name.trim(),
         email: formData.email.trim().toLowerCase(),
         phone: formatPhoneForBackend(formData.phone),
         password: formData.password,
-        role: 'customer' as const, // ✅ Explicitly typed as literal 'customer'
       };
 
       console.log('═══════════════════════════════════════════════════');
@@ -3964,7 +4101,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className={`space-y-4 ${className}`}>
-      {/* ✅ Backend Errors Display */}
+      {/* Backend Errors Display */}
       {backendErrors.length > 0 && (
         <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4">
           <div className="flex items-start space-x-3">
@@ -3992,19 +4129,34 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         </div>
       )}
 
-      {/* Full Name */}
-      <Input
-        type="text"
-        name="full_name"
-        label="Full Name"
-        value={formData.full_name}
-        onChange={handleChange}
-        error={errors.full_name}
-        leftIcon={<User size={20} />}
-        placeholder="John Doe"
-        required
-        disabled={isLoading}
-      />
+      {/* Name Fields - Split into First and Last Name */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Input
+          type="text"
+          name="first_name"
+          label="First Name"
+          value={formData.first_name}
+          onChange={handleChange}
+          error={errors.first_name}
+          leftIcon={<User size={20} />}
+          placeholder="John"
+          required
+          disabled={isLoading}
+        />
+
+        <Input
+          type="text"
+          name="last_name"
+          label="Last Name"
+          value={formData.last_name}
+          onChange={handleChange}
+          error={errors.last_name}
+          leftIcon={<User size={20} />}
+          placeholder="Doe"
+          required
+          disabled={isLoading}
+        />
+      </div>
 
       {/* Email */}
       <Input
@@ -4207,14 +4359,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 };
 
 export default RegisterForm;
-
 ```
 
 ---
 
 ## 📄 src\components\auth\RoleGuard.tsx
 
-*Path: `src\components\auth\RoleGuard.tsx`*
+_Path: `src\components\auth\RoleGuard.tsx`_
 
 ```tsx
 import React from 'react';
@@ -4260,14 +4411,13 @@ const RoleGuard: React.FC<RoleGuardProps> = ({ requiredRole, children }) => {
 };
 
 export default RoleGuard;
-
 ```
 
 ---
 
 ## 📄 src\components\cart\CartItem.tsx
 
-*Path: `src\components\cart\CartItem.tsx`*
+_Path: `src\components\cart\CartItem.tsx`_
 
 ```tsx
 import React from 'react';
@@ -4277,20 +4427,15 @@ interface CartItemProps {
 }
 
 export const CartItem: React.FC<CartItemProps> = (props) => {
-  return (
-    <div>
-      {/* CartItem Component */}
-    </div>
-  );
+  return <div>{/* CartItem Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\cart\CartSummary.tsx
 
-*Path: `src\components\cart\CartSummary.tsx`*
+_Path: `src\components\cart\CartSummary.tsx`_
 
 ```tsx
 import React from 'react';
@@ -4300,20 +4445,15 @@ interface CartSummaryProps {
 }
 
 export const CartSummary: React.FC<CartSummaryProps> = (props) => {
-  return (
-    <div>
-      {/* CartSummary Component */}
-    </div>
-  );
+  return <div>{/* CartSummary Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\cart\DeliverySelector.tsx
 
-*Path: `src\components\cart\DeliverySelector.tsx`*
+_Path: `src\components\cart\DeliverySelector.tsx`_
 
 ```tsx
 import React from 'react';
@@ -4323,20 +4463,15 @@ interface DeliverySelectorProps {
 }
 
 export const DeliverySelector: React.FC<DeliverySelectorProps> = (props) => {
-  return (
-    <div>
-      {/* DeliverySelector Component */}
-    </div>
-  );
+  return <div>{/* DeliverySelector Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\catering\CateringMenu.tsx
 
-*Path: `src\components\catering\CateringMenu.tsx`*
+_Path: `src\components\catering\CateringMenu.tsx`_
 
 ```tsx
 import React from 'react';
@@ -4346,20 +4481,15 @@ interface CateringMenuProps {
 }
 
 export const CateringMenu: React.FC<CateringMenuProps> = (props) => {
-  return (
-    <div>
-      {/* CateringMenu Component */}
-    </div>
-  );
+  return <div>{/* CateringMenu Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\catering\CateringSummary.tsx
 
-*Path: `src\components\catering\CateringSummary.tsx`*
+_Path: `src\components\catering\CateringSummary.tsx`_
 
 ```tsx
 import React from 'react';
@@ -4369,20 +4499,15 @@ interface CateringSummaryProps {
 }
 
 export const CateringSummary: React.FC<CateringSummaryProps> = (props) => {
-  return (
-    <div>
-      {/* CateringSummary Component */}
-    </div>
-  );
+  return <div>{/* CateringSummary Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\catering\EventDetails.tsx
 
-*Path: `src\components\catering\EventDetails.tsx`*
+_Path: `src\components\catering\EventDetails.tsx`_
 
 ```tsx
 import React from 'react';
@@ -4392,20 +4517,15 @@ interface EventDetailsProps {
 }
 
 export const EventDetails: React.FC<EventDetailsProps> = (props) => {
-  return (
-    <div>
-      {/* EventDetails Component */}
-    </div>
-  );
+  return <div>{/* EventDetails Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\catering\HeadCountCalculator.tsx
 
-*Path: `src\components\catering\HeadCountCalculator.tsx`*
+_Path: `src\components\catering\HeadCountCalculator.tsx`_
 
 ```tsx
 import React from 'react';
@@ -4414,21 +4534,18 @@ interface HeadCountCalculatorProps {
   // Add props here
 }
 
-export const HeadCountCalculator: React.FC<HeadCountCalculatorProps> = (props) => {
-  return (
-    <div>
-      {/* HeadCountCalculator Component */}
-    </div>
-  );
+export const HeadCountCalculator: React.FC<HeadCountCalculatorProps> = (
+  props
+) => {
+  return <div>{/* HeadCountCalculator Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\checkout\AddressSelector.tsx
 
-*Path: `src\components\checkout\AddressSelector.tsx`*
+_Path: `src\components\checkout\AddressSelector.tsx`_
 
 ```tsx
 import React from 'react';
@@ -4438,20 +4555,15 @@ interface AddressSelectorProps {
 }
 
 export const AddressSelector: React.FC<AddressSelectorProps> = (props) => {
-  return (
-    <div>
-      {/* AddressSelector Component */}
-    </div>
-  );
+  return <div>{/* AddressSelector Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\checkout\OrderReview.tsx
 
-*Path: `src\components\checkout\OrderReview.tsx`*
+_Path: `src\components\checkout\OrderReview.tsx`_
 
 ```tsx
 import React from 'react';
@@ -4461,20 +4573,15 @@ interface OrderReviewProps {
 }
 
 export const OrderReview: React.FC<OrderReviewProps> = (props) => {
-  return (
-    <div>
-      {/* OrderReview Component */}
-    </div>
-  );
+  return <div>{/* OrderReview Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\checkout\PaymentForm.tsx
 
-*Path: `src\components\checkout\PaymentForm.tsx`*
+_Path: `src\components\checkout\PaymentForm.tsx`_
 
 ```tsx
 import React from 'react';
@@ -4484,20 +4591,15 @@ interface PaymentFormProps {
 }
 
 export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
-  return (
-    <div>
-      {/* PaymentForm Component */}
-    </div>
-  );
+  return <div>{/* PaymentForm Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\checkout\PlaceOrderButton.tsx
 
-*Path: `src\components\checkout\PlaceOrderButton.tsx`*
+_Path: `src\components\checkout\PlaceOrderButton.tsx`_
 
 ```tsx
 import React from 'react';
@@ -4507,20 +4609,15 @@ interface PlaceOrderButtonProps {
 }
 
 export const PlaceOrderButton: React.FC<PlaceOrderButtonProps> = (props) => {
-  return (
-    <div>
-      {/* PlaceOrderButton Component */}
-    </div>
-  );
+  return <div>{/* PlaceOrderButton Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\common\Button.tsx
 
-*Path: `src\components\common\Button.tsx`*
+_Path: `src\components\common\Button.tsx`_
 
 ```tsx
 import React from 'react';
@@ -4585,14 +4682,13 @@ const Button: React.FC<ButtonProps> = ({
 };
 
 export default Button;
-
 ```
 
 ---
 
 ## 📄 src\components\common\Card.tsx
 
-*Path: `src\components\common\Card.tsx`*
+_Path: `src\components\common\Card.tsx`_
 
 ```tsx
 import React from 'react';
@@ -4637,14 +4733,13 @@ const Card: React.FC<CardProps> = ({
 };
 
 export default Card;
-
 ```
 
 ---
 
 ## 📄 src\components\common\Input.tsx
 
-*Path: `src\components\common\Input.tsx`*
+_Path: `src\components\common\Input.tsx`_
 
 ```tsx
 import React, { forwardRef } from 'react';
@@ -4713,14 +4808,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 Input.displayName = 'Input';
 
 export default Input;
-
 ```
 
 ---
 
 ## 📄 src\components\common\LoadingSpinner.tsx
 
-*Path: `src\components\common\LoadingSpinner.tsx`*
+_Path: `src\components\common\LoadingSpinner.tsx`_
 
 ```tsx
 import React from 'react';
@@ -4766,14 +4860,13 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 };
 
 export default LoadingSpinner;
-
 ```
 
 ---
 
 ## 📄 src\components\common\Modal.tsx
 
-*Path: `src\components\common\Modal.tsx`*
+_Path: `src\components\common\Modal.tsx`_
 
 ```tsx
 import React, { useEffect } from 'react';
@@ -4863,14 +4956,13 @@ const Modal: React.FC<ModalProps> = ({
 };
 
 export default Modal;
-
 ```
 
 ---
 
 ## 📄 src\components\common\Toast.tsx
 
-*Path: `src\components\common\Toast.tsx`*
+_Path: `src\components\common\Toast.tsx`_
 
 ```tsx
 import React, { createContext, useContext, useState, useCallback } from 'react';
@@ -4967,14 +5059,13 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
     </ToastContext.Provider>
   );
 };
-
 ```
 
 ---
 
 ## 📄 src\components\layout\CartIcon.tsx
 
-*Path: `src\components\layout\CartIcon.tsx`*
+_Path: `src\components\layout\CartIcon.tsx`_
 
 ```tsx
 import React from 'react';
@@ -4984,20 +5075,15 @@ interface CartIconProps {
 }
 
 export const CartIcon: React.FC<CartIconProps> = (props) => {
-  return (
-    <div>
-      {/* CartIcon Component */}
-    </div>
-  );
+  return <div>{/* CartIcon Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\layout\Footer.tsx
 
-*Path: `src\components\layout\Footer.tsx`*
+_Path: `src\components\layout\Footer.tsx`_
 
 ```tsx
 import React from 'react';
@@ -5162,17 +5248,16 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
-
 ```
 
 ---
 
 ## 📄 src\components\layout\Header.tsx
 
-*Path: `src\components\layout\Header.tsx`*
+_Path: `src\components\layout\Header.tsx`_
 
 ```tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, ShoppingCart, User, LogOut, Settings } from 'lucide-react';
 import { useAuthStore } from '@store/authStore';
@@ -5185,9 +5270,19 @@ const Header: React.FC = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   const { isAuthenticated, user, logout } = useAuthStore();
-  const { summary } = useCartStore();
+  const cartStore = useCartStore();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Fetch cart on mount if authenticated
+  useEffect(() => {
+    if (isAuthenticated && !cartStore.cartSummary && !cartStore.isLoading) {
+      cartStore.fetchCart().catch(console.error);
+    }
+  }, [isAuthenticated]);
+
+  // Calculate cart count safely
+  const cartItemCount = cartStore.cartSummary?.items_count || 0;
 
   const handleLogout = () => {
     logout();
@@ -5232,16 +5327,16 @@ const Header: React.FC = () => {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
-            {/* Cart Icon */}
+            {/* Cart Icon - Only show if authenticated */}
             {isAuthenticated && (
               <button
                 onClick={() => navigate('/checkout')}
                 className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
                 <ShoppingCart size={24} className="text-text" />
-                {summary.item_count > 0 && (
+                {cartItemCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                    {summary.item_count}
+                    {cartItemCount > 99 ? '99+' : cartItemCount}
                   </span>
                 )}
               </button>
@@ -5255,10 +5350,12 @@ const Header: React.FC = () => {
                   className="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-semibold">
-                    {user?.full_name?.charAt(0).toUpperCase()}
+                    {user?.first_name?.charAt(0)?.toUpperCase() ||
+                      user?.email?.charAt(0)?.toUpperCase() ||
+                      'U'}
                   </div>
                   <span className="hidden lg:block font-medium text-text">
-                    {user?.full_name}
+                    {user?.first_name || user?.email?.split('@')[0] || 'User'}
                   </span>
                 </button>
 
@@ -5374,20 +5471,19 @@ const Header: React.FC = () => {
 };
 
 export default Header;
-
 ```
 
 ---
 
 ## 📄 src\components\layout\Layout.tsx
 
-*Path: `src\components\layout\Layout.tsx`*
+_Path: `src\components\layout\Layout.tsx`_
 
 ```tsx
-import React from 'react'
-import { Outlet } from 'react-router-dom'
-import Header from './Header'
-import Footer from './Footer'
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import Header from './Header';
+import Footer from './Footer';
 
 const Layout: React.FC = () => {
   return (
@@ -5398,18 +5494,17 @@ const Layout: React.FC = () => {
       </main>
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Layout
-
+export default Layout;
 ```
 
 ---
 
 ## 📄 src\components\layout\Logo.tsx
 
-*Path: `src\components\layout\Logo.tsx`*
+_Path: `src\components\layout\Logo.tsx`_
 
 ```tsx
 import React from 'react';
@@ -5439,14 +5534,13 @@ const Logo: React.FC<LogoProps> = ({ variant = 'default', size = 'md' }) => {
 };
 
 export default Logo;
-
 ```
 
 ---
 
 ## 📄 src\components\layout\Navigation.tsx
 
-*Path: `src\components\layout\Navigation.tsx`*
+_Path: `src\components\layout\Navigation.tsx`_
 
 ```tsx
 import React from 'react';
@@ -5456,20 +5550,15 @@ interface NavigationProps {
 }
 
 export const Navigation: React.FC<NavigationProps> = (props) => {
-  return (
-    <div>
-      {/* Navigation Component */}
-    </div>
-  );
+  return <div>{/* Navigation Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\layout\UserMenu.tsx
 
-*Path: `src\components\layout\UserMenu.tsx`*
+_Path: `src\components\layout\UserMenu.tsx`_
 
 ```tsx
 import React from 'react';
@@ -5479,27 +5568,30 @@ interface UserMenuProps {
 }
 
 export const UserMenu: React.FC<UserMenuProps> = (props) => {
-  return (
-    <div>
-      {/* UserMenu Component */}
-    </div>
-  );
+  return <div>{/* UserMenu Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\menu\CartSummary.tsx
 
-*Path: `src\components\menu\CartSummary.tsx`*
+_Path: `src\components\menu\CartSummary.tsx`_
 
 ```tsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@hooks/useCart';
+import { useAuthStore } from '@store/authStore';
 import { formatCurrency } from '@utils/formatters';
-import { ShoppingCart, Trash2, Plus, Minus } from 'lucide-react';
+import {
+  ShoppingCart,
+  Trash2,
+  Plus,
+  Minus,
+  Loader2,
+  RefreshCw,
+} from 'lucide-react';
 import Button from '@components/common/Button';
 import Card from '@components/common/Card';
 
@@ -5509,15 +5601,61 @@ interface CartSummaryProps {
 
 const CartSummary: React.FC<CartSummaryProps> = ({ sticky = true }) => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuthStore();
   const {
     items,
     sidelines,
     summary,
+    isLoading,
+    isUpdating,
     updateCartQuantity,
     removeFromCart,
     clearCart,
+    refreshCart,
   } = useCart();
 
+  // Refresh cart on mount
+  useEffect(() => {
+    if (isAuthenticated) {
+      refreshCart();
+    }
+  }, [isAuthenticated]);
+
+  // Not authenticated state
+  if (!isAuthenticated) {
+    return (
+      <Card className={sticky ? 'sticky top-24' : ''} padding="lg">
+        <div className="text-center py-8">
+          <ShoppingCart className="mx-auto h-16 w-16 text-gray-300 mb-4" />
+          <h3 className="font-semibold text-gray-500 mb-2">
+            Login to view cart
+          </h3>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => navigate('/login')}
+            fullWidth
+          >
+            Login Now
+          </Button>
+        </div>
+      </Card>
+    );
+  }
+
+  // Loading state
+  if (isLoading && items.length === 0) {
+    return (
+      <Card className={sticky ? 'sticky top-24' : ''} padding="lg">
+        <div className="text-center py-8">
+          <Loader2 className="mx-auto h-8 w-8 text-primary animate-spin mb-4" />
+          <p className="text-sm text-gray-500">Loading cart...</p>
+        </div>
+      </Card>
+    );
+  }
+
+  // Empty cart
   if (items.length === 0 && sidelines.length === 0) {
     return (
       <Card className={sticky ? 'sticky top-24' : ''} padding="lg">
@@ -5542,41 +5680,45 @@ const CartSummary: React.FC<CartSummaryProps> = ({ sticky = true }) => {
             Your Cart
           </h3>
         </div>
-        <span className="bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">
-          {summary.item_count} {summary.item_count === 1 ? 'item' : 'items'}
-        </span>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={refreshCart}
+            className="p-1 text-gray-400 hover:text-primary transition-colors"
+            disabled={isUpdating}
+          >
+            <RefreshCw size={16} className={isUpdating ? 'animate-spin' : ''} />
+          </button>
+          <span className="bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">
+            {summary.item_count} {summary.item_count === 1 ? 'item' : 'items'}
+          </span>
+        </div>
       </div>
 
       {/* Cart items */}
       <div className="space-y-4 mb-6 max-h-96 overflow-y-auto">
-        {items.map((item) => (
+        {items.map((item: any) => (
           <div
-            key={item.menu_item._id}
+            key={item.item_id}
             className="flex items-start space-x-3 pb-4 border-b border-gray-100 last:border-0"
           >
-            {/* Image */}
-            <img
-              src={item.menu_item.image_url || '/placeholder-food.jpg'}
-              alt={item.menu_item.name}
-              className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
-            />
-
             {/* Details */}
             <div className="flex-1 min-w-0">
               <h4 className="font-semibold text-text text-sm mb-1">
-                {item.menu_item.name}
+                {item.item_name}
               </h4>
+              <p className="text-xs text-gray-500 mb-1">{item.category}</p>
               <p className="text-primary font-semibold text-sm mb-2">
-                {formatCurrency(item.menu_item.price)}
+                {formatCurrency(item.price)}
               </p>
 
               {/* Quantity controls */}
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() =>
-                    updateCartQuantity(item.menu_item._id, item.quantity - 1)
+                    updateCartQuantity(item.item_id, item.quantity - 1)
                   }
-                  className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded hover:border-primary transition-colors"
+                  disabled={isUpdating}
+                  className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded hover:border-primary transition-colors disabled:opacity-50"
                 >
                   <Minus size={12} />
                 </button>
@@ -5585,25 +5727,21 @@ const CartSummary: React.FC<CartSummaryProps> = ({ sticky = true }) => {
                 </span>
                 <button
                   onClick={() =>
-                    updateCartQuantity(item.menu_item._id, item.quantity + 1)
+                    updateCartQuantity(item.item_id, item.quantity + 1)
                   }
-                  className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded hover:border-primary transition-colors"
+                  disabled={isUpdating}
+                  className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded hover:border-primary transition-colors disabled:opacity-50"
                 >
                   <Plus size={12} />
                 </button>
               </div>
-
-              {item.special_instructions && (
-                <p className="text-xs text-gray-500 mt-1 italic">
-                  {item.special_instructions}
-                </p>
-              )}
             </div>
 
             {/* Remove button */}
             <button
-              onClick={() => removeFromCart(item.menu_item._id)}
-              className="text-red-500 hover:text-red-700 transition-colors flex-shrink-0"
+              onClick={() => removeFromCart(item.item_id)}
+              disabled={isUpdating}
+              className="text-red-500 hover:text-red-700 transition-colors flex-shrink-0 disabled:opacity-50"
             >
               <Trash2 size={16} />
             </button>
@@ -5616,22 +5754,57 @@ const CartSummary: React.FC<CartSummaryProps> = ({ sticky = true }) => {
             <div className="pt-2 mt-2 border-t-2 border-gray-200">
               <h4 className="font-semibold text-text text-sm mb-3">Add-ons:</h4>
             </div>
-            {sidelines.map((sideline) => (
+            {sidelines.map((sideline: any) => (
               <div
-                key={sideline.sideline._id}
+                key={sideline.item_id}
                 className="flex items-center justify-between py-2"
               >
                 <div className="flex-1">
                   <p className="font-medium text-text text-sm">
-                    {sideline.sideline.name}
+                    {sideline.item_name}
                   </p>
-                  <p className="text-xs text-gray-500">
-                    Qty: {sideline.quantity}
-                  </p>
+                  <div className="flex items-center space-x-2 mt-1">
+                    <button
+                      onClick={() =>
+                        updateCartQuantity(
+                          sideline.item_id,
+                          sideline.quantity - 1,
+                          true
+                        )
+                      }
+                      disabled={isUpdating}
+                      className="w-5 h-5 flex items-center justify-center border border-gray-300 rounded hover:border-primary transition-colors disabled:opacity-50"
+                    >
+                      <Minus size={10} />
+                    </button>
+                    <span className="text-xs">Qty: {sideline.quantity}</span>
+                    <button
+                      onClick={() =>
+                        updateCartQuantity(
+                          sideline.item_id,
+                          sideline.quantity + 1,
+                          true
+                        )
+                      }
+                      disabled={isUpdating}
+                      className="w-5 h-5 flex items-center justify-center border border-gray-300 rounded hover:border-primary transition-colors disabled:opacity-50"
+                    >
+                      <Plus size={10} />
+                    </button>
+                  </div>
                 </div>
-                <span className="text-primary font-semibold text-sm">
-                  {formatCurrency(sideline.sideline.price * sideline.quantity)}
-                </span>
+                <div className="text-right">
+                  <span className="text-primary font-semibold text-sm">
+                    {formatCurrency(sideline.subtotal)}
+                  </span>
+                  <button
+                    onClick={() => removeFromCart(sideline.item_id, true)}
+                    disabled={isUpdating}
+                    className="ml-2 text-red-500 hover:text-red-700 disabled:opacity-50"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
               </div>
             ))}
           </>
@@ -5678,13 +5851,22 @@ const CartSummary: React.FC<CartSummaryProps> = ({ sticky = true }) => {
           fullWidth
           size="lg"
           onClick={() => navigate('/checkout')}
+          disabled={isUpdating}
         >
-          Proceed to Checkout
+          {isUpdating ? (
+            <>
+              <Loader2 className="animate-spin mr-2" size={18} />
+              Updating...
+            </>
+          ) : (
+            'Proceed to Checkout'
+          )}
         </Button>
 
         <button
           onClick={clearCart}
-          className="w-full text-sm text-gray-600 hover:text-red-500 transition-colors py-2"
+          disabled={isUpdating}
+          className="w-full text-sm text-gray-600 hover:text-red-500 transition-colors py-2 disabled:opacity-50"
         >
           Clear Cart
         </button>
@@ -5694,14 +5876,13 @@ const CartSummary: React.FC<CartSummaryProps> = ({ sticky = true }) => {
 };
 
 export default CartSummary;
-
 ```
 
 ---
 
 ## 📄 src\components\menu\CategoryFilter.tsx
 
-*Path: `src\components\menu\CategoryFilter.tsx`*
+_Path: `src\components\menu\CategoryFilter.tsx`_
 
 ```tsx
 import React from 'react';
@@ -5711,20 +5892,15 @@ interface CategoryFilterProps {
 }
 
 export const CategoryFilter: React.FC<CategoryFilterProps> = (props) => {
-  return (
-    <div>
-      {/* CategoryFilter Component */}
-    </div>
-  );
+  return <div>{/* CategoryFilter Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\menu\FilterBar.tsx
 
-*Path: `src\components\menu\FilterBar.tsx`*
+_Path: `src\components\menu\FilterBar.tsx`_
 
 ```tsx
 import React from 'react';
@@ -5877,21 +6053,31 @@ const FilterBar: React.FC<FilterBarProps> = ({
 };
 
 export default FilterBar;
-
 ```
 
 ---
 
 ## 📄 src\components\menu\MenuItemCard.tsx
 
-*Path: `src\components\menu\MenuItemCard.tsx`*
+_Path: `src\components\menu\MenuItemCard.tsx`_
 
 ```tsx
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MenuItem } from '@types/menu.types';
 import { useCart } from '@hooks/useCart';
+import { useAuthStore } from '@store/authStore';
 import { formatCurrency } from '@utils/formatters';
-import { Plus, Minus, ShoppingCart, Leaf } from 'lucide-react';
+import { getImageUrl, handleImageError } from '@utils/images';
+import {
+  Plus,
+  Minus,
+  ShoppingCart,
+  Leaf,
+  AlertCircle,
+  LogIn,
+  Utensils,
+} from 'lucide-react';
 import Card from '@components/common/Card';
 import Button from '@components/common/Button';
 import { useToast } from '@components/common/Toast';
@@ -5905,24 +6091,57 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   item,
   showQuickAdd = true,
 }) => {
+  const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [showDetails, setShowDetails] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
-  const { addToCart } = useCart();
+  const { addToCart, isUpdating } = useCart();
+  const { isAuthenticated } = useAuthStore();
   const { showToast } = useToast();
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
+    if (!item.id) {
+      console.error('❌ Item missing ID:', item);
+      showToast('Error: Item data is invalid', 'error');
+      return;
+    }
+
+    if (!isAuthenticated) {
+      showToast('Please login to add items to cart', 'warning');
+      navigate('/login');
+      return;
+    }
+
     if (quantity > 0) {
-      addToCart(item, quantity, specialInstructions);
-      setQuantity(1);
-      setSpecialInstructions('');
-      setShowDetails(false);
+      try {
+        await addToCart(item, quantity, specialInstructions);
+        setQuantity(1);
+        setSpecialInstructions('');
+        setShowDetails(false);
+      } catch (error) {
+        console.error('Failed to add to cart:', error);
+      }
     }
   };
 
   const incrementQuantity = () => setQuantity((prev) => prev + 1);
   const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
+
+  // Get the proper image URL
+  const imageUrl = getImageUrl(item.image_url);
+
+  const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    setImageError(true);
+    handleImageError(e);
+  };
+
+  const onImageLoad = () => {
+    setImageLoaded(true);
+    setImageError(false);
+  };
 
   return (
     <Card
@@ -5930,11 +6149,25 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
       padding="none"
     >
       {/* Image */}
-      <div className="relative h-48 overflow-hidden">
+      <div className="relative h-48 overflow-hidden bg-gray-100">
+        {/* Loading skeleton */}
+        {!imageLoaded && !imageError && (
+          <div className="absolute inset-0 bg-gray-200 animate-pulse flex flex-col items-center justify-center">
+            <Utensils className="text-gray-400 mb-2" size={32} />
+            <span className="text-gray-400 text-sm">Loading...</span>
+          </div>
+        )}
+
+        {/* Actual image */}
         <img
-          src={item.image_url || '/placeholder-food.jpg'}
+          src={imageUrl}
           alt={item.name}
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+          className={`w-full h-full object-cover transition-all duration-300 ${
+            imageLoaded ? 'opacity-100 hover:scale-110' : 'opacity-0'
+          }`}
+          onLoad={onImageLoad}
+          onError={onImageError}
+          loading="lazy"
         />
 
         {/* Availability badge */}
@@ -5958,7 +6191,23 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
               VEGAN
             </div>
           )}
+          {item.is_halal && (
+            <div className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-lg">
+              HALAL
+            </div>
+          )}
         </div>
+
+        {/* Spice level indicator */}
+        {item.spice_level && (
+          <div className="absolute bottom-3 left-3">
+            <div className="bg-white px-2 py-1 rounded-full shadow-md text-xs font-semibold">
+              {item.spice_level === 'mild' && '🌶️ Mild'}
+              {item.spice_level === 'medium' && '🌶️🌶️ Medium'}
+              {item.spice_level === 'hot' && '🌶️🌶️🌶️ Hot'}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Content */}
@@ -5975,6 +6224,14 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
         <p className="text-gray-600 text-sm mb-4 line-clamp-2">
           {item.description}
         </p>
+
+        {/* Allergens warning */}
+        {item.allergens && item.allergens.length > 0 && (
+          <div className="flex items-start space-x-2 mb-3 text-xs text-orange-700 bg-orange-50 p-2 rounded">
+            <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
+            <span>Contains: {item.allergens.join(', ')}</span>
+          </div>
+        )}
 
         {/* Price and action */}
         <div className="flex items-center justify-between">
@@ -5993,16 +6250,33 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
             <Button
               variant="primary"
               size="sm"
-              onClick={() => setShowDetails(true)}
+              onClick={() => {
+                if (!isAuthenticated) {
+                  showToast('Please login to add items to cart', 'warning');
+                  navigate('/login');
+                } else {
+                  setShowDetails(true);
+                }
+              }}
+              disabled={isUpdating || !item.id}
             >
-              <ShoppingCart size={16} className="mr-1" />
-              Add
+              {!isAuthenticated ? (
+                <>
+                  <LogIn size={16} className="mr-1" />
+                  Login
+                </>
+              ) : (
+                <>
+                  <ShoppingCart size={16} className="mr-1" />
+                  Add
+                </>
+              )}
             </Button>
           )}
         </div>
 
         {/* Expanded details */}
-        {showDetails && (
+        {showDetails && isAuthenticated && (
           <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
             {/* Quantity selector */}
             <div>
@@ -6057,8 +6331,11 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
                 size="sm"
                 onClick={handleAddToCart}
                 className="flex-1"
+                disabled={isUpdating || !item.id}
               >
-                Add to Cart • {formatCurrency(item.price * quantity)}
+                {isUpdating
+                  ? 'Adding...'
+                  : `Add to Cart • ${formatCurrency(item.price * quantity)}`}
               </Button>
             </div>
           </div>
@@ -6069,14 +6346,13 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
 };
 
 export default MenuItemCard;
-
 ```
 
 ---
 
 ## 📄 src\components\menu\MenuItemGrid.tsx
 
-*Path: `src\components\menu\MenuItemGrid.tsx`*
+_Path: `src\components\menu\MenuItemGrid.tsx`_
 
 ```tsx
 import React from 'react';
@@ -6086,20 +6362,15 @@ interface MenuItemGridProps {
 }
 
 export const MenuItemGrid: React.FC<MenuItemGridProps> = (props) => {
-  return (
-    <div>
-      {/* MenuItemGrid Component */}
-    </div>
-  );
+  return <div>{/* MenuItemGrid Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\menu\SidelinesPanel.tsx
 
-*Path: `src\components\menu\SidelinesPanel.tsx`*
+_Path: `src\components\menu\SidelinesPanel.tsx`_
 
 ```tsx
 import React from 'react';
@@ -6109,20 +6380,15 @@ interface SidelinesPanelProps {
 }
 
 export const SidelinesPanel: React.FC<SidelinesPanelProps> = (props) => {
-  return (
-    <div>
-      {/* SidelinesPanel Component */}
-    </div>
-  );
+  return <div>{/* SidelinesPanel Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\profile\AddressCard.tsx
 
-*Path: `src\components\profile\AddressCard.tsx`*
+_Path: `src\components\profile\AddressCard.tsx`_
 
 ```tsx
 import React, { useState } from 'react';
@@ -6227,14 +6493,13 @@ const AddressCard: React.FC<AddressCardProps> = ({ address }) => {
 };
 
 export default AddressCard;
-
 ```
 
 ---
 
 ## 📄 src\components\profile\AddressManager.tsx
 
-*Path: `src\components\profile\AddressManager.tsx`*
+_Path: `src\components\profile\AddressManager.tsx`_
 
 ```tsx
 import React, { useState, useEffect } from 'react';
@@ -6426,14 +6691,13 @@ const AddressManager: React.FC = () => {
 };
 
 export default AddressManager;
-
 ```
 
 ---
 
 ## 📄 src\components\profile\OrderHistory.tsx
 
-*Path: `src\components\profile\OrderHistory.tsx`*
+_Path: `src\components\profile\OrderHistory.tsx`_
 
 ```tsx
 import React, { useEffect } from 'react';
@@ -6589,14 +6853,13 @@ const OrderHistory: React.FC = () => {
 };
 
 export default OrderHistory;
-
 ```
 
 ---
 
 ## 📄 src\components\profile\ProfileForm.tsx
 
-*Path: `src\components\profile\ProfileForm.tsx`*
+_Path: `src\components\profile\ProfileForm.tsx`_
 
 ```tsx
 import React, { useState } from 'react';
@@ -6688,14 +6951,13 @@ const ProfileForm: React.FC = () => {
 };
 
 export default ProfileForm;
-
 ```
 
 ---
 
 ## 📄 src\components\subscription\DeliverySchedule.tsx
 
-*Path: `src\components\subscription\DeliverySchedule.tsx`*
+_Path: `src\components\subscription\DeliverySchedule.tsx`_
 
 ```tsx
 import React from 'react';
@@ -6705,20 +6967,15 @@ interface DeliveryScheduleProps {
 }
 
 export const DeliverySchedule: React.FC<DeliveryScheduleProps> = (props) => {
-  return (
-    <div>
-      {/* DeliverySchedule Component */}
-    </div>
-  );
+  return <div>{/* DeliverySchedule Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\subscription\MealSelection.tsx
 
-*Path: `src\components\subscription\MealSelection.tsx`*
+_Path: `src\components\subscription\MealSelection.tsx`_
 
 ```tsx
 import React from 'react';
@@ -6728,20 +6985,15 @@ interface MealSelectionProps {
 }
 
 export const MealSelection: React.FC<MealSelectionProps> = (props) => {
-  return (
-    <div>
-      {/* MealSelection Component */}
-    </div>
-  );
+  return <div>{/* MealSelection Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\subscription\SubscriptionPlans.tsx
 
-*Path: `src\components\subscription\SubscriptionPlans.tsx`*
+_Path: `src\components\subscription\SubscriptionPlans.tsx`_
 
 ```tsx
 import React from 'react';
@@ -6751,20 +7003,15 @@ interface SubscriptionPlansProps {
 }
 
 export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = (props) => {
-  return (
-    <div>
-      {/* SubscriptionPlans Component */}
-    </div>
-  );
+  return <div>{/* SubscriptionPlans Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\components\subscription\SubscriptionSummary.tsx
 
-*Path: `src\components\subscription\SubscriptionSummary.tsx`*
+_Path: `src\components\subscription\SubscriptionSummary.tsx`_
 
 ```tsx
 import React from 'react';
@@ -6773,24 +7020,21 @@ interface SubscriptionSummaryProps {
   // Add props here
 }
 
-export const SubscriptionSummary: React.FC<SubscriptionSummaryProps> = (props) => {
-  return (
-    <div>
-      {/* SubscriptionSummary Component */}
-    </div>
-  );
+export const SubscriptionSummary: React.FC<SubscriptionSummaryProps> = (
+  props
+) => {
+  return <div>{/* SubscriptionSummary Component */}</div>;
 };
-
 ```
 
 ---
 
 ## 📄 src\hooks\useAuth.ts
 
-*Path: `src\hooks\useAuth.ts`*
+_Path: `src\hooks\useAuth.ts`_
 
 ```typescript
-import { useAuthStore } from '@store/authStore'
+import { useAuthStore } from '@store/authStore';
 
 export const useAuth = () => {
   const {
@@ -6802,7 +7046,7 @@ export const useAuth = () => {
     register,
     logout,
     updateProfile,
-  } = useAuthStore()
+  } = useAuthStore();
 
   return {
     user,
@@ -6815,124 +7059,250 @@ export const useAuth = () => {
     register,
     logout,
     updateProfile,
-  }
-}
-
+  };
+};
 ```
 
 ---
 
 ## 📄 src\hooks\useCart.ts
 
-*Path: `src\hooks\useCart.ts`*
+_Path: `src\hooks\useCart.ts`_
 
 ```typescript
+import { useEffect } from 'react';
 import { useCartStore } from '@store/cartStore';
-import { useToast } from './useToast'; // This will now properly import from Toast component
+import { useAuthStore } from '@store/authStore';
+import { useToast } from '@components/common/Toast';
+import { MenuItem, Sideline } from '@types/menu.types';
 
 export const useCart = () => {
-  const cart = useCartStore();
+  const cartStore = useCartStore();
+  const { isAuthenticated } = useAuthStore();
   const { showToast } = useToast();
 
-  const addToCart = (menuItem: any, quantity: number = 1, specialInstructions?: string) => {
+  // Fetch cart on mount if authenticated
+  useEffect(() => {
+    if (isAuthenticated && !cartStore.cartSummary && !cartStore.isLoading) {
+      cartStore.fetchCart().catch(console.error);
+    }
+  }, [isAuthenticated]);
+
+  /**
+   * Add menu item to cart
+   */
+  const addToCart = async (
+    menuItem: MenuItem,
+    quantity: number = 1,
+    specialInstructions?: string
+  ) => {
+    if (!isAuthenticated) {
+      // For unauthenticated users, use local cart
+      cartStore.addLocalItem(menuItem, quantity, specialInstructions);
+      showToast(`${menuItem.name} added to cart!`, 'success');
+      return;
+    }
+
     try {
-      cart.addItem(menuItem, quantity, specialInstructions);
+      await cartStore.addItem(menuItem, quantity, specialInstructions);
       showToast(`${menuItem.name} added to cart!`, 'success');
     } catch (error) {
       showToast('Failed to add item to cart', 'error');
     }
   };
 
-  const removeFromCart = (menuItemId: string) => {
+  /**
+   * Add sideline to cart
+   */
+  const addSideline = async (sideline: Sideline, quantity: number = 1) => {
+    if (!isAuthenticated) {
+      showToast('Please login to add items to cart', 'warning');
+      return;
+    }
+
     try {
-      cart.removeItem(menuItemId);
-      showToast('Item removed from cart', 'success');
+      await cartStore.addSideline(sideline, quantity);
+      showToast(`${sideline.name} added to cart!`, 'success');
+    } catch (error) {
+      showToast('Failed to add sideline to cart', 'error');
+    }
+  };
+
+  /**
+   * Remove item from cart
+   */
+  const removeFromCart = async (
+    itemId: string,
+    isSideline: boolean = false
+  ) => {
+    if (!isAuthenticated) {
+      cartStore.removeLocalItem(itemId);
+      showToast('Item removed from cart', 'info');
+      return;
+    }
+
+    try {
+      await cartStore.removeItem(itemId, isSideline);
+      showToast('Item removed from cart', 'info');
     } catch (error) {
       showToast('Failed to remove item', 'error');
     }
   };
 
-  const updateCartQuantity = (menuItemId: string, quantity: number) => {
+  /**
+   * Update cart item quantity
+   */
+  const updateCartQuantity = async (
+    itemId: string,
+    quantity: number,
+    isSideline: boolean = false
+  ) => {
+    if (!isAuthenticated) {
+      cartStore.updateLocalQuantity(itemId, quantity);
+      if (quantity === 0) {
+        showToast('Item removed from cart', 'info');
+      }
+      return;
+    }
+
     try {
-      cart.updateQuantity(menuItemId, quantity);
+      await cartStore.updateQuantity(itemId, quantity, isSideline);
+      if (quantity === 0) {
+        showToast('Item removed from cart', 'info');
+      }
     } catch (error) {
       showToast('Failed to update quantity', 'error');
     }
   };
 
+  /**
+   * Clear the cart
+   */
+  const clearCart = async () => {
+    if (!isAuthenticated) {
+      cartStore.clearLocalCart();
+      showToast('Cart cleared', 'info');
+      return;
+    }
+
+    try {
+      await cartStore.clearCart();
+      showToast('Cart cleared', 'info');
+    } catch (error) {
+      showToast('Failed to clear cart', 'error');
+    }
+  };
+
+  // Get cart data based on authentication status
+  const cartSummary = isAuthenticated
+    ? cartStore.cartSummary
+    : cartStore.getLocalSummary();
+  const items = isAuthenticated
+    ? cartStore.cartSummary?.items || []
+    : cartStore.localItems;
+  const sidelines = isAuthenticated
+    ? cartStore.cartSummary?.sidelines || []
+    : cartStore.localSidelines;
+
+  // Return formatted data for components
   return {
-    ...cart,
+    // Cart items
+    items,
+    sidelines,
+
+    // Summary
+    summary: {
+      item_count: cartSummary?.items_count || 0,
+      subtotal: cartSummary?.subtotal || 0,
+      delivery_fee: cartSummary?.delivery_fee || 0,
+      tax: (cartSummary?.subtotal || 0) * 0.1, // 10% GST
+      total: cartSummary?.total || 0,
+    },
+
+    // Loading states
+    isLoading: cartStore.isLoading,
+    isUpdating: cartStore.isUpdating,
+
+    // Local state
+    orderType: cartStore.orderType,
+    deliveryOption: cartStore.deliveryOption,
+
+    // Actions
     addToCart,
+    addSideline,
     removeFromCart,
     updateCartQuantity,
+    clearCart,
+    refreshCart: cartStore.fetchCart,
+    setOrderType: cartStore.setOrderType,
+    setDeliveryOption: cartStore.setDeliveryOption,
   };
 };
-
 ```
 
 ---
 
 ## 📄 src\hooks\useDebounce.ts
 
-*Path: `src\hooks\useDebounce.ts`*
+_Path: `src\hooks\useDebounce.ts`_
 
 ```typescript
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
 
 export const useDebounce = <T>(value: T, delay: number = 500): T => {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value)
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      setDebouncedValue(value)
-    }, delay)
+      setDebouncedValue(value);
+    }, delay);
 
     return () => {
-      clearTimeout(handler)
-    }
-  }, [value, delay])
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
 
-  return debouncedValue
-}
-
+  return debouncedValue;
+};
 ```
 
 ---
 
 ## 📄 src\hooks\useMenu.ts
 
-*Path: `src\hooks\useMenu.ts`*
+_Path: `src\hooks\useMenu.ts`_
 
 ```typescript
-import { useEffect } from 'react'
-import { useMenuStore } from '@store/menuStore'
+import { useEffect } from 'react';
+import { useMenuStore } from '@store/menuStore';
 
-export const useMenu = (orderType?: 'daily_menu' | 'weekly_subscription' | 'special_catering') => {
-  const menuStore = useMenuStore()
+export const useMenu = (
+  orderType?: 'daily_menu' | 'weekly_subscription' | 'special_catering'
+) => {
+  const menuStore = useMenuStore();
 
   useEffect(() => {
     if (orderType === 'daily_menu') {
-      menuStore.fetchDailyMenu()
+      menuStore.fetchDailyMenu();
     } else if (orderType === 'weekly_subscription') {
-      menuStore.fetchWeeklyMenu()
+      menuStore.fetchWeeklyMenu();
     } else if (orderType === 'special_catering') {
-      menuStore.fetchCateringMenu()
+      menuStore.fetchCateringMenu();
     }
-    
-    menuStore.fetchSidelines()
-    menuStore.fetchCategories()
-  }, [orderType])
 
-  return menuStore
-}
+    menuStore.fetchSidelines();
+    menuStore.fetchCategories();
+  }, [orderType]);
 
+  return menuStore;
+};
 ```
 
 ---
 
 ## 📄 src\hooks\useOrders.ts
 
-*Path: `src\hooks\useOrders.ts`*
+_Path: `src\hooks\useOrders.ts`_
 
 ```typescript
 import { useEffect } from 'react';
@@ -6976,27 +7346,25 @@ export const useOrders = () => {
     cancelOrder,
   };
 };
-
 ```
 
 ---
 
 ## 📄 src\hooks\useToast.ts
 
-*Path: `src\hooks\useToast.ts`*
+_Path: `src\hooks\useToast.ts`_
 
 ```typescript
 // src/hooks/useToast.ts
 // Simply re-export the useToast hook from the Toast component
 export { useToast, ToastProvider } from '@components/common/Toast';
-
 ```
 
 ---
 
 ## 📄 src\pages\admin\AdminDashboard.tsx
 
-*Path: `src\pages\admin\AdminDashboard.tsx`*
+_Path: `src\pages\admin\AdminDashboard.tsx`_
 
 ```tsx
 import React, { useEffect, useState } from 'react';
@@ -7493,107 +7861,116 @@ const AdminDashboard: React.FC = () => {
 };
 
 export default AdminDashboard;
-
 ```
 
 ---
 
 ## 📄 src\pages\admin\MenuManagement.tsx
 
-*Path: `src\pages\admin\MenuManagement.tsx`*
+_Path: `src\pages\admin\MenuManagement.tsx`_
 
 ```tsx
 import React, { useEffect, useState } from 'react';
 import { useAdminStore } from '@store/adminStore';
+import { useToast } from '@components/common/Toast';
+import { MenuItemsList } from '@components/admin/menu/MenuItemsList';
+import { AddMenuItem } from '@components/admin/menu/AddMenuItem';
+import { EditMenuItem } from '@components/admin/menu/EditMenuItem';
 import LoadingSpinner from '@components/common/LoadingSpinner';
-import Card from '@components/common/Card';
-import { OrderStats } from '@components/admin/dashboard/OrderStats';
-import { RecentOrders } from '@components/admin/dashboard/RecentOrders';
-import { RevenueChart } from '@components/admin/dashboard/RevenueChart';
-import {
-  TrendingUp,
-  DollarSign,
-  ShoppingBag,
-  Clock,
-  RefreshCcw,
-  Calendar,
-  Users,
-} from 'lucide-react';
-import { formatCurrency } from '@utils/formatters';
 import Button from '@components/common/Button';
+import Card from '@components/common/Card';
+import Modal from '@components/common/Modal';
+import Input from '@components/common/Input';
+import { Plus, Search, Filter, RefreshCcw } from 'lucide-react';
+import { MenuItem } from '@types/menu.types';
 
-const AdminDashboard: React.FC = () => {
-  const { orderStats, fetchDashboardStats, isLoading } = useAdminStore();
+const MenuManagement: React.FC = () => {
+  const { showToast } = useToast();
+  const {
+    managedMenuItems,
+    managedCategories,
+    fetchManagedMenuItems,
+    fetchManagedCategories,
+    deleteMenuItem,
+    isLoading,
+  } = useAdminStore();
+
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    loadDashboardData();
+    loadData();
   }, []);
 
-  const loadDashboardData = async () => {
+  const loadData = async () => {
     try {
-      await fetchDashboardStats();
+      await Promise.all([fetchManagedMenuItems(), fetchManagedCategories()]);
     } catch (error) {
-      console.error('Failed to load dashboard data:', error);
+      showToast('Failed to load menu data', 'error');
     }
   };
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await loadDashboardData();
+    await loadData();
     setRefreshing(false);
+    showToast('Menu items refreshed', 'success');
   };
 
-  if (isLoading && !orderStats) {
+  const handleDelete = async (itemId: string) => {
+    if (
+      !window.confirm(
+        'Are you sure you want to delete this menu item? This action cannot be undone.'
+      )
+    ) {
+      return;
+    }
+
+    try {
+      await deleteMenuItem(itemId);
+      showToast('Menu item deleted successfully', 'success');
+    } catch (error) {
+      showToast('Failed to delete menu item', 'error');
+    }
+  };
+
+  const handleEdit = (item: MenuItem) => {
+    setEditingItem(item);
+  };
+
+  const handleCloseEdit = () => {
+    setEditingItem(null);
+    loadData();
+  };
+
+  const handleCloseAdd = () => {
+    setShowAddModal(false);
+    loadData();
+  };
+
+  // Filter menu items based on search and category
+  const filteredItems = managedMenuItems.filter((item) => {
+    const matchesSearch =
+      searchQuery === '' ||
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesCategory =
+      selectedCategory === '' || item.category === selectedCategory;
+
+    return matchesSearch && matchesCategory;
+  });
+
+  if (isLoading && managedMenuItems.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner size="lg" message="Loading dashboard..." />
+        <LoadingSpinner size="lg" message="Loading menu items..." />
       </div>
     );
   }
-
-  const stats = [
-    {
-      title: 'Total Orders',
-      value: orderStats?.total_orders || 0,
-      icon: <ShoppingBag size={32} />,
-      color: 'from-blue-500 to-blue-600',
-      textColor: 'text-blue-600',
-      bgColor: 'bg-blue-50',
-      change: '+12%',
-      changeType: 'increase',
-    },
-    {
-      title: 'Pending Orders',
-      value: orderStats?.pending_orders || 0,
-      icon: <Clock size={32} />,
-      color: 'from-orange-500 to-orange-600',
-      textColor: 'text-orange-600',
-      bgColor: 'bg-orange-50',
-      change: '-3%',
-      changeType: 'decrease',
-    },
-    {
-      title: 'Today Revenue',
-      value: formatCurrency(orderStats?.today_revenue || 0),
-      icon: <DollarSign size={32} />,
-      color: 'from-green-500 to-green-600',
-      textColor: 'text-green-600',
-      bgColor: 'bg-green-50',
-      change: '+25%',
-      changeType: 'increase',
-    },
-    {
-      title: 'Total Revenue',
-      value: formatCurrency(orderStats?.total_revenue || 0),
-      icon: <TrendingUp size={32} />,
-      color: 'from-purple-500 to-purple-600',
-      textColor: 'text-purple-600',
-      bgColor: 'bg-purple-50',
-      change: '+18%',
-      changeType: 'increase',
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-background py-8">
@@ -7602,170 +7979,201 @@ const AdminDashboard: React.FC = () => {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="font-heading text-4xl font-bold text-text mb-2">
-              Admin Dashboard
+              Menu Management
             </h1>
-            <p className="text-gray-600 flex items-center space-x-2">
-              <Calendar size={16} />
-              <span>
-                {new Date().toLocaleDateString('en-AU', {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </span>
-            </p>
+            <p className="text-gray-600">Manage your restaurant menu items</p>
           </div>
-          <Button
-            onClick={handleRefresh}
-            disabled={refreshing}
-            variant="outline"
-            size="md"
-          >
-            <RefreshCcw
-              size={18}
-              className={`mr-2 ${refreshing ? 'animate-spin' : ''}`}
-            />
-            {refreshing ? 'Refreshing...' : 'Refresh Data'}
-          </Button>
-        </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => (
-            <Card
-              key={index}
-              padding="lg"
-              className="hover:shadow-xl transition-all duration-300"
+          <div className="flex items-center space-x-3">
+            <Button
+              variant="outline"
+              size="md"
+              onClick={handleRefresh}
+              disabled={refreshing}
             >
-              <div className="flex items-center justify-between mb-4">
-                <div
-                  className={`w-16 h-16 rounded-full ${stat.bgColor} flex items-center justify-center ${stat.textColor}`}
+              <RefreshCcw
+                size={18}
+                className={`mr-2 ${refreshing ? 'animate-spin' : ''}`}
+              />
+              Refresh
+            </Button>
+
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => setShowAddModal(true)}
+            >
+              <Plus size={20} className="mr-2" />
+              Add Menu Item
+            </Button>
+          </div>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Card padding="lg">
+            <div className="text-center">
+              <h3 className="text-3xl font-bold text-primary mb-2">
+                {managedMenuItems.length}
+              </h3>
+              <p className="text-sm text-gray-600">Total Items</p>
+            </div>
+          </Card>
+
+          <Card padding="lg">
+            <div className="text-center">
+              <h3 className="text-3xl font-bold text-green-600 mb-2">
+                {managedMenuItems.filter((item) => item.is_available).length}
+              </h3>
+              <p className="text-sm text-gray-600">Available</p>
+            </div>
+          </Card>
+
+          <Card padding="lg">
+            <div className="text-center">
+              <h3 className="text-3xl font-bold text-orange-600 mb-2">
+                {managedMenuItems.filter((item) => !item.is_available).length}
+              </h3>
+              <p className="text-sm text-gray-600">Unavailable</p>
+            </div>
+          </Card>
+
+          <Card padding="lg">
+            <div className="text-center">
+              <h3 className="text-3xl font-bold text-purple-600 mb-2">
+                {managedCategories.length}
+              </h3>
+              <p className="text-sm text-gray-600">Categories</p>
+            </div>
+          </Card>
+        </div>
+
+        {/* Filters */}
+        <Card padding="lg" className="mb-6">
+          <div className="flex flex-col md:flex-row gap-4">
+            {/* Search */}
+            <div className="flex-1">
+              <div className="relative">
+                <Search
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={20}
+                />
+                <input
+                  type="text"
+                  placeholder="Search menu items..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            {/* Category Filter */}
+            <div className="md:w-64">
+              <div className="relative">
+                <Filter
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={20}
+                />
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent appearance-none"
                 >
-                  {stat.icon}
-                </div>
-                <span
-                  className={`text-sm font-semibold ${
-                    stat.changeType === 'increase'
-                      ? 'text-green-600'
-                      : 'text-red-600'
-                  }`}
-                >
-                  {stat.change}
+                  <option value="">All Categories</option>
+                  {managedCategories.map((cat) => (
+                    <option key={cat._id || cat.name} value={cat.name}>
+                      {cat.display_name || cat.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Clear Filters */}
+            {(searchQuery || selectedCategory) && (
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setSearchQuery('');
+                  setSelectedCategory('');
+                }}
+              >
+                Clear Filters
+              </Button>
+            )}
+          </div>
+
+          {/* Active Filters Display */}
+          {(searchQuery || selectedCategory) && (
+            <div className="mt-4 flex items-center space-x-2">
+              <span className="text-sm text-gray-600">Active filters:</span>
+              {searchQuery && (
+                <span className="inline-block px-3 py-1 bg-primary-50 text-primary rounded-full text-sm">
+                  Search: {searchQuery}
                 </span>
-              </div>
-              <h3 className="text-gray-600 text-sm font-medium mb-1">
-                {stat.title}
-              </h3>
-              <p className="font-heading text-3xl font-bold text-text">
-                {stat.value}
-              </p>
-            </Card>
-          ))}
-        </div>
+              )}
+              {selectedCategory && (
+                <span className="inline-block px-3 py-1 bg-primary-50 text-primary rounded-full text-sm">
+                  Category: {selectedCategory}
+                </span>
+              )}
+              <span className="text-sm text-gray-600 ml-2">
+                ({filteredItems.length} results)
+              </span>
+            </div>
+          )}
+        </Card>
 
-        {/* Order Stats Component */}
-        <div className="mb-8">
-          <OrderStats />
-        </div>
+        {/* Menu Items List */}
+        <MenuItemsList
+          items={filteredItems}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          isLoading={isLoading}
+        />
 
-        {/* Charts and Recent Orders */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Revenue Chart */}
-          <div className="lg:col-span-2">
-            <RevenueChart />
-          </div>
+        {/* Add Modal */}
+        <Modal
+          isOpen={showAddModal}
+          onClose={() => setShowAddModal(false)}
+          title="Add New Menu Item"
+          size="lg"
+        >
+          <AddMenuItem
+            onSuccess={handleCloseAdd}
+            onCancel={() => setShowAddModal(false)}
+          />
+        </Modal>
 
-          {/* Quick Stats */}
-          <div>
-            <Card padding="lg">
-              <h3 className="font-heading text-xl font-bold text-text mb-6">
-                Quick Actions
-              </h3>
-
-              <div className="space-y-3">
-                <Button
-                  variant="primary"
-                  fullWidth
-                  onClick={() => (window.location.href = '/admin/orders')}
-                >
-                  <ShoppingBag size={18} className="mr-2" />
-                  View All Orders
-                </Button>
-
-                <Button
-                  variant="outline"
-                  fullWidth
-                  onClick={() => (window.location.href = '/admin/menu')}
-                >
-                  <Users size={18} className="mr-2" />
-                  Manage Menu
-                </Button>
-
-                <Button
-                  variant="outline"
-                  fullWidth
-                  onClick={() => (window.location.href = '/admin/sidelines')}
-                >
-                  <TrendingUp size={18} className="mr-2" />
-                  Manage Sidelines
-                </Button>
-              </div>
-
-              <div className="mt-8 pt-6 border-t border-gray-200">
-                <h4 className="font-semibold text-text mb-4">
-                  Performance Summary
-                </h4>
-                <div className="space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Completed Orders:</span>
-                    <span className="font-semibold text-green-600">
-                      {orderStats?.completed_orders || 0}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Cancelled Orders:</span>
-                    <span className="font-semibold text-red-600">
-                      {orderStats?.cancelled_orders || 0}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Success Rate:</span>
-                    <span className="font-semibold text-blue-600">
-                      {orderStats?.total_orders
-                        ? (
-                            ((orderStats.completed_orders || 0) /
-                              orderStats.total_orders) *
-                            100
-                          ).toFixed(1)
-                        : 0}
-                      %
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </div>
-
-        {/* Recent Orders */}
-        <div className="mt-8">
-          <RecentOrders />
-        </div>
+        {/* Edit Modal */}
+        <Modal
+          isOpen={!!editingItem}
+          onClose={() => setEditingItem(null)}
+          title="Edit Menu Item"
+          size="lg"
+        >
+          {editingItem && (
+            <EditMenuItem
+              item={editingItem}
+              onSuccess={handleCloseEdit}
+              onCancel={() => setEditingItem(null)}
+            />
+          )}
+        </Modal>
       </div>
     </div>
   );
 };
 
-export default AdminDashboard;
-
+export default MenuManagement;
 ```
 
 ---
 
 ## 📄 src\pages\admin\OrderManagement.tsx
 
-*Path: `src\pages\admin\OrderManagement.tsx`*
+_Path: `src\pages\admin\OrderManagement.tsx`_
 
 ```tsx
 import React, { useEffect, useState } from 'react';
@@ -8005,14 +8413,13 @@ const OrderManagement: React.FC = () => {
 };
 
 export default OrderManagement;
-
 ```
 
 ---
 
 ## 📄 src\pages\admin\SidelinesManagement.tsx
 
-*Path: `src\pages\admin\SidelinesManagement.tsx`*
+_Path: `src\pages\admin\SidelinesManagement.tsx`_
 
 ```tsx
 import React, { useEffect, useState } from 'react';
@@ -8175,14 +8582,13 @@ const SidelinesManagement: React.FC = () => {
 };
 
 export default SidelinesManagement;
-
 ```
 
 ---
 
 ## 📄 src\pages\customer\CateringPage.tsx
 
-*Path: `src\pages\customer\CateringPage.tsx`*
+_Path: `src\pages\customer\CateringPage.tsx`_
 
 ```tsx
 import React, { useState, useEffect } from 'react';
@@ -8690,20 +9096,19 @@ const CateringPage: React.FC = () => {
 };
 
 export default CateringPage;
-
 ```
 
 ---
 
 ## 📄 src\pages\customer\CheckoutPage.tsx
 
-*Path: `src\pages\customer\CheckoutPage.tsx`*
+_Path: `src\pages\customer\CheckoutPage.tsx`_
 
 ```tsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '@hooks/useCart';
-import { useAuth } from '@hooks/useAuth';
+import { useAuthStore } from '@store/authStore';
 import { useToast } from '@components/common/Toast';
 import { ordersAPI } from '@api';
 import { formatCurrency } from '@utils/formatters';
@@ -8714,13 +9119,19 @@ import {
   Truck,
   Store,
   CheckCircle,
-  AlertCircle,
   CreditCard,
   Package,
+  Clock,
+  User,
+  FileText,
+  ShoppingCart,
+  Phone,
+  Mail,
 } from 'lucide-react';
 import Button from '@components/common/Button';
 import Card from '@components/common/Card';
 import Input from '@components/common/Input';
+import LoadingSpinner from '@components/common/LoadingSpinner';
 
 interface CheckoutState {
   cateringDetails?: any;
@@ -8730,8 +9141,20 @@ interface CheckoutState {
 const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
-  const { summary, items, sidelines, clearCart } = useCart();
+  const { user, isAuthenticated } = useAuthStore();
+  const {
+    items = [],
+    sidelines = [],
+    summary = {
+      item_count: 0,
+      subtotal: 0,
+      delivery_fee: 0,
+      tax: 0,
+      total: 0,
+    },
+    clearCart,
+    isLoading: cartLoading,
+  } = useCart();
   const { showToast } = useToast();
 
   const state = (location.state as CheckoutState) || {};
@@ -8747,47 +9170,130 @@ const CheckoutPage: React.FC = () => {
   const [deliveryTime, setDeliveryTime] = useState('');
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'cash'>('card');
+  const [customerInfo, setCustomerInfo] = useState({
+    name: '',
+    email: '',
+    phone: '',
+  });
+
+  // New address form state
+  const [showNewAddressForm, setShowNewAddressForm] = useState(false);
+  const [newAddress, setNewAddress] = useState({
+    label: 'Home',
+    street: '',
+    suburb: '',
+    postcode: '',
+    state: 'NSW',
+    delivery_instructions: '',
+  });
+
+  // Initialize customer info from user data
+  useEffect(() => {
+    if (user) {
+      setCustomerInfo({
+        name:
+          user.first_name && user.last_name
+            ? `${user.first_name} ${user.last_name}`
+            : user.full_name || user.email?.split('@')[0] || '',
+        email: user.email || '',
+        phone: user.phone || '',
+      });
+
+      // Set default address if available
+      if (user.addresses && user.addresses.length > 0) {
+        const defaultAddr = user.addresses.find((addr: any) => addr.is_default);
+        setSelectedAddress(defaultAddr || user.addresses[0]);
+      }
+    }
+  }, [user]);
 
   useEffect(() => {
-    // Set default address
-    if (user?.addresses && user.addresses.length > 0) {
-      const defaultAddr = user.addresses.find((addr: any) => addr.is_default);
-      setSelectedAddress(defaultAddr || user.addresses[0]);
+    // Check authentication
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: '/checkout' } });
+      return;
     }
 
     // Set minimum delivery date (tomorrow)
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     setDeliveryDate(tomorrow.toISOString().split('T')[0]);
-  }, [user]);
+
+    // Set default time
+    setDeliveryTime('12:00');
+  }, [isAuthenticated, navigate]);
+
+  // Helper function to safely get item data
+  const getItemData = (item: any) => {
+    // Handle different item structures
+    if (item.menu_item) {
+      return {
+        id: item.menu_item.id || item.menu_item._id,
+        name: item.menu_item.name || 'Unknown Item',
+        price: item.menu_item.price || 0,
+        quantity: item.quantity || 1,
+      };
+    } else if (item.item_name) {
+      return {
+        id: item.item_id,
+        name: item.item_name || 'Unknown Item',
+        price: item.price || 0,
+        quantity: item.quantity || 1,
+      };
+    } else {
+      return {
+        id: item.id || item._id || Math.random().toString(),
+        name: item.name || 'Unknown Item',
+        price: item.price || 0,
+        quantity: item.quantity || 1,
+      };
+    }
+  };
+
+  // Check if cart is empty (excluding loading state)
+  const isCartEmpty =
+    !cartLoading &&
+    (!items || items.length === 0) &&
+    !cateringDetails &&
+    !subscriptionDetails;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (items.length === 0 && !cateringDetails && !subscriptionDetails) {
-      showToast('Cart is empty', 'error');
+    // Validation
+    if (isCartEmpty) {
+      showToast('Your cart is empty', 'error');
+      navigate('/menu/daily');
       return;
     }
 
-    if (deliveryMethod === 'delivery' && !selectedAddress) {
-      showToast('Please select a delivery address', 'error');
+    if (
+      deliveryMethod === 'delivery' &&
+      !selectedAddress &&
+      !showNewAddressForm
+    ) {
+      showToast('Please select or add a delivery address', 'error');
       return;
     }
 
     if (!deliveryDate || !deliveryTime) {
-      showToast('Please select delivery date and time', 'error');
+      showToast('Please select delivery/pickup date and time', 'error');
+      return;
+    }
+
+    if (!customerInfo.name || !customerInfo.email || !customerInfo.phone) {
+      showToast('Please fill in all contact information', 'error');
       return;
     }
 
     setIsProcessing(true);
 
     try {
-      // Step 1: Create order based on type
-      let orderResponse;
+      let orderPayload: any = {};
 
       if (cateringDetails) {
         // Catering order
-        orderResponse = await ordersAPI.createCateringOrder({
+        orderPayload = {
           package_type: cateringDetails.package.id,
           guest_count: cateringDetails.eventDetails.head_count,
           event_date: cateringDetails.eventDetails.event_date,
@@ -8795,82 +9301,133 @@ const CheckoutPage: React.FC = () => {
           venue_address: cateringDetails.eventDetails.venue_address,
           selected_items: cateringDetails.selectedItems,
           special_requests: specialInstructions,
-          payment_method: paymentMethod,
-        });
+          contact_info: customerInfo,
+        };
       } else if (subscriptionDetails) {
         // Weekly subscription order
-        orderResponse = await ordersAPI.createWeeklyOrder({
+        orderPayload = {
           menu_selections: subscriptionDetails.meals.reduce(
             (acc: any, meal: any) => {
-              acc[meal._id] = 1;
+              acc[meal.id || meal._id] = 1;
               return acc;
             },
             {}
           ),
-          sidelines: sidelines.map((s: any) => ({
-            item_id: s.sideline._id,
-            quantity: s.quantity,
-          })),
+          sidelines:
+            sidelines?.map((s: any) => {
+              const sidelineData = s.sideline || s;
+              return {
+                item_id: sidelineData.id || sidelineData._id,
+                quantity: s.quantity || 1,
+              };
+            }) || [],
           delivery_dates: [deliveryDate],
-          deals: subscriptionDetails.plan.deals || {},
-          delivery_address_id: selectedAddress?._id || '',
+          delivery_address:
+            deliveryMethod === 'delivery'
+              ? showNewAddressForm
+                ? newAddress
+                : selectedAddress
+              : null,
           is_express: false,
           delivery_instructions: specialInstructions,
           notes: '',
-          payment_method: paymentMethod,
-        });
+        };
       } else {
         // Daily order
-        orderResponse = await ordersAPI.createDailyOrder({
-          items: items.map((item: any) => ({
-            item_id: item.menu_item._id,
-            quantity: item.quantity,
-          })),
-          sidelines: sidelines.map((s: any) => ({
-            item_id: s.sideline._id,
-            quantity: s.quantity,
-          })),
+        orderPayload = {
+          items:
+            items?.map((item: any) => {
+              const itemData = getItemData(item);
+              return {
+                item_id: itemData.id,
+                quantity: itemData.quantity,
+              };
+            }) || [],
+          sidelines:
+            sidelines?.map((s: any) => {
+              const sidelineData = s.sideline || s;
+              return {
+                item_id: sidelineData.id || sidelineData._id,
+                quantity: s.quantity || 1,
+              };
+            }) || [],
           delivery_method: deliveryMethod,
-          delivery_address_id: selectedAddress?._id,
+          delivery_address:
+            deliveryMethod === 'delivery'
+              ? showNewAddressForm
+                ? newAddress
+                : selectedAddress
+              : null,
+          delivery_date: deliveryDate,
+          delivery_time: deliveryTime,
           delivery_instructions: specialInstructions,
           notes: '',
-          payment_method: paymentMethod,
-        });
+          contact_info: customerInfo,
+        };
+      }
+
+      console.log('Submitting order:', orderPayload);
+
+      // Create order based on type
+      let orderResponse;
+      if (cateringDetails) {
+        orderResponse = await ordersAPI.createCateringOrder(orderPayload);
+      } else if (subscriptionDetails) {
+        orderResponse = await ordersAPI.createWeeklyOrder(orderPayload);
+      } else {
+        orderResponse = await ordersAPI.createDailyOrder(orderPayload);
       }
 
       const order = orderResponse.data.data;
 
-      // Clear cart and redirect to success page
-      clearCart();
+      // Clear cart after successful order
+      await clearCart();
+
       showToast('Order placed successfully!', 'success');
-      navigate(`/orders/${order.id}`, {
-        state: { orderPlaced: true },
+
+      // Navigate to order confirmation or home
+      navigate('/', {
+        state: { orderPlaced: true, orderId: order.id || order._id },
       });
     } catch (error: any) {
       console.error('Checkout error:', error);
       showToast(
-        error.response?.data?.message || 'Failed to place order',
+        error.response?.data?.message ||
+          'Failed to place order. Please try again.',
         'error'
       );
+    } finally {
       setIsProcessing(false);
     }
   };
 
-  if (!user) {
+  // Show loading while cart data is loading
+  if (cartLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <LoadingSpinner size="lg" message="Loading checkout..." />
+      </div>
+    );
+  }
+
+  // Show empty cart message
+  if (isCartEmpty) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Card padding="lg" className="text-center max-w-md">
-          <AlertCircle className="mx-auto h-16 w-16 text-yellow-500 mb-4" />
-          <h2 className="text-2xl font-bold text-text mb-4">Please Sign In</h2>
+          <ShoppingCart className="mx-auto h-16 w-16 text-gray-300 mb-4" />
+          <h2 className="text-2xl font-bold text-text mb-4">
+            Your cart is empty
+          </h2>
           <p className="text-gray-600 mb-6">
-            You need to be logged in to complete your order
+            Add some delicious items to your cart before checking out
           </p>
           <Button
             variant="primary"
             fullWidth
-            onClick={() => navigate('/login', { state: { from: '/checkout' } })}
+            onClick={() => navigate('/menu/daily')}
           >
-            Sign In
+            Browse Menu
           </Button>
         </Card>
       </div>
@@ -8880,6 +9437,7 @@ const CheckoutPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background py-12">
       <div className="container-custom">
+        {/* Back Button */}
         <button
           onClick={() => navigate(-1)}
           className="flex items-center space-x-2 text-primary hover:text-primary-600 mb-6 transition-colors"
@@ -8889,13 +9447,58 @@ const CheckoutPage: React.FC = () => {
         </button>
 
         <h1 className="font-heading text-4xl font-bold text-text mb-8">
-          Checkout
+          Complete Your Order
         </h1>
 
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column - Checkout Form */}
             <div className="lg:col-span-2 space-y-6">
+              {/* Contact Information */}
+              <Card padding="lg">
+                <h2 className="font-heading text-2xl font-bold text-text mb-4 flex items-center space-x-2">
+                  <User size={24} className="text-primary" />
+                  <span>Contact Information</span>
+                </h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Input
+                    type="text"
+                    label="Full Name"
+                    value={customerInfo.name}
+                    onChange={(e) =>
+                      setCustomerInfo({ ...customerInfo, name: e.target.value })
+                    }
+                    required
+                  />
+                  <Input
+                    type="email"
+                    label="Email"
+                    value={customerInfo.email}
+                    onChange={(e) =>
+                      setCustomerInfo({
+                        ...customerInfo,
+                        email: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                  <Input
+                    type="tel"
+                    label="Phone"
+                    value={customerInfo.phone}
+                    onChange={(e) =>
+                      setCustomerInfo({
+                        ...customerInfo,
+                        phone: e.target.value,
+                      })
+                    }
+                    placeholder="04XX XXX XXX"
+                    required
+                  />
+                </div>
+              </Card>
+
               {/* Delivery Method */}
               <Card padding="lg">
                 <h2 className="font-heading text-2xl font-bold text-text mb-4 flex items-center space-x-2">
@@ -8952,7 +9555,7 @@ const CheckoutPage: React.FC = () => {
                 </div>
               </Card>
 
-              {/* Delivery Address */}
+              {/* Delivery Address - only show if delivery selected */}
               {deliveryMethod === 'delivery' && (
                 <Card padding="lg">
                   <h2 className="font-heading text-2xl font-bold text-text mb-4 flex items-center space-x-2">
@@ -8960,105 +9563,162 @@ const CheckoutPage: React.FC = () => {
                     <span>Delivery Address</span>
                   </h2>
 
-                  {user.addresses && user.addresses.length > 0 ? (
+                  {user?.addresses &&
+                  user.addresses.length > 0 &&
+                  !showNewAddressForm ? (
                     <div className="space-y-3">
                       {user.addresses.map((addr: any) => (
-                        <button
-                          key={addr._id}
-                          type="button"
-                          onClick={() => setSelectedAddress(addr)}
-                          className={`w-full text-left p-4 border-2 rounded-lg transition-all ${
+                        <label
+                          key={addr._id || addr.id || Math.random()}
+                          className={`flex items-start space-x-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                            selectedAddress?.id === addr.id ||
                             selectedAddress?._id === addr._id
                               ? 'border-primary bg-primary-50'
                               : 'border-gray-200 hover:border-primary'
                           }`}
                         >
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <p className="font-semibold text-text">
-                                {addr.label || 'Address'}
-                              </p>
-                              <p className="text-sm text-gray-600 mt-1">
-                                {addr.street}
-                              </p>
-                              <p className="text-sm text-gray-600">
-                                {addr.suburb}, {addr.state} {addr.postcode}
-                              </p>
-                            </div>
-                            {selectedAddress?._id === addr._id && (
-                              <CheckCircle className="text-primary" size={24} />
+                          <input
+                            type="radio"
+                            name="address"
+                            checked={
+                              selectedAddress?.id === addr.id ||
+                              selectedAddress?._id === addr._id
+                            }
+                            onChange={() => setSelectedAddress(addr)}
+                            className="mt-1"
+                          />
+                          <div>
+                            <p className="font-semibold text-text">
+                              {addr.label || 'Address'}
+                            </p>
+                            <p className="text-gray-600 text-sm">
+                              {addr.street}, {addr.suburb} {addr.state}{' '}
+                              {addr.postcode}
+                            </p>
+                            {addr.is_default && (
+                              <span className="inline-block mt-1 px-2 py-1 bg-primary text-white text-xs rounded-full">
+                                Default
+                              </span>
                             )}
                           </div>
-                        </button>
+                        </label>
                       ))}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        fullWidth
+                        onClick={() => setShowNewAddressForm(true)}
+                      >
+                        Add New Address
+                      </Button>
                     </div>
                   ) : (
-                    <div className="text-center py-8">
-                      <p className="text-gray-600 mb-4">
-                        No addresses saved.{' '}
-                        <button
+                    <div className="space-y-4">
+                      <Input
+                        type="text"
+                        label="Street Address"
+                        value={newAddress.street}
+                        onChange={(e) =>
+                          setNewAddress({
+                            ...newAddress,
+                            street: e.target.value,
+                          })
+                        }
+                        required={deliveryMethod === 'delivery'}
+                      />
+                      <div className="grid grid-cols-2 gap-4">
+                        <Input
+                          type="text"
+                          label="Suburb"
+                          value={newAddress.suburb}
+                          onChange={(e) =>
+                            setNewAddress({
+                              ...newAddress,
+                              suburb: e.target.value,
+                            })
+                          }
+                          required={deliveryMethod === 'delivery'}
+                        />
+                        <Input
+                          type="text"
+                          label="Postcode"
+                          value={newAddress.postcode}
+                          onChange={(e) =>
+                            setNewAddress({
+                              ...newAddress,
+                              postcode: e.target.value,
+                            })
+                          }
+                          maxLength={4}
+                          required={deliveryMethod === 'delivery'}
+                        />
+                      </div>
+                      {user?.addresses && user.addresses.length > 0 && (
+                        <Button
                           type="button"
-                          onClick={() => navigate('/profile')}
-                          className="text-primary hover:underline"
+                          variant="ghost"
+                          onClick={() => setShowNewAddressForm(false)}
                         >
-                          Add an address
-                        </button>
-                      </p>
+                          Use Existing Address
+                        </Button>
+                      )}
                     </div>
                   )}
                 </Card>
               )}
 
-              {/* Delivery Date & Time */}
+              {/* Delivery Time */}
               <Card padding="lg">
                 <h2 className="font-heading text-2xl font-bold text-text mb-4 flex items-center space-x-2">
                   <Calendar size={24} className="text-primary" />
-                  <span>Delivery Schedule</span>
+                  <span>
+                    {deliveryMethod === 'delivery' ? 'Delivery' : 'Pickup'}{' '}
+                    Schedule
+                  </span>
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
                     type="date"
-                    label="Delivery Date"
+                    label="Date"
                     value={deliveryDate}
                     onChange={(e) => setDeliveryDate(e.target.value)}
                     min={new Date().toISOString().split('T')[0]}
                     required
                   />
-
-                  <div>
-                    <label className="block text-sm font-medium text-text mb-2">
-                      Delivery Time <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      value={deliveryTime}
-                      onChange={(e) => setDeliveryTime(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      required
-                    >
-                      <option value="">Select time</option>
-                      <option value="11:00-12:00">11:00 AM - 12:00 PM</option>
-                      <option value="12:00-13:00">12:00 PM - 1:00 PM</option>
-                      <option value="13:00-14:00">1:00 PM - 2:00 PM</option>
-                      <option value="18:00-19:00">6:00 PM - 7:00 PM</option>
-                      <option value="19:00-20:00">7:00 PM - 8:00 PM</option>
-                      <option value="20:00-21:00">8:00 PM - 9:00 PM</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="mt-4">
-                  <label className="block text-sm font-medium text-text mb-2">
-                    Special Instructions (Optional)
-                  </label>
-                  <textarea
-                    value={specialInstructions}
-                    onChange={(e) => setSpecialInstructions(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                    rows={3}
-                    placeholder="Any special delivery instructions..."
+                  <Input
+                    type="time"
+                    label="Time"
+                    value={deliveryTime}
+                    onChange={(e) => setDeliveryTime(e.target.value)}
+                    required
                   />
                 </div>
+
+                {deliveryMethod === 'pickup' && (
+                  <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                    <p className="text-sm text-blue-800">
+                      <strong>Pickup Location:</strong> Woodville Rd, Guildford
+                      NSW 2161
+                    </p>
+                  </div>
+                )}
+              </Card>
+
+              {/* Special Instructions */}
+              <Card padding="lg">
+                <h2 className="font-heading text-2xl font-bold text-text mb-4 flex items-center space-x-2">
+                  <FileText size={24} className="text-primary" />
+                  <span>Special Instructions (Optional)</span>
+                </h2>
+
+                <textarea
+                  value={specialInstructions}
+                  onChange={(e) => setSpecialInstructions(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                  rows={4}
+                  placeholder="Any special requests or delivery instructions..."
+                />
               </Card>
 
               {/* Payment Method */}
@@ -9068,147 +9728,142 @@ const CheckoutPage: React.FC = () => {
                   <span>Payment Method</span>
                 </h2>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('card')}
-                    className={`p-4 border-2 rounded-lg transition-all ${
+                <div className="space-y-3">
+                  <label
+                    className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all ${
                       paymentMethod === 'card'
                         ? 'border-primary bg-primary-50'
                         : 'border-gray-200 hover:border-primary'
                     }`}
                   >
-                    <CreditCard
-                      className={`mx-auto mb-2 ${
-                        paymentMethod === 'card'
-                          ? 'text-primary'
-                          : 'text-gray-400'
-                      }`}
-                      size={32}
+                    <input
+                      type="radio"
+                      name="payment"
+                      value="card"
+                      checked={paymentMethod === 'card'}
+                      onChange={(e) =>
+                        setPaymentMethod(e.target.value as 'card')
+                      }
+                      className="mr-3"
                     />
-                    <p className="font-semibold text-text">Card Payment</p>
-                    <p className="text-xs text-gray-600 mt-1">
-                      Pay on delivery
-                    </p>
-                  </button>
+                    <CreditCard className="mr-3 text-gray-600" size={20} />
+                    <span className="font-semibold">Card Payment</span>
+                  </label>
 
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('cash')}
-                    className={`p-4 border-2 rounded-lg transition-all ${
+                  <label
+                    className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all ${
                       paymentMethod === 'cash'
                         ? 'border-primary bg-primary-50'
                         : 'border-gray-200 hover:border-primary'
                     }`}
                   >
-                    <div
-                      className={`mx-auto mb-2 text-3xl ${
-                        paymentMethod === 'cash'
-                          ? 'text-primary'
-                          : 'text-gray-400'
-                      }`}
-                    >
-                      💵
-                    </div>
-                    <p className="font-semibold text-text">Cash Payment</p>
-                    <p className="text-xs text-gray-600 mt-1">
-                      Pay on delivery
-                    </p>
-                  </button>
-                </div>
-
-                <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <p className="text-sm text-blue-800">
-                    <strong>Note:</strong> Payment will be collected upon
-                    delivery. Please have exact change ready if paying with
-                    cash.
-                  </p>
+                    <input
+                      type="radio"
+                      name="payment"
+                      value="cash"
+                      checked={paymentMethod === 'cash'}
+                      onChange={(e) =>
+                        setPaymentMethod(e.target.value as 'cash')
+                      }
+                      className="mr-3"
+                    />
+                    <span className="mr-3">💵</span>
+                    <span className="font-semibold">
+                      Cash on{' '}
+                      {deliveryMethod === 'delivery' ? 'Delivery' : 'Pickup'}
+                    </span>
+                  </label>
                 </div>
               </Card>
-
-              {/* Place Order Button */}
-              <Button
-                type="submit"
-                variant="primary"
-                size="lg"
-                fullWidth
-                disabled={isProcessing}
-                isLoading={isProcessing}
-              >
-                {isProcessing
-                  ? 'Processing Order...'
-                  : `Place Order • ${formatCurrency(summary.total)}`}
-              </Button>
             </div>
 
             {/* Right Column - Order Summary */}
             <div className="lg:col-span-1">
               <Card padding="lg" className="sticky top-24">
-                <h2 className="font-heading text-2xl font-bold text-text mb-6">
-                  Order Summary
+                <h2 className="font-heading text-2xl font-bold text-text mb-4 flex items-center space-x-2">
+                  <Package size={24} className="text-primary" />
+                  <span>Order Summary</span>
                 </h2>
 
                 {/* Items */}
-                <div className="space-y-3 mb-6 max-h-60 overflow-y-auto">
-                  {items.map((item: any) => (
-                    <div
-                      key={item.menu_item._id}
-                      className="flex justify-between text-sm"
-                    >
-                      <span className="text-gray-700">
-                        {item.quantity}x {item.menu_item.name}
-                      </span>
-                      <span className="font-semibold">
-                        {formatCurrency(item.menu_item.price * item.quantity)}
-                      </span>
-                    </div>
-                  ))}
+                {items && items.length > 0 && (
+                  <div className="space-y-3 mb-4">
+                    <p className="text-sm font-semibold text-gray-700">
+                      Items:
+                    </p>
+                    {items.map((item: any, index: number) => {
+                      const itemData = getItemData(item);
+                      return (
+                        <div
+                          key={itemData.id || index}
+                          className="flex justify-between text-sm"
+                        >
+                          <span className="text-gray-600">
+                            {itemData.quantity}x {itemData.name}
+                          </span>
+                          <span className="font-semibold">
+                            {formatCurrency(itemData.price * itemData.quantity)}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
 
-                  {sidelines.map((sideline: any) => (
-                    <div
-                      key={sideline.sideline._id}
-                      className="flex justify-between text-sm"
-                    >
-                      <span className="text-gray-600">
-                        {sideline.quantity}x {sideline.sideline.name}
-                      </span>
-                      <span className="font-semibold">
-                        {formatCurrency(
-                          sideline.sideline.price * sideline.quantity
-                        )}
-                      </span>
+                {/* Sidelines */}
+                {sidelines && sidelines.length > 0 && (
+                  <>
+                    <div className="border-t pt-3 mb-3">
+                      <p className="text-sm font-semibold mb-2">Add-ons:</p>
+                      {sidelines.map((item: any, index: number) => {
+                        const sidelineData = item.sideline || item;
+                        return (
+                          <div
+                            key={sidelineData.id || sidelineData._id || index}
+                            className="flex justify-between text-sm"
+                          >
+                            <span className="text-gray-600">
+                              {item.quantity || 1}x{' '}
+                              {sidelineData.name || 'Add-on'}
+                            </span>
+                            <span className="font-semibold">
+                              {formatCurrency(
+                                (sidelineData.price || 0) * (item.quantity || 1)
+                              )}
+                            </span>
+                          </div>
+                        );
+                      })}
                     </div>
-                  ))}
-                </div>
+                  </>
+                )}
 
-                {/* Pricing Breakdown */}
-                <div className="space-y-3 pt-6 border-t-2 border-gray-200">
+                {/* Summary */}
+                <div className="border-t pt-4 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Subtotal:</span>
-                    <span className="font-medium">
+                    <span className="font-semibold">
                       {formatCurrency(summary.subtotal)}
                     </span>
                   </div>
 
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Delivery Fee:</span>
-                    <span className="font-medium">
-                      {deliveryMethod === 'pickup'
+                    <span className="font-semibold">
+                      {deliveryMethod === 'pickup' || summary.delivery_fee === 0
                         ? 'FREE'
-                        : summary.delivery_fee === 0
-                          ? 'FREE'
-                          : formatCurrency(summary.delivery_fee)}
+                        : formatCurrency(summary.delivery_fee)}
                     </span>
                   </div>
 
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Tax (GST 10%):</span>
-                    <span className="font-medium">
+                    <span className="font-semibold">
                       {formatCurrency(summary.tax)}
                     </span>
                   </div>
 
-                  <div className="pt-3 border-t border-gray-200">
+                  <div className="pt-3 border-t">
                     <div className="flex justify-between items-center">
                       <span className="font-heading text-xl font-bold text-text">
                         Total:
@@ -9220,19 +9875,26 @@ const CheckoutPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="mt-6 pt-6 border-t border-gray-200 space-y-2">
-                  <div className="flex items-center space-x-2 text-sm text-gray-600">
-                    <CheckCircle size={16} className="text-green-500" />
-                    <span>Secure checkout</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm text-gray-600">
-                    <CheckCircle size={16} className="text-green-500" />
-                    <span>Money-back guarantee</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm text-gray-600">
-                    <CheckCircle size={16} className="text-green-500" />
-                    <span>Fresh meals daily</span>
-                  </div>
+                {/* Place Order Button */}
+                <Button
+                  type="submit"
+                  variant="primary"
+                  fullWidth
+                  size="lg"
+                  className="mt-6"
+                  disabled={isProcessing}
+                  isLoading={isProcessing}
+                >
+                  {isProcessing ? 'Processing...' : 'Place Order'}
+                </Button>
+
+                {/* Security Note */}
+                <div className="mt-4 flex items-start space-x-2 text-xs text-gray-600">
+                  <CheckCircle
+                    size={16}
+                    className="text-green-500 flex-shrink-0 mt-0.5"
+                  />
+                  <p>Your payment information is secure and encrypted</p>
                 </div>
               </Card>
             </div>
@@ -9244,136 +9906,135 @@ const CheckoutPage: React.FC = () => {
 };
 
 export default CheckoutPage;
-
 ```
 
 ---
 
 ## 📄 src\pages\customer\DailyMenuPage.tsx
 
-*Path: `src\pages\customer\DailyMenuPage.tsx`*
+_Path: `src\pages\customer\DailyMenuPage.tsx`_
 
 ```tsx
-import React, { useState, useEffect } from 'react';
-import { useMenu } from '@hooks/useMenu';
-import { useCartStore } from '@store/cartStore';
+import React, { useEffect, useState } from 'react';
+import { useMenuStore } from '@store/menuStore';
+import { useAuthStore } from '@store/authStore';
 import MenuItemCard from '@components/menu/MenuItemCard';
-import FilterBar from '@components/menu/FilterBar';
 import CartSummary from '@components/menu/CartSummary';
+import FilterBar from '@components/menu/FilterBar';
 import LoadingSpinner from '@components/common/LoadingSpinner';
+import Card from '@components/common/Card';
 import Button from '@components/common/Button';
-import { Search, MapPin, Store } from 'lucide-react';
-import { useDebounce } from '@hooks/useDebounce';
+import {
+  Package,
+  RefreshCcw,
+  AlertCircle,
+  Truck,
+  Award,
+  Clock,
+  Shield,
+  MapPin,
+  ChefHat,
+  Sparkles,
+} from 'lucide-react';
+import { useToast } from '@components/common/Toast';
 
 const DailyMenuPage: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [localDeliveryOption, setLocalDeliveryOption] = useState<
-    'delivery' | 'pickup'
-  >('delivery');
-
+  const { isAuthenticated } = useAuthStore();
   const {
     dailyMenuItems,
     categories,
     activeFilters,
     isLoading,
-    searchMenuItems,
+    error,
+    fetchDailyMenu,
+    fetchCategories,
     setFilters,
     clearFilters,
     getFilteredItems,
-  } = useMenu('daily_menu');
+  } = useMenuStore();
+  const { showToast } = useToast();
 
-  const { setOrderType, setDeliveryOption } = useCartStore();
-  const debouncedSearch = useDebounce(searchQuery, 500);
+  const [retryCount, setRetryCount] = useState(0);
 
+  // Fetch data on mount
   useEffect(() => {
-    setOrderType('daily_menu');
-    setDeliveryOption(localDeliveryOption);
-  }, [localDeliveryOption, setOrderType, setDeliveryOption]);
+    loadMenuData();
+  }, []);
 
-  useEffect(() => {
-    if (debouncedSearch) {
-      searchMenuItems(debouncedSearch);
+  // Load menu data
+  const loadMenuData = async () => {
+    try {
+      await Promise.all([fetchDailyMenu(), fetchCategories()]);
+    } catch (error) {
+      console.error('Failed to load menu data:', error);
     }
-  }, [debouncedSearch, searchMenuItems]);
+  };
 
+  // Retry loading
+  const handleRetry = () => {
+    setRetryCount((prev) => prev + 1);
+    loadMenuData();
+  };
+
+  // Get filtered items
   const filteredItems = getFilteredItems('daily_menu');
 
-  if (isLoading) {
+  // Loading state
+  if (isLoading && dailyMenuItems.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner size="lg" message="Loading menu..." />
+      <div className="container-custom py-12">
+        <LoadingSpinner message="Loading daily menu..." />
+      </div>
+    );
+  }
+
+  // Error state
+  if (error && dailyMenuItems.length === 0) {
+    return (
+      <div className="container-custom py-12">
+        <Card padding="lg" className="max-w-2xl mx-auto text-center">
+          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <AlertCircle className="h-12 w-12 text-red-500" />
+          </div>
+          <h2 className="font-heading text-3xl font-bold text-text mb-4">
+            Failed to Load Menu
+          </h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={handleRetry}
+            className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors inline-flex items-center space-x-2"
+          >
+            <RefreshCcw size={20} />
+            <span>Retry Loading</span>
+          </button>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container-custom py-12">
-        {/* Page header */}
-        <div className="text-center mb-8">
-          <h1 className="font-heading text-4xl md:text-5xl font-bold text-text mb-4">
+    <div className="bg-background min-h-screen py-8">
+      <div className="container-custom">
+        {/* Hero Section */}
+        <div className="text-center mb-12">
+          <h1 className="font-heading text-5xl font-bold text-text mb-4">
             Daily Menu
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Fresh meals prepared daily. Order for pickup or delivery within 6km.
+            Fresh meals prepared daily. Order for pickup or delivery within 6km
+            of Guildford.
           </p>
-        </div>
-
-        {/* Delivery options */}
-        <div className="max-w-xl mx-auto mb-8">
-          <div className="bg-white rounded-xl shadow-md p-2 flex space-x-2">
-            <button
-              onClick={() => setLocalDeliveryOption('delivery')}
-              className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-semibold transition-all ${
-                localDeliveryOption === 'delivery'
-                  ? 'bg-primary text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              <MapPin size={20} />
-              <span>Delivery</span>
-            </button>
-
-            <button
-              onClick={() => setLocalDeliveryOption('pickup')}
-              className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-semibold transition-all ${
-                localDeliveryOption === 'pickup'
-                  ? 'bg-primary text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              <Store size={20} />
-              <span>Pickup</span>
-            </button>
-          </div>
-
-          {localDeliveryOption === 'delivery' && (
-            <p className="text-sm text-gray-600 text-center mt-3">
-              📍 Delivery available within 6km of Guildford 2161
-            </p>
-          )}
-        </div>
-
-        {/* Search bar */}
-        <div className="max-w-2xl mx-auto mb-8">
-          <div className="relative">
-            <Search
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
-              size={20}
-            />
-            <input
-              type="text"
-              placeholder="Search for dishes..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-lg"
-            />
+          <div className="mt-6 flex items-center justify-center space-x-2 text-sm">
+            <Package size={16} className="text-primary" />
+            <span className="text-gray-600">
+              Delivery available within 6km of Guildford • $10 delivery fee
+            </span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Left column - Filters and menu */}
-          <div className="lg:col-span-3 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-8 space-y-6">
             {/* Filters */}
             <FilterBar
               categories={categories}
@@ -9382,71 +10043,163 @@ const DailyMenuPage: React.FC = () => {
               onClearFilters={clearFilters}
             />
 
-            {/* Menu items grid */}
+            {/* Menu Items Grid */}
             {filteredItems.length > 0 ? (
-              <>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-heading text-2xl font-bold text-text">
-                    Available Items ({filteredItems.length})
-                  </h2>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {filteredItems.map((item) => (
-                    <MenuItemCard key={item._id} item={item} />
-                  ))}
-                </div>
-              </>
-            ) : (
-              <div className="bg-white rounded-xl shadow-md p-12 text-center">
-                <p className="text-gray-500 text-lg mb-4">
-                  {searchQuery
-                    ? `No items found for "${searchQuery}"`
-                    : 'No items match your filters'}
-                </p>
-                <Button variant="outline" onClick={clearFilters}>
-                  Clear Filters
-                </Button>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {filteredItems.map((item) => (
+                  <MenuItemCard
+                    key={item._id || item.id}
+                    item={item}
+                    showQuickAdd={isAuthenticated}
+                  />
+                ))}
               </div>
+            ) : (
+              <Card padding="lg">
+                <div className="text-center py-12">
+                  <Package className="mx-auto h-20 w-20 text-gray-300 mb-4" />
+                  <h3 className="font-semibold text-gray-500 mb-2 text-xl">
+                    {dailyMenuItems.length === 0
+                      ? 'No menu items available'
+                      : 'No items match your filters'}
+                  </h3>
+                  <p className="text-gray-400 mb-6">
+                    {dailyMenuItems.length === 0
+                      ? 'Please check back later or contact us.'
+                      : 'Try adjusting your filters to see more items.'}
+                  </p>
+                  {activeFilters.category ||
+                  activeFilters.is_vegetarian ||
+                  activeFilters.is_vegan ? (
+                    <button
+                      onClick={clearFilters}
+                      className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors"
+                    >
+                      Clear Filters
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleRetry}
+                      className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors inline-flex items-center space-x-2"
+                    >
+                      <RefreshCcw size={18} />
+                      <span>Refresh Menu</span>
+                    </button>
+                  )}
+                </div>
+              </Card>
             )}
           </div>
 
-          {/* Right column - Cart summary (sticky) */}
-          <div className="lg:col-span-1">
+          {/* Sidebar - Cart Summary */}
+          <div className="lg:col-span-4">
             <CartSummary sticky />
           </div>
         </div>
 
-        {/* Info section */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white rounded-xl shadow-md p-6 text-center">
+        {/* Info Cards with Professional Icons */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+          {/* Fresh Daily Card */}
+          <Card
+            padding="lg"
+            className="text-center hover:shadow-xl transition-shadow"
+          >
             <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl">🍽️</span>
+              <ChefHat className="text-primary" size={32} />
             </div>
-            <h3 className="font-semibold text-text mb-2">Fresh Daily</h3>
-            <p className="text-sm text-gray-600">
-              All meals prepared fresh every day with quality ingredients
+            <h3 className="font-heading text-xl font-bold text-text mb-2">
+              Fresh Daily
+            </h3>
+            <p className="text-gray-600 text-sm">
+              All meals prepared daily with quality ingredients
             </p>
-          </div>
+          </Card>
 
-          <div className="bg-white rounded-xl shadow-md p-6 text-center">
+          {/* Fast Delivery Card */}
+          <Card
+            padding="lg"
+            className="text-center hover:shadow-xl transition-shadow"
+          >
             <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl">⚡</span>
+              <Truck className="text-primary" size={32} />
             </div>
-            <h3 className="font-semibold text-text mb-2">Fast Delivery</h3>
-            <p className="text-sm text-gray-600">
-              Quick delivery to your door or pickup available
+            <h3 className="font-heading text-xl font-bold text-text mb-2">
+              Fast Delivery
+            </h3>
+            <p className="text-gray-600 text-sm">
+              Quick delivery or pickup available within 6km radius
             </p>
-          </div>
+          </Card>
 
-          <div className="bg-white rounded-xl shadow-md p-6 text-center">
+          {/* Quality Guaranteed Card */}
+          <Card
+            padding="lg"
+            className="text-center hover:shadow-xl transition-shadow"
+          >
             <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl">💯</span>
+              <Award className="text-primary" size={32} />
             </div>
-            <h3 className="font-semibold text-text mb-2">Quality Guaranteed</h3>
-            <p className="text-sm text-gray-600">
-              Satisfaction guaranteed or your money back
+            <h3 className="font-heading text-xl font-bold text-text mb-2">
+              Quality Guaranteed
+            </h3>
+            <p className="text-gray-600 text-sm">
+              Satisfaction guaranteed on your every order
             </p>
+          </Card>
+        </div>
+
+        {/* Additional Feature Cards */}
+        <div className="mt-12 bg-gradient-to-br from-primary-50 to-orange-50 rounded-xl p-8">
+          <h2 className="font-heading text-2xl font-bold text-text mb-6 text-center">
+            Why Choose Our Daily Menu?
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Order Anytime */}
+            <div className="flex items-start space-x-3">
+              <Clock className="text-primary flex-shrink-0 mt-1" size={24} />
+              <div>
+                <h4 className="font-semibold text-text mb-1">Order Anytime</h4>
+                <p className="text-sm text-gray-600">
+                  11:00 AM - 9:00 PM, 7 days a week
+                </p>
+              </div>
+            </div>
+
+            {/* Free Delivery */}
+            <div className="flex items-start space-x-3">
+              <MapPin className="text-primary flex-shrink-0 mt-1" size={24} />
+              <div>
+                <h4 className="font-semibold text-text mb-1">Free Delivery</h4>
+                <p className="text-sm text-gray-600">
+                  On orders above $50 within 6km
+                </p>
+              </div>
+            </div>
+
+            {/* Safe & Hygienic */}
+            <div className="flex items-start space-x-3">
+              <Shield className="text-primary flex-shrink-0 mt-1" size={24} />
+              <div>
+                <h4 className="font-semibold text-text mb-1">
+                  Safe & Hygienic
+                </h4>
+                <p className="text-sm text-gray-600">
+                  Strict quality control standards
+                </p>
+              </div>
+            </div>
+
+            {/* Best Quality */}
+            <div className="flex items-start space-x-3">
+              <Sparkles className="text-primary flex-shrink-0 mt-1" size={24} />
+              <div>
+                <h4 className="font-semibold text-text mb-1">Best Quality</h4>
+                <p className="text-sm text-gray-600">
+                  Premium ingredients only
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -9455,14 +10208,13 @@ const DailyMenuPage: React.FC = () => {
 };
 
 export default DailyMenuPage;
-
 ```
 
 ---
 
 ## 📄 src\pages\customer\ProfilePage.tsx
 
-*Path: `src\pages\customer\ProfilePage.tsx`*
+_Path: `src\pages\customer\ProfilePage.tsx`_
 
 ```tsx
 import React, { useState, useEffect } from 'react';
@@ -10069,14 +10821,13 @@ const ProfilePage: React.FC = () => {
 };
 
 export default ProfilePage;
-
 ```
 
 ---
 
 ## 📄 src\pages\customer\WeeklySubscriptionPage.tsx
 
-*Path: `src\pages\customer\WeeklySubscriptionPage.tsx`*
+_Path: `src\pages\customer\WeeklySubscriptionPage.tsx`_
 
 ```tsx
 import React, { useState, useEffect } from 'react';
@@ -11381,58 +12132,47 @@ const WeeklySubscriptionPage: React.FC = () => {
 };
 
 export default WeeklySubscriptionPage;
-
 ```
 
 ---
 
 ## 📄 src\routes\AdminRoutes.tsx
 
-*Path: `src\routes\AdminRoutes.tsx`*
+_Path: `src\routes\AdminRoutes.tsx`_
 
 ```tsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 const AdminRoutes: React.FC = () => {
-  return (
-    <Routes>
-      {/* Add routes here */}
-    </Routes>
-  );
+  return <Routes>{/* Add routes here */}</Routes>;
 };
 
 export default AdminRoutes;
-
 ```
 
 ---
 
 ## 📄 src\routes\CustomerRoutes.tsx
 
-*Path: `src\routes\CustomerRoutes.tsx`*
+_Path: `src\routes\CustomerRoutes.tsx`_
 
 ```tsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 const CustomerRoutes: React.FC = () => {
-  return (
-    <Routes>
-      {/* Add routes here */}
-    </Routes>
-  );
+  return <Routes>{/* Add routes here */}</Routes>;
 };
 
 export default CustomerRoutes;
-
 ```
 
 ---
 
 ## 📄 src\routes\index.tsx
 
-*Path: `src\routes\index.tsx`*
+_Path: `src\routes\index.tsx`_
 
 ```tsx
 import React from 'react';
@@ -11464,22 +12204,24 @@ const AppRoutes: React.FC = () => {
   return (
     <Routes>
       <Route element={<Layout />}>
-        {/* Public Routes */}
+        {/* Public Routes - No Authentication Required */}
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/contact" element={<ContactPage />} />
 
-        {/* Protected Customer Routes */}
+        {/* ✅ Menu Pages - Accessible without login */}
+        <Route path="/menu/daily" element={<DailyMenuPage />} />
+        <Route path="/menu/weekly" element={<WeeklySubscriptionPage />} />
+        <Route path="/catering" element={<CateringPage />} />
+
+        {/* ✅ Protected Customer Routes - Login Required */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/menu/daily" element={<DailyMenuPage />} />
-          <Route path="/menu/weekly" element={<WeeklySubscriptionPage />} />
-          <Route path="/catering" element={<CateringPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Route>
 
-        {/* ✅ Protected Admin Routes - FIXED */}
+        {/* Protected Admin Routes */}
         <Route element={<ProtectedRoute />}>
           <Route element={<RoleGuard requiredRole="admin" />}>
             <Route path="/admin" element={<AdminDashboard />} />
@@ -11497,62 +12239,65 @@ const AppRoutes: React.FC = () => {
 };
 
 export default AppRoutes;
-
 ```
 
 ---
 
 ## 📄 src\routes\PublicRoutes.tsx
 
-*Path: `src\routes\PublicRoutes.tsx`*
+_Path: `src\routes\PublicRoutes.tsx`_
 
 ```tsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 const PublicRoutes: React.FC = () => {
-  return (
-    <Routes>
-      {/* Add routes here */}
-    </Routes>
-  );
+  return <Routes>{/* Add routes here */}</Routes>;
 };
 
 export default PublicRoutes;
-
 ```
 
 ---
 
 ## 📄 src\store\addressStore.ts
 
-*Path: `src\store\addressStore.ts`*
+_Path: `src\store\addressStore.ts`_
 
 ```typescript
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-import { deliveryAPI } from '@api/endpoints/delivery'
-import { Address, CreateAddressPayload, DeliveryValidation } from '@types/address.types'
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { deliveryAPI } from '@api/endpoints/delivery';
+import {
+  Address,
+  CreateAddressPayload,
+  DeliveryValidation,
+} from '@types/address.types';
 
 interface AddressState {
-  addresses: Address[]
-  defaultAddress: Address | null
-  deliveryValidation: DeliveryValidation | null
-  
+  addresses: Address[];
+  defaultAddress: Address | null;
+  deliveryValidation: DeliveryValidation | null;
+
   // Loading states
-  isLoading: boolean
-  isValidating: boolean
-  error: string | null
-  
+  isLoading: boolean;
+  isValidating: boolean;
+  error: string | null;
+
   // Actions
-  fetchAddresses: () => Promise<void>
-  addAddress: (payload: CreateAddressPayload) => Promise<Address>
-  updateAddress: (addressId: string, payload: Partial<CreateAddressPayload>) => Promise<void>
-  deleteAddress: (addressId: string) => Promise<void>
-  setDefaultAddress: (addressId: string) => Promise<void>
-  validateDeliveryArea: (addressId: string) => Promise<DeliveryValidation>
-  calculateDeliveryFee: (addressId: string) => Promise<{ fee: number; distance_km: number }>
-  clearError: () => void
+  fetchAddresses: () => Promise<void>;
+  addAddress: (payload: CreateAddressPayload) => Promise<Address>;
+  updateAddress: (
+    addressId: string,
+    payload: Partial<CreateAddressPayload>
+  ) => Promise<void>;
+  deleteAddress: (addressId: string) => Promise<void>;
+  setDefaultAddress: (addressId: string) => Promise<void>;
+  validateDeliveryArea: (addressId: string) => Promise<DeliveryValidation>;
+  calculateDeliveryFee: (
+    addressId: string
+  ) => Promise<{ fee: number; distance_km: number }>;
+  clearError: () => void;
 }
 
 export const useAddressStore = create<AddressState>()(
@@ -11566,165 +12311,181 @@ export const useAddressStore = create<AddressState>()(
       error: null,
 
       fetchAddresses: async () => {
-        set({ isLoading: true, error: null })
+        set({ isLoading: true, error: null });
         try {
-          const response = await deliveryAPI.getAddresses()
-          const addresses = response.data.data || []
-          const defaultAddr = addresses.find((addr: Address) => addr.is_default) || null
-          
+          const response = await deliveryAPI.getAddresses();
+          const addresses = response.data.data || [];
+          const defaultAddr =
+            addresses.find((addr: Address) => addr.is_default) || null;
+
           set({
             addresses,
             defaultAddress: defaultAddr,
-            isLoading: false
-          })
+            isLoading: false,
+          });
         } catch (error: any) {
           set({
             error: error.response?.data?.message || 'Failed to fetch addresses',
-            isLoading: false
-          })
+            isLoading: false,
+          });
         }
       },
 
       addAddress: async (payload: CreateAddressPayload) => {
-        set({ isLoading: true, error: null })
+        set({ isLoading: true, error: null });
         try {
-          const response = await deliveryAPI.createAddress(payload)
-          const newAddress = response.data.data
-          
-          const { addresses } = get()
+          const response = await deliveryAPI.createAddress(payload);
+          const newAddress = response.data.data;
+
+          const { addresses } = get();
           set({
             addresses: [...addresses, newAddress],
-            defaultAddress: newAddress.is_default ? newAddress : get().defaultAddress,
-            isLoading: false
-          })
-          
-          return newAddress
+            defaultAddress: newAddress.is_default
+              ? newAddress
+              : get().defaultAddress,
+            isLoading: false,
+          });
+
+          return newAddress;
         } catch (error: any) {
-          const errorMessage = error.response?.data?.message || 'Failed to add address'
+          const errorMessage =
+            error.response?.data?.message || 'Failed to add address';
           set({
             error: errorMessage,
-            isLoading: false
-          })
-          throw new Error(errorMessage)
+            isLoading: false,
+          });
+          throw new Error(errorMessage);
         }
       },
 
-      updateAddress: async (addressId: string, payload: Partial<CreateAddressPayload>) => {
-        set({ isLoading: true, error: null })
+      updateAddress: async (
+        addressId: string,
+        payload: Partial<CreateAddressPayload>
+      ) => {
+        set({ isLoading: true, error: null });
         try {
-          const response = await deliveryAPI.updateAddress(addressId, payload)
-          const updatedAddress = response.data.data
-          
-          const { addresses } = get()
-          const updatedAddresses = addresses.map(addr =>
+          const response = await deliveryAPI.updateAddress(addressId, payload);
+          const updatedAddress = response.data.data;
+
+          const { addresses } = get();
+          const updatedAddresses = addresses.map((addr) =>
             addr._id === addressId ? updatedAddress : addr
-          )
-          
+          );
+
           set({
             addresses: updatedAddresses,
-            defaultAddress: updatedAddress.is_default ? updatedAddress : get().defaultAddress,
-            isLoading: false
-          })
+            defaultAddress: updatedAddress.is_default
+              ? updatedAddress
+              : get().defaultAddress,
+            isLoading: false,
+          });
         } catch (error: any) {
           set({
             error: error.response?.data?.message || 'Failed to update address',
-            isLoading: false
-          })
-          throw error
+            isLoading: false,
+          });
+          throw error;
         }
       },
 
       deleteAddress: async (addressId: string) => {
-        set({ isLoading: true, error: null })
+        set({ isLoading: true, error: null });
         try {
-          await deliveryAPI.deleteAddress(addressId)
-          
-          const { addresses } = get()
-          const filteredAddresses = addresses.filter(addr => addr._id !== addressId)
-          
+          await deliveryAPI.deleteAddress(addressId);
+
+          const { addresses } = get();
+          const filteredAddresses = addresses.filter(
+            (addr) => addr._id !== addressId
+          );
+
           set({
             addresses: filteredAddresses,
-            defaultAddress: get().defaultAddress?._id === addressId 
-              ? filteredAddresses.find(addr => addr.is_default) || null 
-              : get().defaultAddress,
-            isLoading: false
-          })
+            defaultAddress:
+              get().defaultAddress?._id === addressId
+                ? filteredAddresses.find((addr) => addr.is_default) || null
+                : get().defaultAddress,
+            isLoading: false,
+          });
         } catch (error: any) {
           set({
             error: error.response?.data?.message || 'Failed to delete address',
-            isLoading: false
-          })
-          throw error
+            isLoading: false,
+          });
+          throw error;
         }
       },
 
       setDefaultAddress: async (addressId: string) => {
-        set({ isLoading: true, error: null })
+        set({ isLoading: true, error: null });
         try {
-          const response = await deliveryAPI.setDefaultAddress(addressId)
-          const updatedAddress = response.data.data
-          
-          const { addresses } = get()
-          const updatedAddresses = addresses.map(addr => ({
+          const response = await deliveryAPI.setDefaultAddress(addressId);
+          const updatedAddress = response.data.data;
+
+          const { addresses } = get();
+          const updatedAddresses = addresses.map((addr) => ({
             ...addr,
-            is_default: addr._id === addressId
-          }))
-          
+            is_default: addr._id === addressId,
+          }));
+
           set({
             addresses: updatedAddresses,
             defaultAddress: updatedAddress,
-            isLoading: false
-          })
+            isLoading: false,
+          });
         } catch (error: any) {
           set({
-            error: error.response?.data?.message || 'Failed to set default address',
-            isLoading: false
-          })
-          throw error
+            error:
+              error.response?.data?.message || 'Failed to set default address',
+            isLoading: false,
+          });
+          throw error;
         }
       },
 
       validateDeliveryArea: async (addressId: string) => {
-        set({ isValidating: true, error: null })
+        set({ isValidating: true, error: null });
         try {
-          const response = await deliveryAPI.validateDelivery(addressId)
-          const validation = response.data.data
-          
+          const response = await deliveryAPI.validateDelivery(addressId);
+          const validation = response.data.data;
+
           set({
             deliveryValidation: validation,
-            isValidating: false
-          })
-          
-          return validation
+            isValidating: false,
+          });
+
+          return validation;
         } catch (error: any) {
-          const errorMessage = error.response?.data?.message || 'Failed to validate delivery area'
+          const errorMessage =
+            error.response?.data?.message || 'Failed to validate delivery area';
           set({
             error: errorMessage,
-            isValidating: false
-          })
-          throw new Error(errorMessage)
+            isValidating: false,
+          });
+          throw new Error(errorMessage);
         }
       },
 
       calculateDeliveryFee: async (addressId: string) => {
-        set({ isValidating: true, error: null })
+        set({ isValidating: true, error: null });
         try {
-          const response = await deliveryAPI.calculateDeliveryFee(addressId)
-          const result = response.data.data
-          
-          set({ isValidating: false })
-          return result
+          const response = await deliveryAPI.calculateDeliveryFee(addressId);
+          const result = response.data.data;
+
+          set({ isValidating: false });
+          return result;
         } catch (error: any) {
           set({
-            error: error.response?.data?.message || 'Failed to calculate delivery fee',
-            isValidating: false
-          })
-          throw error
+            error:
+              error.response?.data?.message ||
+              'Failed to calculate delivery fee',
+            isValidating: false,
+          });
+          throw error;
         }
       },
 
       clearError: () => {
-        set({ error: null })
+        set({ error: null });
       },
     }),
     {
@@ -11735,15 +12496,14 @@ export const useAddressStore = create<AddressState>()(
       }),
     }
   )
-)
-
+);
 ```
 
 ---
 
 ## 📄 src\store\adminStore.ts
 
-*Path: `src\store\adminStore.ts`*
+_Path: `src\store\adminStore.ts`_
 
 ```typescript
 import { create } from 'zustand';
@@ -11803,13 +12563,13 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     try {
       console.log('📡 Fetching all orders...');
       const response = await adminAPI.getAllOrders(filters);
-      
+
       // ✅ Unwrap response properly
       const ordersData = response.data.data || response.data;
       const orders = Array.isArray(ordersData) ? ordersData : [];
-      
+
       console.log('✅ Orders loaded:', orders.length);
-      
+
       set({
         allOrders: orders,
         isLoading: false,
@@ -11829,14 +12589,14 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     try {
       console.log('📡 Fetching dashboard stats...');
       const response = await adminAPI.getDashboardStats();
-      
+
       console.log('📦 Dashboard response:', response.data);
-      
+
       // ✅ Unwrap response properly
       const statsData = response.data.data || response.data;
-      
+
       console.log('✅ Stats loaded:', statsData);
-      
+
       // ✅ Provide default values if stats are null/undefined
       set({
         orderStats: statsData || {
@@ -11853,7 +12613,7 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       });
     } catch (error: any) {
       console.error('❌ Failed to fetch dashboard stats:', error);
-      
+
       // ✅ Set default stats on error
       set({
         orderStats: {
@@ -11887,7 +12647,7 @@ export const useAdminStore = create<AdminState>((set, get) => ({
         ),
         isUpdating: false,
       });
-      
+
       console.log('✅ Order status updated');
     } catch (error: any) {
       console.error('❌ Failed to update order:', error);
@@ -11905,12 +12665,12 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     try {
       console.log('📡 Fetching menu items...');
       const response = await adminAPI.getAllMenuItems();
-      
+
       const menuData = response.data.data || response.data;
       const items = Array.isArray(menuData) ? menuData : [];
-      
+
       console.log('✅ Menu items loaded:', items.length);
-      
+
       set({
         managedMenuItems: items,
         isLoading: false,
@@ -11930,12 +12690,12 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     try {
       console.log('📡 Fetching sidelines...');
       const response = await adminAPI.getAllSidelines();
-      
+
       const sidelinesData = response.data.data || response.data;
       const sidelines = Array.isArray(sidelinesData) ? sidelinesData : [];
-      
+
       console.log('✅ Sidelines loaded:', sidelines.length);
-      
+
       set({
         managedSidelines: sidelines,
         isLoading: false,
@@ -11955,12 +12715,12 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     try {
       console.log('📡 Fetching categories...');
       const response = await menuAPI.getCategories();
-      
+
       const categoriesData = response.data.data || response.data;
       const categories = Array.isArray(categoriesData) ? categoriesData : [];
-      
+
       console.log('✅ Categories loaded:', categories);
-      
+
       set({
         managedCategories: categories,
         isLoading: false,
@@ -11978,13 +12738,18 @@ export const useAdminStore = create<AdminState>((set, get) => ({
   createMenuItem: async (data: FormData) => {
     set({ isUpdating: true, error: null });
     try {
+      console.log('📡 Creating menu item...');
       const response = await adminAPI.createMenuItem(data);
       const newItem = response.data.data || response.data;
+
+      console.log('✅ Menu item created:', newItem);
+
       set({
         managedMenuItems: [...get().managedMenuItems, newItem],
         isUpdating: false,
       });
     } catch (error: any) {
+      console.error('❌ Failed to create menu item:', error);
       set({
         error: error.response?.data?.message || 'Failed to create menu item',
         isUpdating: false,
@@ -12096,14 +12861,13 @@ export const useAdminStore = create<AdminState>((set, get) => ({
 
   clearError: () => set({ error: null }),
 }));
-
 ```
 
 ---
 
 ## 📄 src\store\authStore.ts
 
-*Path: `src\store\authStore.ts`*
+_Path: `src\store\authStore.ts`_
 
 ```typescript
 import { create } from 'zustand';
@@ -12153,7 +12917,8 @@ export const useAuthStore = create<AuthState>((set) => ({
         console.log('🔓 JWT Payload:', tokenPayload);
 
         // If role is in JWT, use it as fallback
-        const finalRole = userRole || tokenPayload.role || tokenPayload.user_role;
+        const finalRole =
+          userRole || tokenPayload.role || tokenPayload.user_role;
         console.log('✅ Final role:', finalRole);
 
         set({
@@ -12268,239 +13033,423 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 }));
-
 ```
 
 ---
 
 ## 📄 src\store\cartStore.ts
 
-*Path: `src\store\cartStore.ts`*
+_Path: `src\store\cartStore.ts`_
 
 ```typescript
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-import { Cart, CartItem, CartSideline, CartSummary } from '@types/cart.types'
-import { MenuItem, Sideline } from '@types/menu.types'
-import { Address } from '@types/auth.types'
-import { TAX_RATE, DELIVERY_FEE_PER_KM, FREE_DELIVERY_THRESHOLD } from '@utils/constants'
+import { create } from 'zustand';
+import { cartAPI, CartSummary } from '@api/endpoints/cart';
+import { MenuItem, Sideline } from '@types/menu.types';
 
-interface CartState extends Cart {
-  // Computed values
-  summary: CartSummary
-  
+// Define the structure for cart items stored locally
+interface LocalCartItem {
+  menu_item: MenuItem;
+  quantity: number;
+  special_instructions?: string;
+}
+
+interface LocalSidelineItem {
+  sideline: Sideline;
+  quantity: number;
+}
+
+interface CartStore {
+  // Cart data from backend
+  cartSummary: CartSummary | null;
+
+  // Local cart data (for unauthenticated users)
+  localItems: LocalCartItem[];
+  localSidelines: LocalSidelineItem[];
+
+  // Loading states
+  isLoading: boolean;
+  isUpdating: boolean;
+  error: string | null;
+
+  // Order type and delivery option (local state)
+  orderType: 'daily_menu' | 'weekly_subscription' | 'special_catering' | null;
+  deliveryOption: 'delivery' | 'pickup';
+
   // Actions
-  addItem: (menuItem: MenuItem, quantity: number, specialInstructions?: string) => void
-  removeItem: (menuItemId: string) => void
-  updateQuantity: (menuItemId: string, quantity: number) => void
-  addSideline: (sideline: Sideline, quantity: number) => void
-  removeSideline: (sidelineId: string) => void
-  updateSidelineQuantity: (sidelineId: string, quantity: number) => void
-  setOrderType: (orderType: 'daily_menu' | 'weekly_subscription' | 'special_catering') => void
-  setDeliveryOption: (option: 'pickup' | 'delivery') => void
-  setSelectedAddress: (address: Address | undefined) => void
-  setDeliveryDate: (date: string) => void
-  setDeliveryTimeSlot: (slot: string) => void
-  setSpecialInstructions: (instructions: string) => void
-  calculateSummary: () => void
-  clearCart: () => void
+  fetchCart: () => Promise<void>;
+  addItem: (
+    item: MenuItem,
+    quantity: number,
+    specialInstructions?: string
+  ) => Promise<void>;
+  addSideline: (sideline: Sideline, quantity: number) => Promise<void>;
+  updateQuantity: (
+    itemId: string,
+    quantity: number,
+    isSideline?: boolean
+  ) => Promise<void>;
+  removeItem: (itemId: string, isSideline?: boolean) => Promise<void>;
+  clearCart: () => Promise<void>;
+
+  // Local state setters
+  setOrderType: (
+    type: 'daily_menu' | 'weekly_subscription' | 'special_catering'
+  ) => void;
+  setDeliveryOption: (option: 'delivery' | 'pickup') => void;
+  clearError: () => void;
+
+  // Local cart operations (for unauthenticated users)
+  addLocalItem: (
+    item: MenuItem,
+    quantity: number,
+    specialInstructions?: string
+  ) => void;
+  removeLocalItem: (itemId: string) => void;
+  updateLocalQuantity: (itemId: string, quantity: number) => void;
+  clearLocalCart: () => void;
+
+  // Computed values for local cart
+  getLocalSummary: () => CartSummary;
 }
 
-const calculateCartSummary = (
-  items: CartItem[],
-  sidelines: CartSideline[],
-  deliveryOption: 'pickup' | 'delivery',
-  distanceKm: number = 0
-): CartSummary => {
-  // Calculate subtotal
-  const itemsSubtotal = items.reduce((sum, item) => sum + item.menu_item.price * item.quantity, 0)
-  const sidelinesSubtotal = sidelines.reduce((sum, sideline) => sum + sideline.sideline.price * sideline.quantity, 0)
-  const subtotal = itemsSubtotal + sidelinesSubtotal
+export const useCartStore = create<CartStore>((set, get) => ({
+  cartSummary: null,
+  localItems: [],
+  localSidelines: [],
+  isLoading: false,
+  isUpdating: false,
+  error: null,
+  orderType: null,
+  deliveryOption: 'delivery',
 
-  // Calculate delivery fee
-  let delivery_fee = 0
-  if (deliveryOption === 'delivery') {
-    if (subtotal < FREE_DELIVERY_THRESHOLD) {
-      delivery_fee = distanceKm * DELIVERY_FEE_PER_KM
-    }
-  }
-
-  // Calculate tax
-  const tax = (subtotal + delivery_fee) * TAX_RATE
-
-  // Calculate total
-  const total = subtotal + delivery_fee + tax
-
-  // Count items
-  const item_count = items.reduce((sum, item) => sum + item.quantity, 0) +
-    sidelines.reduce((sum, sideline) => sum + sideline.quantity, 0)
-
-  return {
-    subtotal,
-    delivery_fee,
-    tax,
-    total,
-    item_count,
-  }
-}
-
-export const useCartStore = create<CartState>()(
-  persist(
-    (set, get) => ({
-      items: [],
-      sidelines: [],
-      order_type: 'daily_menu',
-      delivery_option: 'pickup',
-      selected_address: undefined,
-      delivery_date: undefined,
-      delivery_time_slot: undefined,
-      special_instructions: undefined,
-      summary: {
-        subtotal: 0,
-        delivery_fee: 0,
-        tax: 0,
-        total: 0,
-        item_count: 0,
-      },
-
-      addItem: (menuItem: MenuItem, quantity: number, specialInstructions?: string) => {
-        const { items } = get()
-        const existingItemIndex = items.findIndex(item => item.menu_item._id === menuItem._id)
-
-        if (existingItemIndex > -1) {
-          // Update quantity if item exists
-          const newItems = [...items]
-          newItems[existingItemIndex].quantity += quantity
-          set({ items: newItems })
-        } else {
-          // Add new item
-          set({ items: [...items, { menu_item: menuItem, quantity, special_instructions: specialInstructions }] })
-        }
-        get().calculateSummary()
-      },
-
-      removeItem: (menuItemId: string) => {
-        const { items } = get()
-        set({ items: items.filter(item => item.menu_item._id !== menuItemId) })
-        get().calculateSummary()
-      },
-
-      updateQuantity: (menuItemId: string, quantity: number) => {
-        const { items } = get()
-        if (quantity <= 0) {
-          get().removeItem(menuItemId)
-          return
-        }
-        const newItems = items.map(item =>
-          item.menu_item._id === menuItemId ? { ...item, quantity } : item
-        )
-        set({ items: newItems })
-        get().calculateSummary()
-      },
-
-      addSideline: (sideline: Sideline, quantity: number) => {
-        const { sidelines } = get()
-        const existingIndex = sidelines.findIndex(s => s.sideline._id === sideline._id)
-
-        if (existingIndex > -1) {
-          const newSidelines = [...sidelines]
-          newSidelines[existingIndex].quantity += quantity
-          set({ sidelines: newSidelines })
-        } else {
-          set({ sidelines: [...sidelines, { sideline, quantity }] })
-        }
-        get().calculateSummary()
-      },
-
-      removeSideline: (sidelineId: string) => {
-        const { sidelines } = get()
-        set({ sidelines: sidelines.filter(s => s.sideline._id !== sidelineId) })
-        get().calculateSummary()
-      },
-
-      updateSidelineQuantity: (sidelineId: string, quantity: number) => {
-        const { sidelines } = get()
-        if (quantity <= 0) {
-          get().removeSideline(sidelineId)
-          return
-        }
-        const newSidelines = sidelines.map(s =>
-          s.sideline._id === sidelineId ? { ...s, quantity } : s
-        )
-        set({ sidelines: newSidelines })
-        get().calculateSummary()
-      },
-
-      setOrderType: (orderType) => {
-        set({ order_type: orderType })
-      },
-
-      setDeliveryOption: (option) => {
-        set({ delivery_option: option })
-        get().calculateSummary()
-      },
-
-      setSelectedAddress: (address) => {
-        set({ selected_address: address })
-        get().calculateSummary()
-      },
-
-      setDeliveryDate: (date) => {
-        set({ delivery_date: date })
-      },
-
-      setDeliveryTimeSlot: (slot) => {
-        set({ delivery_time_slot: slot })
-      },
-
-      setSpecialInstructions: (instructions) => {
-        set({ special_instructions: instructions })
-      },
-
-      calculateSummary: () => {
-        const { items, sidelines, delivery_option, selected_address } = get()
-        // TODO: Calculate actual distance from selected address
-        const distanceKm = 5 // Placeholder
-        const summary = calculateCartSummary(items, sidelines, delivery_option, distanceKm)
-        set({ summary })
-      },
-
-      clearCart: () => {
+  /**
+   * Fetch cart from backend
+   */
+  fetchCart: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await cartAPI.getCartSummary();
+      set({
+        cartSummary: response.data.data,
+        isLoading: false,
+      });
+    } catch (error: any) {
+      console.error('Failed to fetch cart:', error);
+      // Don't set error for 404 (empty cart)
+      if (error.response?.status !== 404) {
         set({
-          items: [],
-          sidelines: [],
-          delivery_date: undefined,
-          delivery_time_slot: undefined,
-          special_instructions: undefined,
-          summary: {
-            subtotal: 0,
-            delivery_fee: 0,
-            tax: 0,
-            total: 0,
-            item_count: 0,
-          },
-        })
-      },
-    }),
-    {
-      name: 'bakars-cart',
-      partialize: (state) => ({
-        items: state.items,
-        sidelines: state.sidelines,
-        order_type: state.order_type,
-        delivery_option: state.delivery_option,
-      }),
+          error: error.response?.data?.message || 'Failed to fetch cart',
+          isLoading: false,
+        });
+      } else {
+        set({ isLoading: false });
+      }
     }
-  )
-)
+  },
 
+  /**
+   * Add menu item to cart - FIXED to use item.id
+   */
+  addItem: async (
+    item: MenuItem,
+    quantity: number,
+    specialInstructions?: string
+  ) => {
+    set({ isUpdating: true, error: null });
+
+    // Validate item has an ID
+    if (!item.id) {
+      console.error('❌ Item missing ID:', item);
+      set({
+        error: 'Invalid item: missing ID',
+        isUpdating: false,
+      });
+      throw new Error('Invalid item: missing ID');
+    }
+
+    try {
+      console.log('🛒 Adding item to cart:', { itemId: item.id, quantity });
+      const response = await cartAPI.addToCart(item.id, quantity, false);
+      console.log('✅ Item added successfully:', response.data);
+
+      set({
+        cartSummary: response.data.data,
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      console.error('❌ Failed to add item:', error);
+      console.error('Error response:', error.response?.data);
+
+      // If not authenticated, add to local cart
+      if (error.response?.status === 401) {
+        get().addLocalItem(item, quantity, specialInstructions);
+        set({ isUpdating: false });
+      } else {
+        set({
+          error: error.response?.data?.message || 'Failed to add item to cart',
+          isUpdating: false,
+        });
+        throw error;
+      }
+    }
+  },
+
+  /**
+   * Add sideline to cart - FIXED to use sideline.id
+   */
+  addSideline: async (sideline: Sideline, quantity: number) => {
+    set({ isUpdating: true, error: null });
+
+    if (!sideline.id) {
+      console.error('❌ Sideline missing ID:', sideline);
+      set({
+        error: 'Invalid sideline: missing ID',
+        isUpdating: false,
+      });
+      throw new Error('Invalid sideline: missing ID');
+    }
+
+    try {
+      const response = await cartAPI.addToCart(sideline.id, quantity, true);
+      set({
+        cartSummary: response.data.data,
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      console.error('Failed to add sideline:', error);
+      set({
+        error:
+          error.response?.data?.message || 'Failed to add sideline to cart',
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
+  /**
+   * Update item quantity in cart
+   */
+  updateQuantity: async (
+    itemId: string,
+    quantity: number,
+    isSideline: boolean = false
+  ) => {
+    if (quantity <= 0) {
+      await get().removeItem(itemId, isSideline);
+      return;
+    }
+
+    set({ isUpdating: true, error: null });
+    try {
+      const response = await cartAPI.updateCartItem(
+        itemId,
+        quantity,
+        isSideline
+      );
+      set({
+        cartSummary: response.data.data,
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      console.error('Failed to update quantity:', error);
+      // If not authenticated, update local cart
+      if (error.response?.status === 401) {
+        get().updateLocalQuantity(itemId, quantity);
+        set({ isUpdating: false });
+      } else {
+        set({
+          error: error.response?.data?.message || 'Failed to update quantity',
+          isUpdating: false,
+        });
+        throw error;
+      }
+    }
+  },
+
+  /**
+   * Remove item from cart
+   */
+  removeItem: async (itemId: string, isSideline: boolean = false) => {
+    set({ isUpdating: true, error: null });
+    try {
+      const response = await cartAPI.removeFromCart(itemId, isSideline);
+      set({
+        cartSummary: response.data.data,
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      console.error('Failed to remove item:', error);
+      // If not authenticated, remove from local cart
+      if (error.response?.status === 401) {
+        get().removeLocalItem(itemId);
+        set({ isUpdating: false });
+      } else {
+        set({
+          error: error.response?.data?.message || 'Failed to remove item',
+          isUpdating: false,
+        });
+        throw error;
+      }
+    }
+  },
+
+  /**
+   * Clear entire cart
+   */
+  clearCart: async () => {
+    set({ isUpdating: true, error: null });
+    try {
+      await cartAPI.clearCart();
+      set({
+        cartSummary: null,
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      console.error('Failed to clear cart:', error);
+      // If not authenticated, clear local cart
+      if (error.response?.status === 401) {
+        get().clearLocalCart();
+        set({ isUpdating: false });
+      } else {
+        set({
+          error: error.response?.data?.message || 'Failed to clear cart',
+          isUpdating: false,
+        });
+        throw error;
+      }
+    }
+  },
+
+  /**
+   * Local cart operations (for unauthenticated users)
+   */
+  addLocalItem: (
+    item: MenuItem,
+    quantity: number,
+    specialInstructions?: string
+  ) => {
+    const currentItems = get().localItems;
+    const existingItem = currentItems.find((i) => i.menu_item.id === item.id);
+
+    if (existingItem) {
+      set({
+        localItems: currentItems.map((i) =>
+          i.menu_item.id === item.id
+            ? { ...i, quantity: i.quantity + quantity }
+            : i
+        ),
+      });
+    } else {
+      set({
+        localItems: [
+          ...currentItems,
+          {
+            menu_item: item,
+            quantity,
+            special_instructions: specialInstructions,
+          },
+        ],
+      });
+    }
+  },
+
+  removeLocalItem: (itemId: string) => {
+    set({
+      localItems: get().localItems.filter((i) => i.menu_item.id !== itemId),
+    });
+  },
+
+  updateLocalQuantity: (itemId: string, quantity: number) => {
+    if (quantity <= 0) {
+      get().removeLocalItem(itemId);
+      return;
+    }
+    set({
+      localItems: get().localItems.map((i) =>
+        i.menu_item.id === itemId ? { ...i, quantity } : i
+      ),
+    });
+  },
+
+  clearLocalCart: () => {
+    set({ localItems: [], localSidelines: [] });
+  },
+
+  getLocalSummary: () => {
+    const items = get().localItems;
+    const sidelines = get().localSidelines;
+    const deliveryOption = get().deliveryOption;
+
+    const subtotal =
+      items.reduce(
+        (sum, item) => sum + item.menu_item.price * item.quantity,
+        0
+      ) +
+      sidelines.reduce(
+        (sum, item) => sum + item.sideline.price * item.quantity,
+        0
+      );
+
+    const delivery_fee =
+      deliveryOption === 'pickup' ? 0 : subtotal >= 50 ? 0 : 10;
+    const total = subtotal + delivery_fee;
+    const items_count =
+      items.reduce((sum, item) => sum + item.quantity, 0) +
+      sidelines.reduce((sum, item) => sum + item.quantity, 0);
+
+    return {
+      items: items.map((i) => ({
+        item_id: i.menu_item.id,
+        item_name: i.menu_item.name,
+        category: i.menu_item.category,
+        quantity: i.quantity,
+        price: i.menu_item.price,
+        subtotal: i.menu_item.price * i.quantity,
+      })),
+      sidelines: sidelines.map((s) => ({
+        item_id: s.sideline.id,
+        item_name: s.sideline.name,
+        quantity: s.quantity,
+        price: s.sideline.price,
+        subtotal: s.sideline.price * s.quantity,
+      })),
+      subtotal,
+      delivery_fee,
+      total,
+      items_count,
+    };
+  },
+
+  /**
+   * Set order type (local state)
+   */
+  setOrderType: (
+    type: 'daily_menu' | 'weekly_subscription' | 'special_catering'
+  ) => {
+    set({ orderType: type });
+  },
+
+  /**
+   * Set delivery option (local state)
+   */
+  setDeliveryOption: (option: 'delivery' | 'pickup') => {
+    set({ deliveryOption: option });
+  },
+
+  /**
+   * Clear error
+   */
+  clearError: () => {
+    set({ error: null });
+  },
+}));
 ```
 
 ---
 
 ## 📄 src\store\menuStore.ts
 
-*Path: `src\store\menuStore.ts`*
+_Path: `src\store\menuStore.ts`_
 
 ```typescript
 import { create } from 'zustand';
@@ -12512,8 +13461,92 @@ import {
   MenuCategory,
 } from '@types/menu.types';
 
+// ✅ ============================================
+// NORMALIZATION FUNCTIONS
+// ============================================
+
+/**
+ * Normalize menu item to ensure both id and _id exist
+ * and image URLs are properly formatted
+ */
+const normalizeMenuItem = (item: any): MenuItem => {
+  // Ensure both id and _id exist
+  const itemId = item.id || item._id;
+
+  if (!itemId) {
+    console.error('❌ Item missing both id and _id:', item);
+  }
+
+  // Normalize the item
+  const normalized: MenuItem = {
+    ...item,
+    id: itemId,
+    _id: itemId,
+    // Ensure required fields have defaults
+    name: item.name || 'Unnamed Item',
+    description: item.description || '',
+    category: item.category || 'other',
+    price: Number(item.price) || 0,
+    image_url: item.image_url || undefined,
+    is_available: item.is_available !== false,
+    is_available_for_daily: item.is_available_for_daily !== false,
+    is_available_for_weekly: item.is_available_for_weekly !== false,
+    is_available_for_catering: item.is_available_for_catering !== false,
+    max_boxes_per_menu: item.max_boxes_per_menu || 2,
+    allergens: Array.isArray(item.allergens) ? item.allergens : [],
+    spice_level: item.spice_level || undefined,
+    is_vegetarian: item.is_vegetarian === true,
+    is_vegan: item.is_vegan === true,
+    is_halal: item.is_halal !== false,
+    nutritional_info: item.nutritional_info || undefined,
+    serving_size: item.serving_size || undefined,
+    created_at: item.created_at || new Date().toISOString(),
+    updated_at: item.updated_at || new Date().toISOString(),
+  };
+
+  // Debug log in development
+  if (import.meta.env.DEV) {
+    console.log('🔧 Normalized menu item:', {
+      originalId: item.id,
+      original_Id: item._id,
+      normalizedId: normalized.id,
+      normalized_Id: normalized._id,
+      name: normalized.name,
+      imageUrl: normalized.image_url,
+      isAvailableForDaily: normalized.is_available_for_daily,
+    });
+  }
+
+  return normalized;
+};
+
+/**
+ * Normalize sideline to ensure both id and _id exist
+ */
+const normalizeSideline = (item: any): Sideline => {
+  const itemId = item.id || item._id;
+
+  return {
+    ...item,
+    id: itemId,
+    _id: itemId,
+    name: item.name || 'Unnamed Sideline',
+    description: item.description || undefined,
+    price: Number(item.price) || 0,
+    image_url: item.image_url || undefined,
+    is_available: item.is_available !== false,
+    sort_order: item.sort_order || 0,
+    created_at: item.created_at || new Date().toISOString(),
+    updated_at: item.updated_at || new Date().toISOString(),
+  };
+};
+
+// ✅ ============================================
+// MENU STORE INTERFACE
+// ============================================
+
 interface MenuState {
-  // Daily menu
+  // Menu items by type
   dailyMenuItems: MenuItem[];
   weeklyMenuItems: MenuItem[];
   cateringMenuItems: MenuItem[];
@@ -12534,7 +13567,7 @@ interface MenuState {
 
   // Actions
   fetchDailyMenu: () => Promise<void>;
-  fetchWeeklyMenu: () => Promise<void>;
+  fetchWeeklyMenu: (deliveryDate?: string) => Promise<void>;
   fetchCateringMenu: () => Promise<void>;
   fetchSidelines: () => Promise<void>;
   fetchCategories: () => Promise<void>;
@@ -12545,6 +13578,10 @@ interface MenuState {
     orderType: 'daily_menu' | 'weekly_subscription' | 'special_catering'
   ) => MenuItem[];
 }
+
+// ✅ ============================================
+// MENU STORE IMPLEMENTATION
+// ============================================
 
 export const useMenuStore = create<MenuState>((set, get) => ({
   dailyMenuItems: [],
@@ -12557,176 +13594,184 @@ export const useMenuStore = create<MenuState>((set, get) => ({
   isLoading: false,
   error: null,
 
+  // ✅ FETCH DAILY MENU
   fetchDailyMenu: async () => {
     set({ isLoading: true, error: null });
+
     try {
-      console.log('🔍 [DEBUG] Fetching daily menu from API...');
+      console.log('🔍 [MenuStore] Fetching daily menu from API...');
       const response = await menuAPI.getDailyMenu();
-      
-      // ===== EXTENSIVE DEBUGGING =====
-      console.log('🔍 [DEBUG] Full Response Object:', response);
-      console.log('🔍 [DEBUG] response.data:', response.data);
-      console.log('🔍 [DEBUG] response.data.data:', response.data.data);
-      console.log('🔍 [DEBUG] response.data.items:', response.data.items);
-      console.log('🔍 [DEBUG] response.data.menu_items:', response.data.menu_items);
-      console.log('🔍 [DEBUG] typeof response.data:', typeof response.data);
-      console.log('🔍 [DEBUG] Array.isArray(response.data):', Array.isArray(response.data));
-      console.log('🔍 [DEBUG] Array.isArray(response.data.data):', Array.isArray(response.data.data));
-      console.log('🔍 [DEBUG] Object.keys(response.data):', Object.keys(response.data));
-      
-      // Try all possible unwrapping strategies
-      let items: MenuItem[] = [];
-      
-      // Strategy 1: response.data.data
-      if (response.data.data !== undefined && response.data.data !== null) {
-        if (Array.isArray(response.data.data)) {
-          items = response.data.data;
-          console.log('✅ [SUCCESS] Using response.data.data (Strategy 1) - Length:', items.length);
-        } else if (typeof response.data.data === 'object' && response.data.data.items) {
-          items = response.data.data.items;
-          console.log('✅ [SUCCESS] Using response.data.data.items (Strategy 1b) - Length:', items.length);
-        }
-      }
-      // Strategy 2: response.data.items
-      else if (response.data.items && Array.isArray(response.data.items)) {
+
+      console.log('📦 [MenuStore] Raw API response:', response);
+
+      let items: any[] = [];
+
+      // ✅ Handle different response structures
+      if (response.data?.data && Array.isArray(response.data.data)) {
+        items = response.data.data;
+        console.log('✅ [MenuStore] Using response.data.data');
+      } else if (response.data?.items && Array.isArray(response.data.items)) {
         items = response.data.items;
-        console.log('✅ [SUCCESS] Using response.data.items (Strategy 2) - Length:', items.length);
-      }
-      // Strategy 3: response.data is array
-      else if (Array.isArray(response.data)) {
+        console.log('✅ [MenuStore] Using response.data.items');
+      } else if (Array.isArray(response.data)) {
         items = response.data;
-        console.log('✅ [SUCCESS] Using response.data directly (Strategy 3) - Length:', items.length);
-      }
-      // Strategy 4: response.data.menu_items
-      else if (response.data.menu_items && Array.isArray(response.data.menu_items)) {
-        items = response.data.menu_items;
-        console.log('✅ [SUCCESS] Using response.data.menu_items (Strategy 4) - Length:', items.length);
-      }
-      else {
-        console.error('❌ [ERROR] Could not find array in response!');
-        console.error('❌ [ERROR] Response structure:', JSON.stringify(response.data, null, 2));
+        console.log('✅ [MenuStore] Using response.data directly');
+      } else {
+        console.warn('⚠️ [MenuStore] Unknown response structure:', response);
       }
 
-      console.log('📦 [RESULT] Final items array length:', items.length);
-      if (items.length > 0) {
-        console.log('📦 [RESULT] First item:', items[0]);
-        console.log('📦 [RESULT] Sample item structure:', Object.keys(items[0]));
+      // ✅ Normalize ALL items
+      const normalizedItems = items.map(normalizeMenuItem);
+
+      console.log(
+        `📦 [MenuStore] Normalized ${normalizedItems.length} daily menu items`
+      );
+
+      if (normalizedItems.length > 0) {
+        console.log('📦 [MenuStore] Sample normalized item:', {
+          id: normalizedItems[0].id,
+          _id: normalizedItems[0]._id,
+          name: normalizedItems[0].name,
+          imageUrl: normalizedItems[0].image_url,
+          isAvailable: normalizedItems[0].is_available,
+          isAvailableForDaily: normalizedItems[0].is_available_for_daily,
+        });
       } else {
-        console.warn('⚠️ [WARNING] No items found in response!');
-        console.warn('⚠️ [WARNING] This means the backend returned an empty array or database has no menu items');
+        console.warn('⚠️ [MenuStore] No daily menu items found!');
       }
 
       set({
-        dailyMenuItems: items,
+        dailyMenuItems: normalizedItems,
         isLoading: false,
+        error: null,
       });
     } catch (error: any) {
-      console.error('❌ [ERROR] Failed to fetch daily menu:', error);
-      console.error('❌ [ERROR] Error response:', error.response);
-      console.error('❌ [ERROR] Error message:', error.message);
+      console.error('❌ [MenuStore] Failed to fetch daily menu:', error);
       set({
-        error: error.response?.data?.message || 'Failed to fetch daily menu',
+        error:
+          error.response?.data?.message ||
+          error.message ||
+          'Failed to fetch daily menu',
         isLoading: false,
+        dailyMenuItems: [], // Clear items on error
       });
     }
   },
 
-  fetchWeeklyMenu: async () => {
+  // ✅ FETCH WEEKLY MENU
+  fetchWeeklyMenu: async (deliveryDate?: string) => {
     set({ isLoading: true, error: null });
+
     try {
-      console.log('🔍 [DEBUG] Fetching weekly menu...');
-      
-      // Calculate next Monday
-      const today = new Date();
-      const dayOfWeek = today.getDay();
-      const daysUntilMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek;
-      const nextMonday = new Date(today);
-      nextMonday.setDate(today.getDate() + daysUntilMonday);
-      const delivery_date = nextMonday.toISOString().split('T')[0];
-      
-      console.log('📅 Using delivery_date:', delivery_date);
-      
-      const response = await menuAPI.getWeeklyMenu(delivery_date);
-      
-      console.log('🔍 [DEBUG] Weekly menu response:', response.data);
-      
-      const menuData = response.data.data || response.data;
-      
-      let items: MenuItem[] = [];
+      console.log('🔍 [MenuStore] Fetching weekly menu...');
+
+      const response = await menuAPI.getWeeklyMenu(deliveryDate);
+
+      console.log('📦 [MenuStore] Weekly menu response:', response);
+
+      const menuData = response.data?.data || response.data;
+
+      let items: any[] = [];
+
       if (Array.isArray(menuData)) {
         items = menuData;
-      } else if (menuData && menuData.items) {
+      } else if (menuData?.items && Array.isArray(menuData.items)) {
         items = menuData.items;
       }
 
-      console.log('✅ Weekly menu items:', items.length);
+      // ✅ Normalize all items
+      const normalizedItems = items.map(normalizeMenuItem);
+
+      console.log(
+        `✅ [MenuStore] Weekly menu: ${normalizedItems.length} items`
+      );
 
       set({
-        weeklyMenuItems: items,
+        weeklyMenuItems: normalizedItems,
         isLoading: false,
+        error: null,
       });
     } catch (error: any) {
-      console.error('❌ Failed to fetch weekly menu:', error);
+      console.error('❌ [MenuStore] Failed to fetch weekly menu:', error);
       set({
-        error: error.response?.data?.message || 'Failed to fetch weekly menu',
+        error:
+          error.response?.data?.message ||
+          error.message ||
+          'Failed to fetch weekly menu',
         isLoading: false,
+        weeklyMenuItems: [],
       });
     }
   },
 
+  // ✅ FETCH CATERING MENU
   fetchCateringMenu: async () => {
     set({ isLoading: true, error: null });
-    try {
-      console.log('🔍 [DEBUG] Fetching catering menu...');
-      const response = await menuAPI.getCateringMenu();
-      
-      const menuData = response.data.data || response.data;
-      const items = Array.isArray(menuData) ? menuData : [];
 
-      console.log('✅ Catering items:', items.length);
+    try {
+      console.log('🔍 [MenuStore] Fetching catering menu...');
+      const response = await menuAPI.getCateringMenu();
+
+      const menuData = response.data?.data || response.data;
+      let items = Array.isArray(menuData) ? menuData : [];
+
+      // ✅ Normalize all items
+      const normalizedItems = items.map(normalizeMenuItem);
+
+      console.log(`✅ [MenuStore] Catering items: ${normalizedItems.length}`);
 
       set({
-        cateringMenuItems: items,
+        cateringMenuItems: normalizedItems,
         isLoading: false,
+        error: null,
       });
     } catch (error: any) {
-      console.error('❌ Failed to fetch catering menu:', error);
+      console.error('❌ [MenuStore] Failed to fetch catering menu:', error);
       set({
-        error: error.response?.data?.message || 'Failed to fetch catering menu',
+        error:
+          error.response?.data?.message ||
+          error.message ||
+          'Failed to fetch catering menu',
         isLoading: false,
+        cateringMenuItems: [],
       });
     }
   },
 
+  // ✅ FETCH SIDELINES
   fetchSidelines: async () => {
     try {
-      console.log('🔍 [DEBUG] Fetching sidelines...');
+      console.log('🔍 [MenuStore] Fetching sidelines...');
       const response = await menuAPI.getSidelines();
-      
-      console.log('🔍 [DEBUG] Sidelines response:', response.data);
-      
-      const sidelinesData = response.data.data || response.data;
-      const items = Array.isArray(sidelinesData) ? sidelinesData : [];
 
-      console.log('✅ Sidelines:', items.length);
+      console.log('📦 [MenuStore] Sidelines response:', response.data);
 
-      set({ sidelines: items });
+      const sidelinesData = response.data?.data || response.data;
+      let items = Array.isArray(sidelinesData) ? sidelinesData : [];
+
+      // ✅ Normalize all sidelines
+      const normalizedItems = items.map(normalizeSideline);
+
+      console.log(`✅ [MenuStore] Sidelines: ${normalizedItems.length}`);
+
+      set({ sidelines: normalizedItems });
     } catch (error: any) {
-      console.error('❌ Failed to fetch sidelines:', error);
+      console.error('❌ [MenuStore] Failed to fetch sidelines:', error);
     }
   },
 
+  // ✅ FETCH CATEGORIES
   fetchCategories: async () => {
     try {
-      console.log('🔍 [DEBUG] Fetching categories...');
+      console.log('🔍 [MenuStore] Fetching categories...');
       const response = await menuAPI.getCategories();
-      
-      console.log('🔍 [DEBUG] Categories response:', response.data);
-      
-      const categoriesData = response.data.data || response.data;
-      
+
+      console.log('📦 [MenuStore] Categories response:', response.data);
+
+      const categoriesData = response.data?.data || response.data;
+
       let items: string[] = [];
-      
+
       if (Array.isArray(categoriesData)) {
         items = categoriesData.map((cat: any) => {
           if (typeof cat === 'string') {
@@ -12736,63 +13781,76 @@ export const useMenuStore = create<MenuState>((set, get) => ({
         });
       }
 
-      console.log('✅ Categories:', items);
+      console.log('✅ [MenuStore] Categories:', items);
 
       set({ categories: items });
     } catch (error: any) {
-      console.error('❌ Failed to fetch categories:', error);
+      console.error('❌ [MenuStore] Failed to fetch categories:', error);
     }
   },
 
+  // ✅ SEARCH MENU ITEMS
   searchMenuItems: async (query: string) => {
     set({ searchQuery: query, isLoading: true, error: null });
-    try {
-      console.log('🔍 Searching for:', query);
-      const response = await menuAPI.searchMenuItems(query);
-      
-      const searchData = response.data.data || response.data;
-      const items = Array.isArray(searchData) ? searchData : [];
 
-      console.log('✅ Search results:', items.length);
+    try {
+      console.log('🔍 [MenuStore] Searching for:', query);
+      const response = await menuAPI.searchMenuItems(query);
+
+      const searchData = response.data?.data || response.data;
+      let items = Array.isArray(searchData) ? searchData : [];
+
+      // ✅ Normalize all items
+      const normalizedItems = items.map(normalizeMenuItem);
+
+      console.log(`✅ [MenuStore] Search results: ${normalizedItems.length}`);
 
       // Categorize items by order type
       set({
-        dailyMenuItems: items.filter(
-          (item: MenuItem) => item.is_available_for_daily
+        dailyMenuItems: normalizedItems.filter(
+          (item) => item.is_available_for_daily
         ),
-        weeklyMenuItems: items.filter(
-          (item: MenuItem) => item.is_available_for_weekly
+        weeklyMenuItems: normalizedItems.filter(
+          (item) => item.is_available_for_weekly
         ),
-        cateringMenuItems: items.filter(
-          (item: MenuItem) => item.is_available_for_catering
+        cateringMenuItems: normalizedItems.filter(
+          (item) => item.is_available_for_catering
         ),
         isLoading: false,
+        error: null,
       });
     } catch (error: any) {
-      console.error('❌ Search failed:', error);
+      console.error('❌ [MenuStore] Search failed:', error);
       set({
-        error: error.response?.data?.message || 'Search failed',
+        error:
+          error.response?.data?.message || error.message || 'Search failed',
         isLoading: false,
       });
     }
   },
 
+  // ✅ SET FILTERS
   setFilters: (filters: Partial<MenuFilters>) => {
+    console.log('🔍 [MenuStore] Setting filters:', filters);
     set((state) => ({
       activeFilters: { ...state.activeFilters, ...filters },
     }));
   },
 
+  // ✅ CLEAR FILTERS
   clearFilters: () => {
+    console.log('🔍 [MenuStore] Clearing all filters');
     set({ activeFilters: {}, searchQuery: '' });
   },
 
+  // ✅ GET FILTERED ITEMS
   getFilteredItems: (
     orderType: 'daily_menu' | 'weekly_subscription' | 'special_catering'
   ) => {
     const { activeFilters, searchQuery } = get();
 
     let items: MenuItem[] = [];
+
     switch (orderType) {
       case 'daily_menu':
         items = get().dailyMenuItems;
@@ -12805,84 +13863,96 @@ export const useMenuStore = create<MenuState>((set, get) => ({
         break;
     }
 
-    console.log(`📦 Filtering ${orderType}:`, items.length, 'items');
+    console.log(`📦 [MenuStore] Filtering ${orderType}: ${items.length} items`);
+    console.log(`📦 [MenuStore] Active filters:`, activeFilters);
 
     // Apply filters
     let filtered = items;
 
+    // Category filter
     if (activeFilters.category) {
       filtered = filtered.filter(
         (item) => item.category === activeFilters.category
       );
+      console.log(
+        `  🔹 After category filter (${activeFilters.category}): ${filtered.length}`
+      );
     }
 
+    // Vegetarian filter
     if (activeFilters.is_vegetarian !== undefined) {
       filtered = filtered.filter(
         (item) => item.is_vegetarian === activeFilters.is_vegetarian
       );
+      console.log(`  🔹 After vegetarian filter: ${filtered.length}`);
     }
 
+    // Vegan filter
     if (activeFilters.is_vegan !== undefined) {
       filtered = filtered.filter(
         (item) => item.is_vegan === activeFilters.is_vegan
       );
+      console.log(`  🔹 After vegan filter: ${filtered.length}`);
     }
 
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
+    // Search query filter
+    if (searchQuery && searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
       filtered = filtered.filter(
         (item) =>
           item.name.toLowerCase().includes(query) ||
-          item.description.toLowerCase().includes(query)
+          (item.description && item.description.toLowerCase().includes(query))
       );
+      console.log(`  🔹 After search filter ("${query}"): ${filtered.length}`);
     }
 
-    console.log(`✅ After filtering:`, filtered.length, 'items');
+    console.log(
+      `✅ [MenuStore] Final filtered count: ${filtered.length} items`
+    );
 
     return filtered;
   },
 }));
-
 ```
 
 ---
 
 ## 📄 src\store\orderStore.ts
 
-*Path: `src\store\orderStore.ts`*
+_Path: `src\store\orderStore.ts`_
 
 ```typescript
-import { create } from 'zustand'
-import { ordersAPI } from '@api/endpoints/orders'
-import { Order, CreateOrderPayload, OrderTracking } from '@types/order.types'
-import { PaginatedResponse } from '@types/common.types'
+import { create } from 'zustand';
+import { ordersAPI } from '@api/endpoints/orders';
+import { Order, CreateOrderPayload, OrderTracking } from '@types/order.types';
+import { PaginatedResponse } from '@types/common.types';
 
 interface OrderState {
   // Current order being created
-  currentOrder: Order | null
-  
+  currentOrder: Order | null;
+
   // Order history
-  orderHistory: Order[]
-  orderHistoryTotal: number
-  orderHistoryPage: number
-  
+  orderHistory: Order[];
+  orderHistoryTotal: number;
+  orderHistoryPage: number;
+
   // Order tracking
-  trackingInfo: OrderTracking | null
-  
+  trackingInfo: OrderTracking | null;
+
   // Loading states
-  isPlacingOrder: boolean
-  isLoadingHistory: boolean
-  isTracking: boolean
-  error: string | null
-  
+  isPlacingOrder: boolean;
+  isLoadingHistory: boolean;
+  isTracking: boolean;
+  error: string | null;
+
   // Actions
-  createOrder: (payload: CreateOrderPayload) => Promise<Order>
-  fetchOrderHistory: (page?: number) => Promise<void>
-  fetchOrderById: (orderId: string) => Promise<void>
-  trackOrder: (orderId: string) => Promise<void>
-  cancelOrder: (orderId: string, reason: string) => Promise<void>
-  clearCurrentOrder: () => void
-  clearError: () => void
+  createOrder: (payload: CreateOrderPayload) => Promise<Order>;
+  fetchOrderHistory: (page?: number) => Promise<void>;
+  fetchOrderById: (orderId: string) => Promise<void>;
+  trackOrder: (orderId: string) => Promise<void>;
+  cancelOrder: (orderId: string, reason: string) => Promise<void>;
+  clearCurrentOrder: () => void;
+  clearError: () => void;
 }
 
 export const useOrderStore = create<OrderState>((set, get) => ({
@@ -12897,121 +13967,124 @@ export const useOrderStore = create<OrderState>((set, get) => ({
   error: null,
 
   createOrder: async (payload: CreateOrderPayload) => {
-    set({ isPlacingOrder: true, error: null })
+    set({ isPlacingOrder: true, error: null });
     try {
-      const response = await ordersAPI.createOrder(payload)
-      const order = response.data.data
-      
-      set({ 
+      const response = await ordersAPI.createOrder(payload);
+      const order = response.data.data;
+
+      set({
         currentOrder: order,
-        isPlacingOrder: false 
-      })
-      
-      return order
+        isPlacingOrder: false,
+      });
+
+      return order;
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Failed to create order'
-      set({ 
+      const errorMessage =
+        error.response?.data?.message || 'Failed to create order';
+      set({
         error: errorMessage,
-        isPlacingOrder: false 
-      })
-      throw new Error(errorMessage)
+        isPlacingOrder: false,
+      });
+      throw new Error(errorMessage);
     }
   },
 
   fetchOrderHistory: async (page = 1) => {
-    set({ isLoadingHistory: true, error: null })
+    set({ isLoadingHistory: true, error: null });
     try {
-      const response = await ordersAPI.getOrderHistory(page, 10)
-      const data: PaginatedResponse<Order> = response.data.data
-      
+      const response = await ordersAPI.getOrderHistory(page, 10);
+      const data: PaginatedResponse<Order> = response.data.data;
+
       set({
         orderHistory: data.items,
         orderHistoryTotal: data.total,
         orderHistoryPage: page,
-        isLoadingHistory: false
-      })
+        isLoadingHistory: false,
+      });
     } catch (error: any) {
-      set({ 
+      set({
         error: error.response?.data?.message || 'Failed to fetch order history',
-        isLoadingHistory: false 
-      })
+        isLoadingHistory: false,
+      });
     }
   },
 
   fetchOrderById: async (orderId: string) => {
-    set({ isLoadingHistory: true, error: null })
+    set({ isLoadingHistory: true, error: null });
     try {
-      const response = await ordersAPI.getOrderById(orderId)
-      set({ 
+      const response = await ordersAPI.getOrderById(orderId);
+      set({
         currentOrder: response.data.data,
-        isLoadingHistory: false 
-      })
+        isLoadingHistory: false,
+      });
     } catch (error: any) {
-      set({ 
+      set({
         error: error.response?.data?.message || 'Failed to fetch order details',
-        isLoadingHistory: false 
-      })
+        isLoadingHistory: false,
+      });
     }
   },
 
   trackOrder: async (orderId: string) => {
-    set({ isTracking: true, error: null })
+    set({ isTracking: true, error: null });
     try {
-      const response = await ordersAPI.trackOrder(orderId)
-      set({ 
+      const response = await ordersAPI.trackOrder(orderId);
+      set({
         trackingInfo: response.data.data,
-        isTracking: false 
-      })
+        isTracking: false,
+      });
     } catch (error: any) {
-      set({ 
+      set({
         error: error.response?.data?.message || 'Failed to track order',
-        isTracking: false 
-      })
+        isTracking: false,
+      });
     }
   },
 
   cancelOrder: async (orderId: string, reason: string) => {
-    set({ isPlacingOrder: true, error: null })
+    set({ isPlacingOrder: true, error: null });
     try {
-      const response = await ordersAPI.cancelOrder(orderId, reason)
-      const cancelledOrder = response.data.data
-      
+      const response = await ordersAPI.cancelOrder(orderId, reason);
+      const cancelledOrder = response.data.data;
+
       // Update order history if the cancelled order is in the list
-      const { orderHistory } = get()
-      const updatedHistory = orderHistory.map(order => 
+      const { orderHistory } = get();
+      const updatedHistory = orderHistory.map((order) =>
         order._id === orderId ? cancelledOrder : order
-      )
-      
+      );
+
       set({
         orderHistory: updatedHistory,
-        currentOrder: get().currentOrder?._id === orderId ? cancelledOrder : get().currentOrder,
-        isPlacingOrder: false
-      })
+        currentOrder:
+          get().currentOrder?._id === orderId
+            ? cancelledOrder
+            : get().currentOrder,
+        isPlacingOrder: false,
+      });
     } catch (error: any) {
-      set({ 
+      set({
         error: error.response?.data?.message || 'Failed to cancel order',
-        isPlacingOrder: false 
-      })
-      throw error
+        isPlacingOrder: false,
+      });
+      throw error;
     }
   },
 
   clearCurrentOrder: () => {
-    set({ currentOrder: null, trackingInfo: null })
+    set({ currentOrder: null, trackingInfo: null });
   },
 
   clearError: () => {
-    set({ error: null })
+    set({ error: null });
   },
-}))
-
+}));
 ```
 
 ---
 
 ## 📄 src\styles\globals.css
 
-*Path: `src\styles\globals.css`*
+_Path: `src\styles\globals.css`_
 
 ```css
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;500;600;700&display=swap');
@@ -13024,8 +14097,13 @@ export const useOrderStore = create<OrderState>((set, get) => ({
   body {
     @apply bg-background text-text font-body antialiased;
   }
-  
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-heading;
   }
 }
@@ -13035,25 +14113,25 @@ export const useOrderStore = create<OrderState>((set, get) => ({
   .btn-primary {
     @apply bg-primary hover:bg-primary-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg;
   }
-  
+
   .btn-secondary {
     @apply bg-secondary hover:bg-secondary-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200;
   }
-  
+
   .btn-outline {
     @apply border-2 border-primary text-primary hover:bg-primary hover:text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200;
   }
-  
+
   /* Card Styles */
   .card {
     @apply bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow duration-200;
   }
-  
+
   /* Input Styles */
   .input-field {
     @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all duration-200;
   }
-  
+
   /* Container */
   .container-custom {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
@@ -13076,64 +14154,62 @@ export const useOrderStore = create<OrderState>((set, get) => ({
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #FF6B35;
+  background: #ff6b35;
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #FF4800;
+  background: #ff4800;
 }
-
 ```
 
 ---
 
 ## 📄 src\types\address.types.ts
 
-*Path: `src\types\address.types.ts`*
+_Path: `src\types\address.types.ts`_
 
 ```typescript
 export interface Address {
-  _id: string
-  user_id: string
-  label: string
-  street: string
-  suburb: string
-  postcode: string
-  state: string
-  country: string
-  is_default: boolean
-  delivery_instructions?: string
-  created_at: string
-  updated_at: string
+  _id: string;
+  user_id: string;
+  label: string;
+  street: string;
+  suburb: string;
+  postcode: string;
+  state: string;
+  country: string;
+  is_default: boolean;
+  delivery_instructions?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface CreateAddressPayload {
-  label: string
-  street: string
-  suburb: string
-  postcode: string
-  state: string
-  country?: string
-  is_default?: boolean
-  delivery_instructions?: string
+  label: string;
+  street: string;
+  suburb: string;
+  postcode: string;
+  state: string;
+  country?: string;
+  is_default?: boolean;
+  delivery_instructions?: string;
 }
 
 export interface DeliveryValidation {
-  is_valid: boolean
-  distance_km: number
-  delivery_fee: number
-  estimated_time_minutes: number
-  message?: string
+  is_valid: boolean;
+  distance_km: number;
+  delivery_fee: number;
+  estimated_time_minutes: number;
+  message?: string;
 }
-
 ```
 
 ---
 
 ## 📄 src\types\auth.types.ts
 
-*Path: `src\types\auth.types.ts`*
+_Path: `src\types\auth.types.ts`_
 
 ```typescript
 export interface User {
@@ -13176,261 +14252,287 @@ export interface AuthResponse {
   token_type: string;
   user: User;
 }
-
 ```
 
 ---
 
 ## 📄 src\types\cart.types.ts
 
-*Path: `src\types\cart.types.ts`*
+_Path: `src\types\cart.types.ts`_
 
 ```typescript
-import { MenuItem, Sideline } from './menu.types'
-import { Address } from './auth.types'
+import { MenuItem, Sideline } from './menu.types';
+import { Address } from './auth.types';
 
 export interface CartItem {
-  menu_item: MenuItem
-  quantity: number
-  special_instructions?: string
+  menu_item: MenuItem;
+  quantity: number;
+  special_instructions?: string;
 }
 
 export interface CartSideline {
-  sideline: Sideline
-  quantity: number
+  sideline: Sideline;
+  quantity: number;
 }
 
 export interface Cart {
-  items: CartItem[]
-  sidelines: CartSideline[]
-  order_type: 'daily_menu' | 'weekly_subscription' | 'special_catering'
-  delivery_option: 'pickup' | 'delivery'
-  selected_address?: Address
-  delivery_date?: string
-  delivery_time_slot?: string
-  special_instructions?: string
+  items: CartItem[];
+  sidelines: CartSideline[];
+  order_type: 'daily_menu' | 'weekly_subscription' | 'special_catering';
+  delivery_option: 'pickup' | 'delivery';
+  selected_address?: Address;
+  delivery_date?: string;
+  delivery_time_slot?: string;
+  special_instructions?: string;
 }
 
 export interface CartSummary {
-  subtotal: number
-  delivery_fee: number
-  tax: number
-  total: number
-  item_count: number
+  subtotal: number;
+  delivery_fee: number;
+  tax: number;
+  total: number;
+  item_count: number;
 }
 
 export interface WeeklySubscriptionSelection {
-  plan_type: 'weekly' | 'fortnightly' | 'monthly'
-  meals_per_week: number
-  selected_meals: { [key: string]: MenuItem[] } // day => meals
-  start_date: string
-  delivery_days: string[]
+  plan_type: 'weekly' | 'fortnightly' | 'monthly';
+  meals_per_week: number;
+  selected_meals: { [key: string]: MenuItem[] }; // day => meals
+  start_date: string;
+  delivery_days: string[];
 }
 
 export interface CateringDetails {
-  event_date: string
-  event_time: string
-  head_count: number
-  event_type: string
-  venue_address: string
-  special_requirements?: string
+  event_date: string;
+  event_time: string;
+  head_count: number;
+  event_type: string;
+  venue_address: string;
+  special_requirements?: string;
 }
-
 ```
 
 ---
 
 ## 📄 src\types\common.types.ts
 
-*Path: `src\types\common.types.ts`*
+_Path: `src\types\common.types.ts`_
 
 ```typescript
 // Common types used across the application
 
 export interface ApiResponse<T = any> {
-  data: T
-  message?: string
-  success: boolean
+  data: T;
+  message?: string;
+  success: boolean;
 }
 
 export interface ApiError {
-  message: string
-  errors?: Record<string, string[]>
-  status?: number
+  message: string;
+  errors?: Record<string, string[]>;
+  status?: number;
 }
 
 export interface PaginationParams {
-  page: number
-  limit: number
+  page: number;
+  limit: number;
 }
 
 export interface PaginatedResponse<T> {
-  items: T[]
-  total: number
-  page: number
-  pages: number
+  items: T[];
+  total: number;
+  page: number;
+  pages: number;
 }
 
-export type OrderType = 'daily_menu' | 'weekly_subscription' | 'special_catering'
-export type DeliveryOption = 'pickup' | 'delivery'
-export type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'out_for_delivery' | 'delivered' | 'cancelled'
-export type PaymentStatus = 'pending' | 'completed' | 'failed' | 'refunded'
-export type PaymentMethod = 'card' | 'cash'
-export type UserRole = 'customer' | 'admin'
-
+export type OrderType =
+  | 'daily_menu'
+  | 'weekly_subscription'
+  | 'special_catering';
+export type DeliveryOption = 'pickup' | 'delivery';
+export type OrderStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'preparing'
+  | 'out_for_delivery'
+  | 'delivered'
+  | 'cancelled';
+export type PaymentStatus = 'pending' | 'completed' | 'failed' | 'refunded';
+export type PaymentMethod = 'card' | 'cash';
+export type UserRole = 'customer' | 'admin';
 ```
 
 ---
 
 ## 📄 src\types\menu.types.ts
 
-*Path: `src\types\menu.types.ts`*
+_Path: `src\types\menu.types.ts`_
 
 ```typescript
 export interface MenuItem {
-  _id: string
-  name: string
-  description: string
-  category: string
-  price: number
-  image_url?: string
-  available: boolean
-  order_type: 'daily_menu' | 'weekly_subscription' | 'special_catering'
+  _id: string; // MongoDB ID
+  id: string; // Also support 'id' field for compatibility
+  name: string;
+  description: string;
+  category: string;
+  price: number;
+  image_url?: string; // ✅ This can be null/undefined
+  is_available: boolean;
+  is_available_for_daily: boolean;
+  is_available_for_weekly: boolean;
+  is_available_for_catering: boolean;
+  max_boxes_per_menu?: number;
   nutritional_info?: {
-    calories?: number
-    protein?: number
-    carbs?: number
-    fat?: number
-  }
-  allergens?: string[]
-  spice_level?: 'mild' | 'medium' | 'hot'
-  is_vegetarian: boolean
-  is_vegan: boolean
-  created_at: string
-  updated_at: string
+    calories?: number;
+    protein?: number;
+    carbs?: number;
+    fat?: number;
+  };
+  allergens?: string[];
+  spice_level?: 'mild' | 'medium' | 'hot';
+  is_vegetarian: boolean;
+  is_vegan?: boolean;
+  is_halal?: boolean;
+  serving_size?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Sideline {
-  _id: string
-  name: string
-  description: string
-  price: number
-  image_url?: string
-  available: boolean
-  category: string
-  created_at: string
-  updated_at: string
+  _id: string;
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
+  image_url?: string;
+  is_available: boolean;
+  sort_order?: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface MenuCategory {
-  name: string
-  display_name: string
-  order: number
+  _id: string;
+  id: string;
+  name: string;
+  display_name: string;
+  description?: string;
+  image_url?: string;
+  is_active: boolean;
+  sort_order: number;
 }
 
 export interface MenuFilters {
-  category?: string
-  is_vegetarian?: boolean
-  is_vegan?: boolean
-  search?: string
-  order_type?: 'daily_menu' | 'weekly_subscription' | 'special_catering'
+  category?: string;
+  is_vegetarian?: boolean;
+  is_vegan?: boolean;
+  search?: string;
+  order_type?: 'daily_menu' | 'weekly_subscription' | 'special_catering';
 }
-
 ```
 
 ---
 
 ## 📄 src\types\order.types.ts
 
-*Path: `src\types\order.types.ts`*
+_Path: `src\types\order.types.ts`_
 
 ```typescript
-import { CartItem, CartSideline } from './cart.types'
-import { Address } from './auth.types'
+import { CartItem, CartSideline } from './cart.types';
+import { Address } from './auth.types';
 
 export interface Order {
-  _id: string
-  user_id: string
-  order_type: 'daily_menu' | 'weekly_subscription' | 'special_catering'
-  items: CartItem[]
-  sidelines: CartSideline[]
-  delivery_option: 'pickup' | 'delivery'
-  delivery_address?: Address
-  delivery_date: string
-  delivery_time_slot?: string
-  status: 'pending' | 'confirmed' | 'preparing' | 'out_for_delivery' | 'delivered' | 'cancelled'
-  payment_status: 'pending' | 'completed' | 'failed' | 'refunded'
-  payment_method: 'card' | 'cash'
-  payment_intent_id?: string
-  subtotal: number
-  delivery_fee: number
-  tax: number
-  total: number
-  special_instructions?: string
-  cancellation_reason?: string
-  created_at: string
-  updated_at: string
+  _id: string;
+  user_id: string;
+  order_type: 'daily_menu' | 'weekly_subscription' | 'special_catering';
+  items: CartItem[];
+  sidelines: CartSideline[];
+  delivery_option: 'pickup' | 'delivery';
+  delivery_address?: Address;
+  delivery_date: string;
+  delivery_time_slot?: string;
+  status:
+    | 'pending'
+    | 'confirmed'
+    | 'preparing'
+    | 'out_for_delivery'
+    | 'delivered'
+    | 'cancelled';
+  payment_status: 'pending' | 'completed' | 'failed' | 'refunded';
+  payment_method: 'card' | 'cash';
+  payment_intent_id?: string;
+  subtotal: number;
+  delivery_fee: number;
+  tax: number;
+  total: number;
+  special_instructions?: string;
+  cancellation_reason?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface CreateOrderPayload {
-  order_type: 'daily_menu' | 'weekly_subscription' | 'special_catering'
-  items: { menu_item_id: string; quantity: number; special_instructions?: string }[]
-  sidelines?: { sideline_id: string; quantity: number }[]
-  delivery_option: 'pickup' | 'delivery'
-  delivery_address_id?: string
-  delivery_date: string
-  delivery_time_slot?: string
-  payment_method: 'card' | 'cash'
-  special_instructions?: string
+  order_type: 'daily_menu' | 'weekly_subscription' | 'special_catering';
+  items: {
+    menu_item_id: string;
+    quantity: number;
+    special_instructions?: string;
+  }[];
+  sidelines?: { sideline_id: string; quantity: number }[];
+  delivery_option: 'pickup' | 'delivery';
+  delivery_address_id?: string;
+  delivery_date: string;
+  delivery_time_slot?: string;
+  payment_method: 'card' | 'cash';
+  special_instructions?: string;
 }
 
 export interface OrderTracking {
-  order_id: string
-  status: string
-  estimated_delivery_time?: string
+  order_id: string;
+  status: string;
+  estimated_delivery_time?: string;
   driver_location?: {
-    lat: number
-    lng: number
-  }
+    lat: number;
+    lng: number;
+  };
   status_history: {
-    status: string
-    timestamp: string
-    note?: string
-  }[]
+    status: string;
+    timestamp: string;
+    note?: string;
+  }[];
 }
-
 ```
 
 ---
 
 ## 📄 src\utils\constants.ts
 
-*Path: `src\utils\constants.ts`*
+_Path: `src\utils\constants.ts`_
 
 ```typescript
 /**
  * Application constants
  */
 
-export const APP_NAME = 'Bakar\'s Food & Catering'
+export const APP_NAME = "Bakar's Food & Catering";
 
 export const BUSINESS_INFO = {
   address: 'Guildford 2161, Sydney, Australia',
   phone: import.meta.env.VITE_WHATSAPP_NUMBER || '+61XXXXXXXXX',
   email: 'info@bakarsfood.com.au',
   deliveryRadius: 6, // km
-}
+};
 
 export const ORDER_TYPES = {
   DAILY_MENU: 'daily_menu',
   WEEKLY_SUBSCRIPTION: 'weekly_subscription',
   SPECIAL_CATERING: 'special_catering',
-} as const
+} as const;
 
 export const DELIVERY_OPTIONS = {
   PICKUP: 'pickup',
   DELIVERY: 'delivery',
-} as const
+} as const;
 
 export const ORDER_STATUS = {
   PENDING: 'pending',
@@ -13439,19 +14541,19 @@ export const ORDER_STATUS = {
   OUT_FOR_DELIVERY: 'out_for_delivery',
   DELIVERED: 'delivered',
   CANCELLED: 'cancelled',
-} as const
+} as const;
 
 export const PAYMENT_STATUS = {
   PENDING: 'pending',
   COMPLETED: 'completed',
   FAILED: 'failed',
   REFUNDED: 'refunded',
-} as const
+} as const;
 
 export const PAYMENT_METHODS = {
   CARD: 'card',
   CASH: 'cash',
-} as const
+} as const;
 
 export const DELIVERY_TIME_SLOTS = [
   '11:00 AM - 12:00 PM',
@@ -13460,7 +14562,7 @@ export const DELIVERY_TIME_SLOTS = [
   '6:00 PM - 7:00 PM',
   '7:00 PM - 8:00 PM',
   '8:00 PM - 9:00 PM',
-]
+];
 
 export const DAYS_OF_WEEK = [
   'Monday',
@@ -13470,32 +14572,31 @@ export const DAYS_OF_WEEK = [
   'Friday',
   'Saturday',
   'Sunday',
-]
+];
 
 export const SUBSCRIPTION_PLANS = {
   WEEKLY: { meals: 7, discount: 0 },
   FORTNIGHTLY: { meals: 14, discount: 5 },
   MONTHLY: { meals: 30, discount: 10 },
-}
+};
 
-export const TAX_RATE = 0.10 // 10% GST
+export const TAX_RATE = 0.1; // 10% GST
 
-export const MIN_ORDER_VALUE = 15 // AUD
+export const MIN_ORDER_VALUE = 15; // AUD
 
-export const DELIVERY_FEE_PER_KM = 2.5 // AUD per km
+export const DELIVERY_FEE_PER_KM = 2.5; // AUD per km
 
-export const FREE_DELIVERY_THRESHOLD = 50 // AUD
-
+export const FREE_DELIVERY_THRESHOLD = 50; // AUD
 ```
 
 ---
 
 ## 📄 src\utils\formatters.ts
 
-*Path: `src\utils\formatters.ts`*
+_Path: `src\utils\formatters.ts`_
 
 ```typescript
-import { format, parseISO } from 'date-fns'
+import { format, parseISO } from 'date-fns';
 
 /**
  * Format currency values to AUD
@@ -13504,67 +14605,70 @@ export const formatCurrency = (amount: number): string => {
   return new Intl.NumberFormat('en-AU', {
     style: 'currency',
     currency: 'AUD',
-  }).format(amount)
-}
+  }).format(amount);
+};
 
 /**
  * Format date to readable string
  */
-export const formatDate = (date: string | Date, formatStr: string = 'PPP'): string => {
+export const formatDate = (
+  date: string | Date,
+  formatStr: string = 'PPP'
+): string => {
   try {
-    const dateObj = typeof date === 'string' ? parseISO(date) : date
-    return format(dateObj, formatStr)
+    const dateObj = typeof date === 'string' ? parseISO(date) : date;
+    return format(dateObj, formatStr);
   } catch (error) {
-    return 'Invalid date'
+    return 'Invalid date';
   }
-}
+};
 
 /**
  * Format time to 12-hour format
  */
 export const formatTime = (date: string | Date): string => {
   try {
-    const dateObj = typeof date === 'string' ? parseISO(date) : date
-    return format(dateObj, 'h:mm a')
+    const dateObj = typeof date === 'string' ? parseISO(date) : date;
+    return format(dateObj, 'h:mm a');
   } catch (error) {
-    return 'Invalid time'
+    return 'Invalid time';
   }
-}
+};
 
 /**
  * Format distance in kilometers
  */
 export const formatDistance = (distanceKm: number): string => {
   if (distanceKm < 1) {
-    return `${Math.round(distanceKm * 1000)}m`
+    return `${Math.round(distanceKm * 1000)}m`;
   }
-  return `${distanceKm.toFixed(1)}km`
-}
+  return `${distanceKm.toFixed(1)}km`;
+};
 
 /**
  * Format phone number to Australian format
  */
 export const formatPhoneNumber = (phone: string): string => {
-  const cleaned = phone.replace(/\D/g, '')
-  
+  const cleaned = phone.replace(/\D/g, '');
+
   if (cleaned.length === 10) {
-    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)} ${cleaned.slice(6)}`
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)} ${cleaned.slice(6)}`;
   }
-  
+
   if (cleaned.length === 11 && cleaned.startsWith('61')) {
-    return `+${cleaned.slice(0, 2)} ${cleaned.slice(2, 3)} ${cleaned.slice(3, 7)} ${cleaned.slice(7)}`
+    return `+${cleaned.slice(0, 2)} ${cleaned.slice(2, 3)} ${cleaned.slice(3, 7)} ${cleaned.slice(7)}`;
   }
-  
-  return phone
-}
+
+  return phone;
+};
 
 /**
  * Truncate text with ellipsis
  */
 export const truncateText = (text: string, maxLength: number): string => {
-  if (text.length <= maxLength) return text
-  return text.slice(0, maxLength) + '...'
-}
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength) + '...';
+};
 
 /**
  * Get initials from full name
@@ -13572,19 +14676,379 @@ export const truncateText = (text: string, maxLength: number): string => {
 export const getInitials = (name: string): string => {
   return name
     .split(' ')
-    .map(word => word[0])
+    .map((word) => word[0])
     .join('')
     .toUpperCase()
-    .slice(0, 2)
-}
+    .slice(0, 2);
+};
+```
 
+---
+
+## 📄 src\utils\images.ts
+
+_Path: `src\utils\images.ts`_
+
+```typescript
+/**
+ * Image utility functions with comprehensive error handling and fallbacks
+ */
+
+// Get environment variables
+const CDN_URL =
+  import.meta.env.VITE_CDN_URL || import.meta.env.VITE_R2_PUBLIC_URL || '';
+const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+
+// High-quality food image fallbacks from Unsplash
+const FALLBACK_IMAGES = {
+  food: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop&auto=format',
+  curry:
+    'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop&auto=format',
+  rice: 'https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=400&h=300&fit=crop&auto=format',
+  bbq: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=300&fit=crop&auto=format',
+  default:
+    'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop&auto=format',
+};
+
+// Placeholder for loading state
+const PLACEHOLDER_IMAGE =
+  'https://via.placeholder.com/400x300/f3f4f6/9ca3af?text=Loading...';
+
+// SVG placeholder as base64 (last resort fallback)
+const SVG_PLACEHOLDER = `data:image/svg+xml;base64,${btoa(`
+<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#f3f4f6"/>
+  <g>
+    <rect x="150" y="100" width="100" height="80" fill="none" stroke="#9ca3af" stroke-width="3" rx="10"/>
+    <circle cx="175" cy="130" r="8" fill="#9ca3af"/>
+    <circle cx="225" cy="130" r="8" fill="#9ca3af"/>
+    <path d="M175 155 Q200 170 225 155" stroke="#9ca3af" stroke-width="3" fill="none"/>
+  </g>
+  <text x="50%" y="220" font-family="Arial" font-size="16" fill="#9ca3af" text-anchor="middle">No Image Available</text>
+</svg>
+`)}`;
+
+/**
+ * Get the full image URL with comprehensive fallback handling
+ * @param imageUrl - The image URL from the API (can be relative or absolute)
+ * @param category - Optional category for better fallback selection
+ * @returns Absolute image URL or fallback
+ */
+export const getImageUrl = (
+  imageUrl?: string | null,
+  category?: string
+): string => {
+  // Debug logging in development
+  if (import.meta.env.DEV) {
+    console.log('🖼️ [getImageUrl] Processing:', {
+      input: imageUrl,
+      category,
+      CDN_URL,
+      API_URL,
+    });
+  }
+
+  // Case 1: No image URL provided - return category-specific or default fallback
+  if (
+    !imageUrl ||
+    imageUrl.trim() === '' ||
+    imageUrl === 'null' ||
+    imageUrl === 'undefined'
+  ) {
+    const fallback = getCategoryFallback(category);
+    if (import.meta.env.DEV) {
+      console.log(
+        '⚠️ [getImageUrl] No URL provided, using fallback:',
+        fallback
+      );
+    }
+    return fallback;
+  }
+
+  // Case 2: Already a full URL (http/https)
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+    if (import.meta.env.DEV) {
+      console.log('✅ [getImageUrl] Full URL detected:', imageUrl);
+    }
+    return imageUrl;
+  }
+
+  // Case 3: Data URL (base64)
+  if (imageUrl.startsWith('data:')) {
+    if (import.meta.env.DEV) {
+      console.log('✅ [getImageUrl] Data URL detected');
+    }
+    return imageUrl;
+  }
+
+  // Case 4: Construct full URL from relative path
+  let fullUrl = '';
+
+  // Clean the image URL (remove any leading/trailing whitespace)
+  const cleanImageUrl = imageUrl.trim();
+
+  // If we have a CDN URL, use it
+  if (CDN_URL) {
+    // Remove leading slash from image URL if present
+    const imagePath = cleanImageUrl.startsWith('/')
+      ? cleanImageUrl.substring(1)
+      : cleanImageUrl;
+
+    // Ensure CDN URL doesn't end with slash
+    const baseUrl = CDN_URL.endsWith('/') ? CDN_URL.slice(0, -1) : CDN_URL;
+
+    fullUrl = `${baseUrl}/${imagePath}`;
+  }
+  // Otherwise, use API URL as fallback
+  else {
+    // If the path doesn't start with /, assume it needs /static/ prefix
+    if (!cleanImageUrl.startsWith('/')) {
+      fullUrl = `${API_URL}/static/${cleanImageUrl}`;
+    } else {
+      fullUrl = `${API_URL}${cleanImageUrl}`;
+    }
+  }
+
+  if (import.meta.env.DEV) {
+    console.log('✅ [getImageUrl] Constructed URL:', fullUrl);
+  }
+
+  return fullUrl;
+};
+
+/**
+ * Get category-specific fallback image
+ * @param category - The food category
+ * @returns Appropriate fallback image URL
+ */
+const getCategoryFallback = (category?: string): string => {
+  if (!category) return FALLBACK_IMAGES.default;
+
+  const lowerCategory = category.toLowerCase();
+
+  if (lowerCategory.includes('rice')) return FALLBACK_IMAGES.rice;
+  if (lowerCategory.includes('curry')) return FALLBACK_IMAGES.curry;
+  if (lowerCategory.includes('bbq') || lowerCategory.includes('grill'))
+    return FALLBACK_IMAGES.bbq;
+
+  return FALLBACK_IMAGES.default;
+};
+
+/**
+ * Handle image loading errors with multi-level fallback
+ * @param event - The error event from img element
+ * @param category - Optional category for better fallback
+ */
+export const handleImageError = (
+  event: React.SyntheticEvent<HTMLImageElement, Event>,
+  category?: string
+): void => {
+  const target = event.currentTarget;
+  const currentSrc = target.src;
+
+  console.error('❌ [handleImageError] Image failed to load:', currentSrc);
+
+  // Track which fallback level we're at using data attribute
+  const fallbackLevel = parseInt(target.dataset.fallbackLevel || '0', 10);
+
+  if (fallbackLevel === 0) {
+    // Level 1: Try category-specific fallback
+    const categoryFallback = getCategoryFallback(category);
+    console.log(
+      '🔄 [handleImageError] Trying category fallback:',
+      categoryFallback
+    );
+    target.src = categoryFallback;
+    target.dataset.fallbackLevel = '1';
+  } else if (fallbackLevel === 1) {
+    // Level 2: Try generic food fallback
+    console.log('🔄 [handleImageError] Trying generic fallback');
+    target.src = FALLBACK_IMAGES.default;
+    target.dataset.fallbackLevel = '2';
+  } else if (fallbackLevel === 2) {
+    // Level 3: Try placeholder service
+    console.log('🔄 [handleImageError] Trying placeholder service');
+    target.src = PLACEHOLDER_IMAGE;
+    target.dataset.fallbackLevel = '3';
+  } else {
+    // Level 4: Final fallback to SVG
+    console.log('🔄 [handleImageError] Using SVG fallback');
+    target.src = SVG_PLACEHOLDER;
+    target.onerror = null; // Prevent infinite loop
+  }
+};
+
+/**
+ * Preload an image to check if it's valid
+ * @param src - Image source URL
+ * @returns Promise that resolves if image loads successfully
+ */
+export const preloadImage = (src: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+
+    img.onload = () => {
+      console.log('✅ [preloadImage] Successfully loaded:', src);
+      resolve();
+    };
+
+    img.onerror = () => {
+      console.error('❌ [preloadImage] Failed to load:', src);
+      reject(new Error(`Failed to load image: ${src}`));
+    };
+
+    img.src = src;
+  });
+};
+
+/**
+ * Check if image URL is valid format
+ * @param url - URL to check
+ * @returns Boolean indicating if URL appears to be valid image
+ */
+export const isValidImageUrl = (url?: string | null): boolean => {
+  if (!url || url.trim() === '') return false;
+
+  // Check for common image extensions
+  const imageExtensions = [
+    '.jpg',
+    '.jpeg',
+    '.png',
+    '.gif',
+    '.webp',
+    '.svg',
+    '.bmp',
+    '.ico',
+  ];
+  const hasImageExtension = imageExtensions.some((ext) =>
+    url.toLowerCase().includes(ext)
+  );
+
+  // Check for data URLs
+  const isDataUrl = url.startsWith('data:image/');
+
+  // Check for known image services
+  const isImageService =
+    url.includes('unsplash.com') ||
+    url.includes('placeholder.com') ||
+    url.includes('cloudflarestorage.com') ||
+    url.includes('r2.dev') ||
+    url.includes('imagekit.io') ||
+    url.includes('cloudinary.com');
+
+  return hasImageExtension || isDataUrl || isImageService;
+};
+
+/**
+ * Get optimized image URL with transformations (for Cloudflare Images)
+ * @param imageUrl - Original image URL
+ * @param options - Transformation options
+ * @returns Optimized image URL
+ */
+export const getOptimizedImageUrl = (
+  imageUrl: string,
+  options: {
+    width?: number;
+    height?: number;
+    quality?: number;
+    fit?: 'scale-down' | 'contain' | 'cover' | 'crop' | 'pad';
+    format?: 'auto' | 'webp' | 'avif' | 'json';
+  } = {}
+): string => {
+  // Get the base URL
+  const baseUrl = getImageUrl(imageUrl);
+
+  // If it's not a Cloudflare URL, return as-is
+  if (
+    !baseUrl.includes('cloudflarestorage.com') &&
+    !baseUrl.includes('imagedelivery.net')
+  ) {
+    return baseUrl;
+  }
+
+  // Build transformation parameters for Cloudflare Images
+  const params: string[] = [];
+
+  if (options.width) params.push(`w=${options.width}`);
+  if (options.height) params.push(`h=${options.height}`);
+  if (options.quality) params.push(`q=${options.quality}`);
+  if (options.fit) params.push(`fit=${options.fit}`);
+  if (options.format) params.push(`f=${options.format}`);
+
+  // If no transformations, return original
+  if (params.length === 0) {
+    return baseUrl;
+  }
+
+  // Check if URL already has query parameters
+  const separator = baseUrl.includes('?') ? '&' : '?';
+
+  return `${baseUrl}${separator}${params.join('&')}`;
+};
+
+/**
+ * Get placeholder image for loading states
+ * @returns Placeholder image URL
+ */
+export const getPlaceholderImage = (): string => {
+  return PLACEHOLDER_IMAGE;
+};
+
+/**
+ * Get error fallback image
+ * @param category - Optional category for specific fallback
+ * @returns Error fallback image URL
+ */
+export const getErrorFallbackImage = (category?: string): string => {
+  return getCategoryFallback(category);
+};
+
+/**
+ * Generate image srcset for responsive images
+ * @param imageUrl - Base image URL
+ * @param sizes - Array of widths to generate
+ * @returns srcset string for img element
+ */
+export const generateSrcSet = (
+  imageUrl: string,
+  sizes: number[] = [320, 640, 960, 1280, 1920]
+): string => {
+  const baseUrl = getImageUrl(imageUrl);
+
+  // If it's not a Cloudflare URL, return empty (no srcset)
+  if (
+    !baseUrl.includes('cloudflarestorage.com') &&
+    !baseUrl.includes('imagedelivery.net')
+  ) {
+    return '';
+  }
+
+  return sizes
+    .map((size) => {
+      const optimizedUrl = getOptimizedImageUrl(baseUrl, { width: size });
+      return `${optimizedUrl} ${size}w`;
+    })
+    .join(', ');
+};
+
+// Export default for convenience
+export default {
+  getImageUrl,
+  handleImageError,
+  preloadImage,
+  isValidImageUrl,
+  getOptimizedImageUrl,
+  getPlaceholderImage,
+  getErrorFallbackImage,
+  generateSrcSet,
+};
 ```
 
 ---
 
 ## 📄 src\utils\storage.ts
 
-*Path: `src\utils\storage.ts`*
+_Path: `src\utils\storage.ts`_
 
 ```typescript
 /**
@@ -13595,7 +15059,7 @@ const STORAGE_KEYS = {
   AUTH_TOKEN: 'bakars_auth_token',
   CART: 'bakars_cart',
   USER_PREFERENCES: 'bakars_preferences',
-} as const
+} as const;
 
 export const storage = {
   /**
@@ -13603,10 +15067,10 @@ export const storage = {
    */
   setItem: <T>(key: string, value: T): void => {
     try {
-      const serialized = JSON.stringify(value)
-      localStorage.setItem(key, serialized)
+      const serialized = JSON.stringify(value);
+      localStorage.setItem(key, serialized);
     } catch (error) {
-      console.error('Error saving to localStorage:', error)
+      console.error('Error saving to localStorage:', error);
     }
   },
 
@@ -13615,11 +15079,11 @@ export const storage = {
    */
   getItem: <T>(key: string): T | null => {
     try {
-      const item = localStorage.getItem(key)
-      return item ? JSON.parse(item) : null
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : null;
     } catch (error) {
-      console.error('Error reading from localStorage:', error)
-      return null
+      console.error('Error reading from localStorage:', error);
+      return null;
     }
   },
 
@@ -13628,9 +15092,9 @@ export const storage = {
    */
   removeItem: (key: string): void => {
     try {
-      localStorage.removeItem(key)
+      localStorage.removeItem(key);
     } catch (error) {
-      console.error('Error removing from localStorage:', error)
+      console.error('Error removing from localStorage:', error);
     }
   },
 
@@ -13639,90 +15103,102 @@ export const storage = {
    */
   clear: (): void => {
     try {
-      localStorage.clear()
+      localStorage.clear();
     } catch (error) {
-      console.error('Error clearing localStorage:', error)
+      console.error('Error clearing localStorage:', error);
     }
   },
 
   // Predefined key methods
   keys: STORAGE_KEYS,
-}
-
+};
 ```
 
 ---
 
 ## 📄 src\utils\validators.ts
 
-*Path: `src\utils\validators.ts`*
+_Path: `src\utils\validators.ts`_
 
 ```typescript
 /**
  * Validate email format
  */
 export const isValidEmail = (email: string): boolean => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
-}
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
 
 /**
  * Validate Australian phone number
  */
 export const isValidPhone = (phone: string): boolean => {
-  const cleaned = phone.replace(/\D/g, '')
+  const cleaned = phone.replace(/\D/g, '');
   // Australian mobile: 04XX XXX XXX or 614XX XXX XXX
   // Australian landline: 0X XXXX XXXX or 61X XXXX XXXX
-  return /^(04\d{8}|614\d{8}|0[2-8]\d{8}|61[2-8]\d{8})$/.test(cleaned)
-}
+  return /^(04\d{8}|614\d{8}|0[2-8]\d{8}|61[2-8]\d{8})$/.test(cleaned);
+};
 
 /**
  * Validate password strength
  */
-export const isValidPassword = (password: string): { valid: boolean; message?: string } => {
+export const isValidPassword = (
+  password: string
+): { valid: boolean; message?: string } => {
   if (password.length < 8) {
-    return { valid: false, message: 'Password must be at least 8 characters long' }
+    return {
+      valid: false,
+      message: 'Password must be at least 8 characters long',
+    };
   }
-  
+
   if (!/[A-Z]/.test(password)) {
-    return { valid: false, message: 'Password must contain at least one uppercase letter' }
+    return {
+      valid: false,
+      message: 'Password must contain at least one uppercase letter',
+    };
   }
-  
+
   if (!/[a-z]/.test(password)) {
-    return { valid: false, message: 'Password must contain at least one lowercase letter' }
+    return {
+      valid: false,
+      message: 'Password must contain at least one lowercase letter',
+    };
   }
-  
+
   if (!/[0-9]/.test(password)) {
-    return { valid: false, message: 'Password must contain at least one number' }
+    return {
+      valid: false,
+      message: 'Password must contain at least one number',
+    };
   }
-  
-  return { valid: true }
-}
+
+  return { valid: true };
+};
 
 /**
  * Validate postcode
  */
 export const isValidPostcode = (postcode: string): boolean => {
-  return /^\d{4}$/.test(postcode)
-}
+  return /^\d{4}$/.test(postcode);
+};
 
 /**
  * Validate required field
  */
 export const isRequired = (value: any): boolean => {
   if (typeof value === 'string') {
-    return value.trim().length > 0
+    return value.trim().length > 0;
   }
-  return value !== null && value !== undefined
-}
-
+  return value !== null && value !== undefined;
+};
 ```
 
 ---
 
 ## 📄 src\App.tsx
 
-*Path: `src\App.tsx`*
+_Path: `src\App.tsx`_
 
 ```tsx
 import React, { useEffect } from 'react';
@@ -13759,27 +15235,25 @@ const App: React.FC = () => {
 };
 
 export default App;
-
 ```
 
 ---
 
 ## 📄 src\main.tsx
 
-*Path: `src\main.tsx`*
+_Path: `src\main.tsx`_
 
 ```tsx
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App'
-import './styles/globals.css'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import './styles/globals.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
-)
-
+  </React.StrictMode>
+);
 ```
 
 ---

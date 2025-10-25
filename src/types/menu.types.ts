@@ -1,10 +1,11 @@
 export interface MenuItem {
-  id: string;  // Changed from _id to id to match backend
+  _id: string;  // MongoDB ID
+  id: string;   // Also support 'id' field for compatibility
   name: string;
   description: string;
   category: string;
   price: number;
-  image_url?: string;
+  image_url?: string;  // ✅ This can be null/undefined
   is_available: boolean;
   is_available_for_daily: boolean;
   is_available_for_weekly: boolean;
@@ -27,7 +28,8 @@ export interface MenuItem {
 }
 
 export interface Sideline {
-  id: string;  // Changed from _id to id
+  _id: string;
+  id: string;
   name: string;
   description?: string;
   price: number;
@@ -39,13 +41,14 @@ export interface Sideline {
 }
 
 export interface MenuCategory {
-  id?: string;  // Changed from _id to id
+  _id: string;
+  id: string;
   name: string;
   display_name: string;
   description?: string;
   image_url?: string;
-  is_active?: boolean;
-  sort_order?: number;
+  is_active: boolean;
+  sort_order: number;
 }
 
 export interface MenuFilters {

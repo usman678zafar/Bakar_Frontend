@@ -12,6 +12,7 @@ import {
   Leaf,
   AlertCircle,
   LogIn,
+  Utensils,
 } from 'lucide-react';
 import Card from '@components/common/Card';
 import Button from '@components/common/Button';
@@ -31,20 +32,13 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [showDetails, setShowDetails] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const { addToCart, isUpdating } = useCart();
   const { isAuthenticated } = useAuthStore();
   const { showToast } = useToast();
 
   const handleAddToCart = async () => {
-    // Debug log
-    console.log('🛒 Adding to cart - Item:', {
-      id: item.id,
-      name: item.name,
-      quantity,
-      hasId: !!item.id,
-    });
-
     if (!item.id) {
       console.error('❌ Item missing ID:', item);
       showToast('Error: Item data is invalid', 'error');
@@ -75,6 +69,16 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   // Get the proper image URL
   const imageUrl = getImageUrl(item.image_url);
 
+  const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    setImageError(true);
+    handleImageError(e);
+  };
+
+  const onImageLoad = () => {
+    setImageLoaded(true);
+    setImageError(false);
+  };
+
   return (
     <Card
       className="overflow-hidden hover:shadow-xl transition-shadow duration-300"
@@ -83,29 +87,24 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
       {/* Image */}
       <div className="relative h-48 overflow-hidden bg-gray-100">
         {/* Loading skeleton */}
-        {!imageLoaded && (
-          <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-            <Utensils className="text-gray-400" size={32} />
+        {!imageLoaded && !imageError && (
+          <div className="absolute inset-0 bg-gray-200 animate-pulse flex flex-col items-center justify-center">
+            <Utensils className="text-gray-400 mb-2" size={32} />
+            <span className="text-gray-400 text-sm">Loading...</span>
           </div>
         )}
 
+        {/* Actual image */}
         <img
           src={imageUrl}
           alt={item.name}
           className={`w-full h-full object-cover transition-all duration-300 ${
             imageLoaded ? 'opacity-100 hover:scale-110' : 'opacity-0'
           }`}
-          onLoad={() => setImageLoaded(true)}
-          onError={handleImageError}
+          onLoad={onImageLoad}
+          onError={onImageError}
           loading="lazy"
         />
-
-        {/* Debug info in development */}
-        {import.meta.env.DEV && !item.id && (
-          <div className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
-            Missing ID
-          </div>
-        )}
 
         {/* Availability badge */}
         {!item.is_available && (
@@ -202,8 +201,6 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
                   <LogIn size={16} className="mr-1" />
                   Login
                 </>
-              ) : !item.id ? (
-                'Invalid'
               ) : (
                 <>
                   <ShoppingCart size={16} className="mr-1" />
@@ -283,8 +280,5 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
     </Card>
   );
 };
-
-// Add missing import
-import { Utensils } from 'lucide-react';
 
 export default MenuItemCard;

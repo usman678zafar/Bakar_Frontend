@@ -1,134 +1,123 @@
-import React, { useState, useEffect } from 'react';
-import { useMenu } from '@hooks/useMenu';
-import { useCartStore } from '@store/cartStore';
+import React, { useEffect, useState } from 'react';
+import { useMenuStore } from '@store/menuStore';
+import { useAuthStore } from '@store/authStore';
 import MenuItemCard from '@components/menu/MenuItemCard';
-import FilterBar from '@components/menu/FilterBar';
 import CartSummary from '@components/menu/CartSummary';
+import FilterBar from '@components/menu/FilterBar';
 import LoadingSpinner from '@components/common/LoadingSpinner';
+import Card from '@components/common/Card';
 import Button from '@components/common/Button';
 import {
-  Search,
-  MapPin,
-  Store,
-  Utensils,
-  Zap,
+  Package,
+  RefreshCcw,
+  AlertCircle,
+  Truck,
   Award,
   Clock,
-  Truck,
   Shield,
+  MapPin,
+  ChefHat,
+  Sparkles,
 } from 'lucide-react';
-import { useDebounce } from '@hooks/useDebounce';
+import { useToast } from '@components/common/Toast';
 
 const DailyMenuPage: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [localDeliveryOption, setLocalDeliveryOption] = useState<
-    'delivery' | 'pickup'
-  >('delivery');
-
+  const { isAuthenticated } = useAuthStore();
   const {
     dailyMenuItems,
     categories,
     activeFilters,
     isLoading,
-    searchMenuItems,
+    error,
+    fetchDailyMenu,
+    fetchCategories,
     setFilters,
     clearFilters,
     getFilteredItems,
-  } = useMenu('daily_menu');
+  } = useMenuStore();
+  const { showToast } = useToast();
 
-  const { setOrderType, setDeliveryOption } = useCartStore();
-  const debouncedSearch = useDebounce(searchQuery, 500);
+  const [retryCount, setRetryCount] = useState(0);
 
+  // Fetch data on mount
   useEffect(() => {
-    setOrderType('daily_menu');
-    setDeliveryOption(localDeliveryOption);
-  }, [localDeliveryOption, setOrderType, setDeliveryOption]);
+    loadMenuData();
+  }, []);
 
-  useEffect(() => {
-    if (debouncedSearch) {
-      searchMenuItems(debouncedSearch);
+  // Load menu data
+  const loadMenuData = async () => {
+    try {
+      await Promise.all([fetchDailyMenu(), fetchCategories()]);
+    } catch (error) {
+      console.error('Failed to load menu data:', error);
     }
-  }, [debouncedSearch, searchMenuItems]);
+  };
 
+  // Retry loading
+  const handleRetry = () => {
+    setRetryCount((prev) => prev + 1);
+    loadMenuData();
+  };
+
+  // Get filtered items
   const filteredItems = getFilteredItems('daily_menu');
 
-  if (isLoading) {
+  // Loading state
+  if (isLoading && dailyMenuItems.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner size="lg" message="Loading menu..." />
+      <div className="container-custom py-12">
+        <LoadingSpinner message="Loading daily menu..." />
+      </div>
+    );
+  }
+
+  // Error state
+  if (error && dailyMenuItems.length === 0) {
+    return (
+      <div className="container-custom py-12">
+        <Card padding="lg" className="max-w-2xl mx-auto text-center">
+          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <AlertCircle className="h-12 w-12 text-red-500" />
+          </div>
+          <h2 className="font-heading text-3xl font-bold text-text mb-4">
+            Failed to Load Menu
+          </h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={handleRetry}
+            className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors inline-flex items-center space-x-2"
+          >
+            <RefreshCcw size={20} />
+            <span>Retry Loading</span>
+          </button>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container-custom py-12">
-        {/* Page header */}
-        <div className="text-center mb-8">
-          <h1 className="font-heading text-4xl md:text-5xl font-bold text-text mb-4">
+    <div className="bg-background min-h-screen py-8">
+      <div className="container-custom">
+        {/* Hero Section */}
+        <div className="text-center mb-12">
+          <h1 className="font-heading text-5xl font-bold text-text mb-4">
             Daily Menu
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Fresh meals prepared daily. Order for pickup or delivery within 6km.
+            Fresh meals prepared daily. Order for pickup or delivery within 6km
+            of Guildford.
           </p>
-        </div>
-
-        {/* Delivery options */}
-        <div className="max-w-xl mx-auto mb-8">
-          <div className="bg-white rounded-xl shadow-md p-2 flex space-x-2">
-            <button
-              onClick={() => setLocalDeliveryOption('delivery')}
-              className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-semibold transition-all ${
-                localDeliveryOption === 'delivery'
-                  ? 'bg-primary text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              <MapPin size={20} />
-              <span>Delivery</span>
-            </button>
-
-            <button
-              onClick={() => setLocalDeliveryOption('pickup')}
-              className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-semibold transition-all ${
-                localDeliveryOption === 'pickup'
-                  ? 'bg-primary text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              <Store size={20} />
-              <span>Pickup</span>
-            </button>
-          </div>
-
-          {localDeliveryOption === 'delivery' && (
-            <p className="text-sm text-gray-600 text-center mt-3 flex items-center justify-center space-x-2">
-              <MapPin size={14} className="text-primary" />
-              <span>Delivery available within 6km of Guildford 2161</span>
-            </p>
-          )}
-        </div>
-
-        {/* Search bar */}
-        <div className="max-w-2xl mx-auto mb-8">
-          <div className="relative">
-            <Search
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
-              size={20}
-            />
-            <input
-              type="text"
-              placeholder="Search for dishes..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-lg"
-            />
+          <div className="mt-6 flex items-center justify-center space-x-2 text-sm">
+            <Package size={16} className="text-primary" />
+            <span className="text-gray-600">
+              Delivery available within 6km of Guildford • $10 delivery fee
+            </span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Left column - Filters and menu */}
-          <div className="lg:col-span-3 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-8 space-y-6">
             {/* Filters */}
             <FilterBar
               categories={categories}
@@ -137,81 +126,119 @@ const DailyMenuPage: React.FC = () => {
               onClearFilters={clearFilters}
             />
 
-            {/* Menu items grid */}
+            {/* Menu Items Grid */}
             {filteredItems.length > 0 ? (
-              <>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-heading text-2xl font-bold text-text">
-                    Available Items ({filteredItems.length})
-                  </h2>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {filteredItems.map((item) => (
-                    <MenuItemCard key={item._id} item={item} />
-                  ))}
-                </div>
-              </>
-            ) : (
-              <div className="bg-white rounded-xl shadow-md p-12 text-center">
-                <p className="text-gray-500 text-lg mb-4">
-                  {searchQuery
-                    ? `No items found for "${searchQuery}"`
-                    : 'No items match your filters'}
-                </p>
-                <Button variant="outline" onClick={clearFilters}>
-                  Clear Filters
-                </Button>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {filteredItems.map((item) => (
+                  <MenuItemCard
+                    key={item._id || item.id}
+                    item={item}
+                    showQuickAdd={isAuthenticated}
+                  />
+                ))}
               </div>
+            ) : (
+              <Card padding="lg">
+                <div className="text-center py-12">
+                  <Package className="mx-auto h-20 w-20 text-gray-300 mb-4" />
+                  <h3 className="font-semibold text-gray-500 mb-2 text-xl">
+                    {dailyMenuItems.length === 0
+                      ? 'No menu items available'
+                      : 'No items match your filters'}
+                  </h3>
+                  <p className="text-gray-400 mb-6">
+                    {dailyMenuItems.length === 0
+                      ? 'Please check back later or contact us.'
+                      : 'Try adjusting your filters to see more items.'}
+                  </p>
+                  {activeFilters.category ||
+                  activeFilters.is_vegetarian ||
+                  activeFilters.is_vegan ? (
+                    <button
+                      onClick={clearFilters}
+                      className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors"
+                    >
+                      Clear Filters
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleRetry}
+                      className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors inline-flex items-center space-x-2"
+                    >
+                      <RefreshCcw size={18} />
+                      <span>Refresh Menu</span>
+                    </button>
+                  )}
+                </div>
+              </Card>
             )}
           </div>
 
-          {/* Right column - Cart summary (sticky) */}
-          <div className="lg:col-span-1">
+          {/* Sidebar - Cart Summary */}
+          <div className="lg:col-span-4">
             <CartSummary sticky />
           </div>
         </div>
 
-        {/* Info section with proper icons */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white rounded-xl shadow-md p-6 text-center group hover:shadow-xl transition-all duration-300">
-            <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-              <Utensils className="text-primary" size={32} />
+        {/* Info Cards with Professional Icons */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+          {/* Fresh Daily Card */}
+          <Card
+            padding="lg"
+            className="text-center hover:shadow-xl transition-shadow"
+          >
+            <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <ChefHat className="text-primary" size={32} />
             </div>
-            <h3 className="font-semibold text-text mb-2">Fresh Daily</h3>
-            <p className="text-sm text-gray-600">
-              All meals prepared fresh every day with quality ingredients
+            <h3 className="font-heading text-xl font-bold text-text mb-2">
+              Fresh Daily
+            </h3>
+            <p className="text-gray-600 text-sm">
+              All meals prepared daily with quality ingredients
             </p>
-          </div>
+          </Card>
 
-          <div className="bg-white rounded-xl shadow-md p-6 text-center group hover:shadow-xl transition-all duration-300">
-            <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-              <Zap className="text-primary" size={32} />
+          {/* Fast Delivery Card */}
+          <Card
+            padding="lg"
+            className="text-center hover:shadow-xl transition-shadow"
+          >
+            <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Truck className="text-primary" size={32} />
             </div>
-            <h3 className="font-semibold text-text mb-2">Fast Delivery</h3>
-            <p className="text-sm text-gray-600">
-              Quick delivery to your door or pickup available
+            <h3 className="font-heading text-xl font-bold text-text mb-2">
+              Fast Delivery
+            </h3>
+            <p className="text-gray-600 text-sm">
+              Quick delivery or pickup available within 6km radius
             </p>
-          </div>
+          </Card>
 
-          <div className="bg-white rounded-xl shadow-md p-6 text-center group hover:shadow-xl transition-all duration-300">
-            <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+          {/* Quality Guaranteed Card */}
+          <Card
+            padding="lg"
+            className="text-center hover:shadow-xl transition-shadow"
+          >
+            <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">
               <Award className="text-primary" size={32} />
             </div>
-            <h3 className="font-semibold text-text mb-2">Quality Guaranteed</h3>
-            <p className="text-sm text-gray-600">
-              Satisfaction guaranteed or your money back
+            <h3 className="font-heading text-xl font-bold text-text mb-2">
+              Quality Guaranteed
+            </h3>
+            <p className="text-gray-600 text-sm">
+              Satisfaction guaranteed on your every order
             </p>
-          </div>
+          </Card>
         </div>
 
-        {/* Additional Info Section */}
+        {/* Additional Feature Cards */}
         <div className="mt-12 bg-gradient-to-br from-primary-50 to-orange-50 rounded-xl p-8">
           <h2 className="font-heading text-2xl font-bold text-text mb-6 text-center">
             Why Choose Our Daily Menu?
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Order Anytime */}
             <div className="flex items-start space-x-3">
               <Clock className="text-primary flex-shrink-0 mt-1" size={24} />
               <div>
@@ -222,8 +249,9 @@ const DailyMenuPage: React.FC = () => {
               </div>
             </div>
 
+            {/* Free Delivery */}
             <div className="flex items-start space-x-3">
-              <Truck className="text-primary flex-shrink-0 mt-1" size={24} />
+              <MapPin className="text-primary flex-shrink-0 mt-1" size={24} />
               <div>
                 <h4 className="font-semibold text-text mb-1">Free Delivery</h4>
                 <p className="text-sm text-gray-600">
@@ -232,6 +260,7 @@ const DailyMenuPage: React.FC = () => {
               </div>
             </div>
 
+            {/* Safe & Hygienic */}
             <div className="flex items-start space-x-3">
               <Shield className="text-primary flex-shrink-0 mt-1" size={24} />
               <div>
@@ -244,8 +273,9 @@ const DailyMenuPage: React.FC = () => {
               </div>
             </div>
 
+            {/* Best Quality */}
             <div className="flex items-start space-x-3">
-              <Award className="text-primary flex-shrink-0 mt-1" size={24} />
+              <Sparkles className="text-primary flex-shrink-0 mt-1" size={24} />
               <div>
                 <h4 className="font-semibold text-text mb-1">Best Quality</h4>
                 <p className="text-sm text-gray-600">
