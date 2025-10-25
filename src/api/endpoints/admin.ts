@@ -7,18 +7,23 @@ export const adminAPI = {
   /**
    * Get dashboard statistics
    */
-  getDashboardStats: () =>
-    apiClient.get<ApiResponse<any>>('/admin/dashboard'),
+  getDashboardStats: () => apiClient.get<ApiResponse<any>>('/admin/dashboard'),
 
   /**
    * Get all orders
    */
-  getAllOrders: (filters?: { status?: string; date_from?: string; date_to?: string }) => {
+  getAllOrders: (filters?: {
+    status?: string;
+    date_from?: string;
+    date_to?: string;
+  }) => {
     const params = new URLSearchParams();
     if (filters?.status) params.append('status', filters.status);
     if (filters?.date_from) params.append('date_from', filters.date_from);
     if (filters?.date_to) params.append('date_to', filters.date_to);
-    return apiClient.get<ApiResponse<Order[]>>(`/admin/orders?${params.toString()}`);
+    return apiClient.get<ApiResponse<Order[]>>(
+      `/admin/orders?${params.toString()}`
+    );
   },
 
   /**
@@ -64,9 +69,13 @@ export const adminAPI = {
    * Update sideline
    */
   updateSideline: (sidelineId: string, data: FormData) =>
-    apiClient.put<ApiResponse<Sideline>>(`/admin/sidelines/${sidelineId}`, data, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    }),
+    apiClient.put<ApiResponse<Sideline>>(
+      `/admin/sidelines/${sidelineId}`,
+      data,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    ),
 
   /**
    * Delete sideline
@@ -75,14 +84,24 @@ export const adminAPI = {
     apiClient.delete<ApiResponse<void>>(`/admin/sidelines/${sidelineId}`),
 
   /**
-   * Get all menu items (admin)
+   * Get all menu items (admin) - ✅ FIXED: Include ALL items regardless of availability
+   * Admin should see ALL items including unavailable ones
    */
-  getAllMenuItems: () =>
-    apiClient.get<ApiResponse<MenuItem[]>>('/admin/menu-items'),
+  getAllMenuItems: () => {
+    console.log('🔍 [Admin API] Fetching ALL menu items including unavailable...');
+    // Add include_unavailable parameter to explicitly request all items
+    return apiClient.get<ApiResponse<MenuItem[]>>(
+      '/admin/menu-items?include_unavailable=true&include_all=true'
+    );
+  },
 
   /**
-   * Get all sidelines (admin)
+   * Get all sidelines (admin) - ✅ FIXED: Include ALL items regardless of availability
    */
-  getAllSidelines: () =>
-    apiClient.get<ApiResponse<Sideline[]>>('/admin/sidelines'),
+  getAllSidelines: () => {
+    console.log('🔍 [Admin API] Fetching ALL sidelines including unavailable...');
+    return apiClient.get<ApiResponse<Sideline[]>>(
+      '/admin/sidelines?include_unavailable=true&include_all=true'
+    );
+  },
 };

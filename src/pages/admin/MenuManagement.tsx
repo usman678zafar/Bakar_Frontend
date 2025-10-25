@@ -9,7 +9,15 @@ import Button from '@components/common/Button';
 import Card from '@components/common/Card';
 import Modal from '@components/common/Modal';
 import Input from '@components/common/Input';
-import { Plus, Search, Filter, RefreshCcw } from 'lucide-react';
+import {
+  Plus,
+  Search,
+  Filter,
+  RefreshCcw,
+  Eye,
+  EyeOff,
+  Info,
+} from 'lucide-react';
 import { MenuItem } from '@types/menu.types';
 
 const MenuManagement: React.FC = () => {
@@ -27,6 +35,7 @@ const MenuManagement: React.FC = () => {
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [showUnavailable, setShowUnavailable] = useState(true); // ✅ DEFAULT: Show ALL items including unavailable
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
@@ -35,8 +44,11 @@ const MenuManagement: React.FC = () => {
 
   const loadData = async () => {
     try {
+      console.log('🔄 Loading menu management data...');
       await Promise.all([fetchManagedMenuItems(), fetchManagedCategories()]);
+      console.log('✅ Menu management data loaded');
     } catch (error) {
+      console.error('❌ Failed to load menu data:', error);
       showToast('Failed to load menu data', 'error');
     }
   };
@@ -71,15 +83,15 @@ const MenuManagement: React.FC = () => {
 
   const handleCloseEdit = () => {
     setEditingItem(null);
-    loadData();
+    loadData(); // Refresh data after edit
   };
 
   const handleCloseAdd = () => {
     setShowAddModal(false);
-    loadData();
+    loadData(); // Refresh data after add
   };
 
-  // Filter menu items based on search and category
+  // ✅ FIXED: Filter menu items - Admin sees ALL items by default
   const filteredItems = managedMenuItems.filter((item) => {
     const matchesSearch =
       searchQuery === '' ||
@@ -89,7 +101,27 @@ const MenuManagement: React.FC = () => {
     const matchesCategory =
       selectedCategory === '' || item.category === selectedCategory;
 
-    return matchesSearch && matchesCategory;
+    // ✅ FIXED: Only filter by availability if admin chooses to hide unavailable items
+    const matchesAvailability = showUnavailable || item.is_available;
+
+    return matchesSearch && matchesCategory && matchesAvailability;
+  });
+
+  // ✅ Calculate stats including ALL items (don't filter managedMenuItems)
+  const totalItems = managedMenuItems.length;
+  const availableItems = managedMenuItems.filter(
+    (item) => item.is_available
+  ).length;
+  const unavailableItems = managedMenuItems.filter(
+    (item) => !item.is_available
+  ).length;
+
+  console.log('📊 Menu Management Stats:', {
+    total: totalItems,
+    available: availableItems,
+    unavailable: unavailableItems,
+    filtered: filteredItems.length,
+    showingUnavailable: showUnavailable,
   });
 
   if (isLoading && managedMenuItems.length === 0) {
@@ -137,12 +169,12 @@ const MenuManagement: React.FC = () => {
           </div>
         </div>
 
-        {/* Stats Cards */}
+        {/* ✅ Stats Cards - Shows counts of ALL items */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card padding="lg">
             <div className="text-center">
               <h3 className="text-3xl font-bold text-primary mb-2">
-                {managedMenuItems.length}
+                {totalItems}
               </h3>
               <p className="text-sm text-gray-600">Total Items</p>
             </div>
@@ -151,7 +183,7 @@ const MenuManagement: React.FC = () => {
           <Card padding="lg">
             <div className="text-center">
               <h3 className="text-3xl font-bold text-green-600 mb-2">
-                {managedMenuItems.filter((item) => item.is_available).length}
+                {availableItems}
               </h3>
               <p className="text-sm text-gray-600">Available</p>
             </div>
@@ -160,7 +192,7 @@ const MenuManagement: React.FC = () => {
           <Card padding="lg">
             <div className="text-center">
               <h3 className="text-3xl font-bold text-orange-600 mb-2">
-                {managedMenuItems.filter((item) => !item.is_available).length}
+                {unavailableItems}
               </h3>
               <p className="text-sm text-gray-600">Unavailable</p>
             </div>
@@ -218,13 +250,38 @@ const MenuManagement: React.FC = () => {
               </div>
             </div>
 
+            {/* ✅ FIXED: Availability Toggle - Default shows all */}
+            <div className="md:w-auto">
+              <button
+                onClick={() => setShowUnavailable(!showUnavailable)}
+                className={`flex items-center space-x-2 px-4 py-3 border-2 rounded-lg transition-all ${
+                  showUnavailable
+                    ? 'border-primary bg-primary text-white'
+                    : 'border-orange-500 bg-orange-500 text-white'
+                }`}
+              >
+                {showUnavailable ? (
+                  <>
+                    <Eye size={20} />
+                    <span>Showing All</span>
+                  </>
+                ) : (
+                  <>
+                    <EyeOff size={20} />
+                    <span>Available Only</span>
+                  </>
+                )}
+              </button>
+            </div>
+
             {/* Clear Filters */}
-            {(searchQuery || selectedCategory) && (
+            {(searchQuery || selectedCategory || !showUnavailable) && (
               <Button
                 variant="ghost"
                 onClick={() => {
                   setSearchQuery('');
                   setSelectedCategory('');
+                  setShowUnavailable(true);
                 }}
               >
                 Clear Filters
@@ -233,7 +290,7 @@ const MenuManagement: React.FC = () => {
           </div>
 
           {/* Active Filters Display */}
-          {(searchQuery || selectedCategory) && (
+          {(searchQuery || selectedCategory || !showUnavailable) && (
             <div className="mt-4 flex items-center space-x-2">
               <span className="text-sm text-gray-600">Active filters:</span>
               {searchQuery && (
@@ -246,11 +303,30 @@ const MenuManagement: React.FC = () => {
                   Category: {selectedCategory}
                 </span>
               )}
+              {!showUnavailable && (
+                <span className="inline-block px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-sm">
+                  Available Only
+                </span>
+              )}
               <span className="text-sm text-gray-600 ml-2">
-                ({filteredItems.length} results)
+                ({filteredItems.length} of {managedMenuItems.length} items)
               </span>
             </div>
           )}
+
+          {/* ✅ IMPROVED: Info Message for Admin */}
+          <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <p className="text-sm text-blue-800 flex items-start space-x-2">
+              <Info size={16} className="text-blue-600 mt-0.5 flex-shrink-0" />
+              <span>
+                <strong>Admin View:</strong> You can see and manage ALL menu
+                items regardless of their availability status. Items marked as{' '}
+                <span className="font-semibold">unavailable</span> will not be
+                shown to customers but remain visible here for management. Use
+                the toggle above to filter your view.
+              </span>
+            </p>
+          </div>
         </Card>
 
         {/* Menu Items List */}

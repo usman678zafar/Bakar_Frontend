@@ -55,13 +55,12 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     try {
       console.log('📡 Fetching all orders...');
       const response = await adminAPI.getAllOrders(filters);
-      
-      // ✅ Unwrap response properly
+
       const ordersData = response.data.data || response.data;
       const orders = Array.isArray(ordersData) ? ordersData : [];
-      
+
       console.log('✅ Orders loaded:', orders.length);
-      
+
       set({
         allOrders: orders,
         isLoading: false,
@@ -81,15 +80,11 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     try {
       console.log('📡 Fetching dashboard stats...');
       const response = await adminAPI.getDashboardStats();
-      
-      console.log('📦 Dashboard response:', response.data);
-      
-      // ✅ Unwrap response properly
+
       const statsData = response.data.data || response.data;
-      
+
       console.log('✅ Stats loaded:', statsData);
-      
-      // ✅ Provide default values if stats are null/undefined
+
       set({
         orderStats: statsData || {
           total_orders: 0,
@@ -105,8 +100,7 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       });
     } catch (error: any) {
       console.error('❌ Failed to fetch dashboard stats:', error);
-      
-      // ✅ Set default stats on error
+
       set({
         orderStats: {
           total_orders: 0,
@@ -139,7 +133,7 @@ export const useAdminStore = create<AdminState>((set, get) => ({
         ),
         isUpdating: false,
       });
-      
+
       console.log('✅ Order status updated');
     } catch (error: any) {
       console.error('❌ Failed to update order:', error);
@@ -151,24 +145,58 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     }
   },
 
-  // ✅ Fetch managed menu items
+  // ✅ FIXED: Fetch ALL menu items for admin (including unavailable)
   fetchManagedMenuItems: async () => {
     set({ isLoading: true, error: null });
     try {
-      console.log('📡 Fetching menu items...');
+      console.log('📡 [ADMIN] Fetching ALL menu items (including unavailable)...');
+      
+      // Use admin API that includes unavailable items
       const response = await adminAPI.getAllMenuItems();
-      
+      console.log('📦 [ADMIN] Raw response:', response);
+
       const menuData = response.data.data || response.data;
-      const items = Array.isArray(menuData) ? menuData : [];
+      let items = Array.isArray(menuData) ? menuData : [];
       
-      console.log('✅ Menu items loaded:', items.length);
+      // If admin endpoint doesn't exist or returns empty, fallback to regular endpoint
+      if (items.length === 0) {
+        console.log('⚠️ [ADMIN] Admin endpoint empty, trying fallback to daily menu...');
+        try {
+          const fallbackResponse = await menuAPI.getDailyMenu();
+          const fallbackData = fallbackResponse.data.data || fallbackResponse.data;
+          items = Array.isArray(fallbackData) ? fallbackData : [];
+          console.log('✅ [ADMIN] Fallback loaded:', items.length, 'items');
+        } catch (fallbackError) {
+          console.error('❌ [ADMIN] Fallback also failed:', fallbackError);
+        }
+      }
+
+      // Log availability status for debugging
+      const availableCount = items.filter(item => item.is_available).length;
+      const unavailableCount = items.filter(item => !item.is_available).length;
       
+      console.log('✅ [ADMIN] All menu items loaded:', items.length);
+      console.log(`📊 [ADMIN] Available: ${availableCount}, Unavailable: ${unavailableCount}`);
+      
+      // Log sample items for debugging
+      if (items.length > 0) {
+        console.log('📦 [ADMIN] Sample items:', items.slice(0, 3).map(item => ({
+          id: item._id,
+          name: item.name,
+          is_available: item.is_available,
+          category: item.category
+        })));
+      }
+
       set({
-        managedMenuItems: items,
+        managedMenuItems: items, // Store ALL items without filtering
         isLoading: false,
       });
     } catch (error: any) {
-      console.error('❌ Failed to fetch menu items:', error);
+      console.error('❌ [ADMIN] Failed to fetch menu items:', error);
+      console.error('Error details:', error.response?.data);
+      
+      // Even on error, try to use cached data if available
       set({
         error: error.response?.data?.message || 'Failed to fetch menu items',
         isLoading: false,
@@ -176,24 +204,39 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     }
   },
 
-  // ✅ Fetch managed sidelines
+  // ✅ FIXED: Fetch ALL sidelines for admin (including unavailable)
   fetchManagedSidelines: async () => {
     set({ isLoading: true, error: null });
     try {
-      console.log('📡 Fetching sidelines...');
+      console.log('📡 [ADMIN] Fetching ALL sidelines (including unavailable)...');
       const response = await adminAPI.getAllSidelines();
-      
+
       const sidelinesData = response.data.data || response.data;
-      const sidelines = Array.isArray(sidelinesData) ? sidelinesData : [];
+      let sidelines = Array.isArray(sidelinesData) ? sidelinesData : [];
       
-      console.log('✅ Sidelines loaded:', sidelines.length);
-      
+      // If admin endpoint doesn't exist or returns empty, fallback
+      if (sidelines.length === 0) {
+        console.log('⚠️ [ADMIN] Admin endpoint empty, trying fallback...');
+        try {
+          const fallbackResponse = await menuAPI.getSidelines();
+          const fallbackData = fallbackResponse.data.data || fallbackResponse.data;
+          sidelines = Array.isArray(fallbackData) ? fallbackData : [];
+        } catch (fallbackError) {
+          console.error('❌ [ADMIN] Fallback failed:', fallbackError);
+        }
+      }
+
+      // Log availability status
+      const availableCount = sidelines.filter(item => item.is_available).length;
+      const unavailableCount = sidelines.filter(item => !item.is_available).length;
+      console.log(`📊 [ADMIN] Sidelines - Available: ${availableCount}, Unavailable: ${unavailableCount}`);
+
       set({
-        managedSidelines: sidelines,
+        managedSidelines: sidelines, // Store ALL items without filtering
         isLoading: false,
       });
     } catch (error: any) {
-      console.error('❌ Failed to fetch sidelines:', error);
+      console.error('❌ [ADMIN] Failed to fetch sidelines:', error);
       set({
         error: error.response?.data?.message || 'Failed to fetch sidelines',
         isLoading: false,
@@ -207,12 +250,12 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     try {
       console.log('📡 Fetching categories...');
       const response = await menuAPI.getCategories();
-      
+
       const categoriesData = response.data.data || response.data;
       const categories = Array.isArray(categoriesData) ? categoriesData : [];
-      
+
       console.log('✅ Categories loaded:', categories);
-      
+
       set({
         managedCategories: categories,
         isLoading: false,
@@ -228,41 +271,66 @@ export const useAdminStore = create<AdminState>((set, get) => ({
 
   // ✅ Create menu item
   createMenuItem: async (data: FormData) => {
-  set({ isUpdating: true, error: null });
-  try {
-    console.log('📡 Creating menu item...');
-    const response = await adminAPI.createMenuItem(data);
-    const newItem = response.data.data || response.data;
-    
-    console.log('✅ Menu item created:', newItem);
-    
-    set({
-      managedMenuItems: [...get().managedMenuItems, newItem],
-      isUpdating: false,
-    });
-  } catch (error: any) {
-    console.error('❌ Failed to create menu item:', error);
-    set({
-      error: error.response?.data?.message || 'Failed to create menu item',
-      isUpdating: false,
-    });
-    throw error;
-  }
-},
+    set({ isUpdating: true, error: null });
+    try {
+      console.log('📡 Creating menu item...');
+      
+      // Log form data for debugging
+      for (let [key, value] of data.entries()) {
+        console.log(`  ${key}: ${value}`);
+      }
+      
+      const response = await adminAPI.createMenuItem(data);
+      const newItem = response.data.data || response.data;
+
+      console.log('✅ Menu item created:', newItem);
+
+      // Refresh the entire list to ensure consistency
+      await get().fetchManagedMenuItems();
+      
+      set({ isUpdating: false });
+    } catch (error: any) {
+      console.error('❌ Failed to create menu item:', error);
+      console.error('Error details:', error.response?.data);
+      set({
+        error: error.response?.data?.message || 'Failed to create menu item',
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
 
   // ✅ Update menu item
   updateMenuItem: async (itemId: string, data: FormData) => {
     set({ isUpdating: true, error: null });
     try {
+      console.log('📡 Updating menu item:', itemId);
+      
+      // Log form data for debugging
+      for (let [key, value] of data.entries()) {
+        console.log(`  ${key}: ${value}`);
+      }
+      
       const response = await adminAPI.updateMenuItem(itemId, data);
       const updatedItem = response.data.data || response.data;
+      
+      console.log('✅ Menu item updated:', updatedItem);
+      
+      // Update the item in the list WITHOUT filtering
+      const currentItems = get().managedMenuItems;
       set({
-        managedMenuItems: get().managedMenuItems.map((item) =>
+        managedMenuItems: currentItems.map((item) =>
           item._id === itemId ? updatedItem : item
         ),
         isUpdating: false,
       });
+      
+      // Optional: Refresh entire list to ensure consistency
+      // await get().fetchManagedMenuItems();
+      
     } catch (error: any) {
+      console.error('❌ Failed to update menu item:', error);
+      console.error('Error details:', error.response?.data);
       set({
         error: error.response?.data?.message || 'Failed to update menu item',
         isUpdating: false,
@@ -297,10 +365,11 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     try {
       const response = await adminAPI.createSideline(data);
       const newSideline = response.data.data || response.data;
-      set({
-        managedSidelines: [...get().managedSidelines, newSideline],
-        isUpdating: false,
-      });
+      
+      // Refresh the entire list
+      await get().fetchManagedSidelines();
+      
+      set({ isUpdating: false });
     } catch (error: any) {
       set({
         error: error.response?.data?.message || 'Failed to create sideline',
@@ -316,8 +385,11 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     try {
       const response = await adminAPI.updateSideline(sidelineId, data);
       const updatedSideline = response.data.data || response.data;
+      
+      // Update the item in the list WITHOUT filtering
+      const currentSidelines = get().managedSidelines;
       set({
-        managedSidelines: get().managedSidelines.map((sideline) =>
+        managedSidelines: currentSidelines.map((sideline) =>
           sideline._id === sidelineId ? updatedSideline : sideline
         ),
         isUpdating: false,
