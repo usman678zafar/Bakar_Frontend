@@ -72,22 +72,24 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <div className="fixed top-4 right-4 z-50 space-y-2">
-        {toasts.map((toast) => (
-          <div
-            key={toast.id}
-            className={`flex items-center space-x-3 px-4 py-3 rounded-lg border-2 shadow-lg animate-slide-in ${getStyles(toast.type)} min-w-[300px] max-w-md`}
-          >
-            {getIcon(toast.type)}
-            <p className="flex-1 font-medium text-sm">{toast.message}</p>
-            <button
-              onClick={() => removeToast(toast.id)}
-              className="hover:bg-white/20 rounded p-1 transition-colors"
+      <div className="fixed inset-x-0 top-8 z-50 flex justify-center pointer-events-none px-4">
+        <div className="space-y-3 w-full max-w-md">
+          {toasts.map((toast) => (
+            <div
+              key={toast.id}
+              className={`pointer-events-auto flex items-center space-x-3 px-4 py-3 rounded-lg border-2 shadow-lg animate-slide-in ${getStyles(toast.type)} w-full`}
             >
-              <X size={18} />
-            </button>
-          </div>
-        ))}
+              {getIcon(toast.type)}
+              <p className="flex-1 font-medium text-sm text-center">{toast.message}</p>
+              <button
+                onClick={() => removeToast(toast.id)}
+                className="hover:bg-white/20 rounded p-1 transition-colors"
+              >
+                <X size={18} />
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
     </ToastContext.Provider>
   );

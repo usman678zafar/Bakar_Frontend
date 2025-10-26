@@ -49,17 +49,17 @@ const Modal: React.FC<ModalProps> = ({
       />
 
       {/* Modal */}
-      <div className="flex min-h-full items-center justify-center p-4">
+      <div className="flex min-h-full items-center justify-center p-4 sm:p-6">
         <div
           className={clsx(
-            'relative w-full bg-white rounded-xl shadow-2xl transform transition-all',
+            'relative w-full bg-white rounded-xl shadow-2xl transform transition-all flex flex-col overflow-hidden max-h-[calc(100vh-3rem)]',
             sizeClasses[size]
           )}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
           {(title || showCloseButton) && (
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-white">
               {title && (
                 <h2 className="text-2xl font-heading font-bold text-text">
                   {title}
@@ -77,7 +77,7 @@ const Modal: React.FC<ModalProps> = ({
           )}
 
           {/* Content */}
-          <div className="p-6">{children}</div>
+          <div className="p-6 overflow-y-auto flex-1">{children}</div>
         </div>
       </div>
     </div>

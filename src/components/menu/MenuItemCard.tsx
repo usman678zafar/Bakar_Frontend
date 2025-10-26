@@ -74,10 +74,8 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
         setQuantity(1);
         setSpecialInstructions('');
         setShowDetailsModal(false);
-        showToast(`${item.name} added to cart!`, 'success');
       } catch (error) {
         console.error('Failed to add to cart:', error);
-        showToast('Failed to add item to cart', 'error');
       }
     }
   };
