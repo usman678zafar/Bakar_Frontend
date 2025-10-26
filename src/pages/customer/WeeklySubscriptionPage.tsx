@@ -16,6 +16,8 @@ import {
   Truck,
   Clock,
   RefreshCcw,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 
 // ===========================
@@ -528,7 +530,7 @@ const WeeklySubscriptionPage: React.FC = () => {
     0
   );
 
-  // Fetch menu items from backend
+  // Fetch menu items from backend - REMOVED showToast notifications
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
@@ -564,7 +566,7 @@ const WeeklySubscriptionPage: React.FC = () => {
 
               if (weeklyAvailableItems.length > 0) {
                 setMenuItems(weeklyAvailableItems);
-                showToast('Showing available items from daily menu', 'info');
+                // REMOVED: showToast('Showing available items from daily menu', 'info');
               } else {
                 setMenuItems([]);
                 setMenuNotFound(true);
@@ -597,14 +599,11 @@ const WeeklySubscriptionPage: React.FC = () => {
 
               if (weeklyAvailableItems.length > 0) {
                 setMenuItems(weeklyAvailableItems);
-                showToast('Showing available items from daily menu', 'info');
+                // REMOVED: showToast('Showing available items from daily menu', 'info');
                 setMenuNotFound(false);
               } else {
                 setMenuItems([]);
-                showToast(
-                  'No items available for weekly subscription at the moment',
-                  'warning'
-                );
+                // REMOVED: showToast('No items available for weekly subscription at the moment', 'warning');
               }
             } catch (dailyError) {
               console.error(

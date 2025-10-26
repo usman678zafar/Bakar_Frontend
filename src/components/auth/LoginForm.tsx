@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@hooks/useAuth';
+import { useCart } from '@hooks/useCart';
 import { useToast } from '@components/common/Toast';
 import Input from '@components/common/Input';
 import Button from '@components/common/Button';
@@ -10,10 +11,12 @@ const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
+  const { addToCart } = useCart();
   const { showToast } = useToast();
 
-  // ✅ Get the return URL from state or default to home
+  // ✅ Get the return URL and check for pending cart item
   const from = location.state?.from || '/';
+  const hasPendingCartItem = location.state?.pendingCartItem || false;
 
   const [formData, setFormData] = useState({
     email: '',
@@ -21,6 +24,36 @@ const LoginForm: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // ✅ Add pending item to cart after successful login
+  const addPendingItemToCart = async () => {
+    const pendingItemStr = localStorage.getItem('bakars_pending_cart_item');
+    if (pendingItemStr) {
+      try {
+        const pendingItem = JSON.parse(pendingItemStr);
+
+        // Check if the item is not too old (24 hours)
+        const itemDate = new Date(pendingItem.timestamp);
+        const now = new Date();
+        const hoursDiff =
+          (now.getTime() - itemDate.getTime()) / (1000 * 60 * 60);
+
+        if (hoursDiff < 24) {
+          await addToCart(
+            pendingItem.item,
+            pendingItem.quantity,
+            pendingItem.specialInstructions
+          );
+          showToast(`${pendingItem.item.name} added to cart!`, 'success');
+        }
+
+        // Clear the pending item
+        localStorage.removeItem('bakars_pending_cart_item');
+      } catch (error) {
+        console.error('Failed to add pending item to cart:', error);
+      }
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +63,11 @@ const LoginForm: React.FC = () => {
     try {
       await login(formData);
       showToast('Login successful!', 'success');
+
+      // ✅ Add pending cart item if exists
+      if (hasPendingCartItem) {
+        await addPendingItemToCart();
+      }
 
       // ✅ Navigate to the intended page or home
       navigate(from, { replace: true });
@@ -50,8 +88,16 @@ const LoginForm: React.FC = () => {
         </h2>
         <p className="text-gray-600">Sign in to your account to continue</p>
 
-        {/* ✅ Show info if redirected from a protected page */}
-        {from !== '/' && from !== '/login' && (
+        {/* ✅ Show info if there's a pending cart item */}
+        {hasPendingCartItem && (
+          <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-3">
+            <p className="text-sm text-green-800">
+              Login to add your selected item to cart
+            </p>
+          </div>
+        )}
+        {/* Show info if redirected from a protected page */}
+        {from !== '/' && from !== '/login' && !hasPendingCartItem && (
           <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3">
             <p className="text-sm text-blue-800">
               Please login to access that page
@@ -128,6 +174,7 @@ const LoginForm: React.FC = () => {
           <span className="text-gray-600">Don't have an account? </span>
           <Link
             to="/register"
+            state={{ from: from, pendingCartItem: hasPendingCartItem }}
             className="text-primary hover:text-primary-600 font-semibold"
           >
             Sign up

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useMenuStore } from '@store/menuStore';
 import { useAuthStore } from '@store/authStore';
 import MenuItemCard from '@components/menu/MenuItemCard';
-import CartSummary from '@components/menu/CartSummary';
 import FilterBar from '@components/menu/FilterBar';
 import LoadingSpinner from '@components/common/LoadingSpinner';
 import Card from '@components/common/Card';
@@ -115,120 +114,62 @@ const DailyMenuPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-8 space-y-6">
-            {/* Filters */}
-            <FilterBar
-              categories={categories}
-              activeFilters={activeFilters}
-              onFilterChange={setFilters}
-              onClearFilters={clearFilters}
-            />
+        {/* Main Content - Now full width */}
+        <div className="space-y-6">
+          {/* Filters */}
+          <FilterBar
+            categories={categories}
+            activeFilters={activeFilters}
+            onFilterChange={setFilters}
+            onClearFilters={clearFilters}
+          />
 
-            {/* Menu Items Grid */}
-            {filteredItems.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filteredItems.map((item) => (
-                  <MenuItemCard
-                    key={item._id || item.id}
-                    item={item}
-                    showQuickAdd={isAuthenticated}
-                  />
-                ))}
+          {/* Menu Items Grid - Adjusted for full width */}
+          {filteredItems.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredItems.map((item) => (
+                <MenuItemCard
+                  key={item._id || item.id}
+                  item={item}
+                  showQuickAdd={true} // Always show Add button
+                />
+              ))}
+            </div>
+          ) : (
+            <Card padding="lg">
+              <div className="text-center py-12">
+                <Package className="mx-auto h-20 w-20 text-gray-300 mb-4" />
+                <h3 className="font-semibold text-gray-500 mb-2 text-xl">
+                  {dailyMenuItems.length === 0
+                    ? 'No menu items available'
+                    : 'No items match your filters'}
+                </h3>
+                <p className="text-gray-400 mb-6">
+                  {dailyMenuItems.length === 0
+                    ? 'Please check back later or contact us.'
+                    : 'Try adjusting your filters to see more items.'}
+                </p>
+                {activeFilters.category ||
+                activeFilters.is_vegetarian ||
+                activeFilters.is_vegan ? (
+                  <button
+                    onClick={clearFilters}
+                    className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors"
+                  >
+                    Clear Filters
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleRetry}
+                    className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors inline-flex items-center space-x-2"
+                  >
+                    <RefreshCcw size={18} />
+                    <span>Refresh Menu</span>
+                  </button>
+                )}
               </div>
-            ) : (
-              <Card padding="lg">
-                <div className="text-center py-12">
-                  <Package className="mx-auto h-20 w-20 text-gray-300 mb-4" />
-                  <h3 className="font-semibold text-gray-500 mb-2 text-xl">
-                    {dailyMenuItems.length === 0
-                      ? 'No menu items available'
-                      : 'No items match your filters'}
-                  </h3>
-                  <p className="text-gray-400 mb-6">
-                    {dailyMenuItems.length === 0
-                      ? 'Please check back later or contact us.'
-                      : 'Try adjusting your filters to see more items.'}
-                  </p>
-                  {activeFilters.category ||
-                  activeFilters.is_vegetarian ||
-                  activeFilters.is_vegan ? (
-                    <button
-                      onClick={clearFilters}
-                      className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors"
-                    >
-                      Clear Filters
-                    </button>
-                  ) : (
-                    <button
-                      onClick={handleRetry}
-                      className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors inline-flex items-center space-x-2"
-                    >
-                      <RefreshCcw size={18} />
-                      <span>Refresh Menu</span>
-                    </button>
-                  )}
-                </div>
-              </Card>
-            )}
-          </div>
-
-          {/* Sidebar - Cart Summary */}
-          <div className="lg:col-span-4">
-            <CartSummary sticky />
-          </div>
-        </div>
-
-        {/* Info Cards with Professional Icons */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-          {/* Fresh Daily Card */}
-          <Card
-            padding="lg"
-            className="text-center hover:shadow-xl transition-shadow"
-          >
-            <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <ChefHat className="text-primary" size={32} />
-            </div>
-            <h3 className="font-heading text-xl font-bold text-text mb-2">
-              Fresh Daily
-            </h3>
-            <p className="text-gray-600 text-sm">
-              All meals prepared daily with quality ingredients
-            </p>
-          </Card>
-
-          {/* Fast Delivery Card */}
-          <Card
-            padding="lg"
-            className="text-center hover:shadow-xl transition-shadow"
-          >
-            <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Truck className="text-primary" size={32} />
-            </div>
-            <h3 className="font-heading text-xl font-bold text-text mb-2">
-              Fast Delivery
-            </h3>
-            <p className="text-gray-600 text-sm">
-              Quick delivery or pickup available within 6km radius
-            </p>
-          </Card>
-
-          {/* Quality Guaranteed Card */}
-          <Card
-            padding="lg"
-            className="text-center hover:shadow-xl transition-shadow"
-          >
-            <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Award className="text-primary" size={32} />
-            </div>
-            <h3 className="font-heading text-xl font-bold text-text mb-2">
-              Quality Guaranteed
-            </h3>
-            <p className="text-gray-600 text-sm">
-              Satisfaction guaranteed on your every order
-            </p>
-          </Card>
+            </Card>
+          )}
         </div>
 
         {/* Additional Feature Cards */}

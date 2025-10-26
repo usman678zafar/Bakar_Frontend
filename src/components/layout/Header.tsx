@@ -71,7 +71,7 @@ const Header: React.FC = () => {
             {/* Cart Icon - Only show if authenticated */}
             {isAuthenticated && (
               <button
-                onClick={() => navigate('/checkout')}
+                onClick={() => navigate('/cart')} // ✅ CHANGED: Navigate to /cart instead of /checkout
                 className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
                 <ShoppingCart size={24} className="text-text" />

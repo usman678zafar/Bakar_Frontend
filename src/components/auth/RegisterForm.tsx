@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@hooks/useAuth';
+import { useCart } from '@hooks/useCart';
 import { useToast } from '@components/common/Toast';
 import Input from '@components/common/Input';
 import Button from '@components/common/Button';
@@ -53,8 +54,14 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   className = '',
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { register } = useAuth();
+  const { addToCart } = useCart();
   const { showToast } = useToast();
+
+  // ✅ Get the return URL and check for pending cart item
+  const from = location.state?.from || '/';
+  const hasPendingCartItem = location.state?.pendingCartItem || false;
 
   const [formData, setFormData] = useState<FormData>({
     first_name: '',
@@ -71,6 +78,36 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [backendErrors, setBackendErrors] = useState<string[]>([]);
+
+  // ✅ Add pending item to cart after successful registration
+  const addPendingItemToCart = async () => {
+    const pendingItemStr = localStorage.getItem('bakars_pending_cart_item');
+    if (pendingItemStr) {
+      try {
+        const pendingItem = JSON.parse(pendingItemStr);
+
+        // Check if the item is not too old (24 hours)
+        const itemDate = new Date(pendingItem.timestamp);
+        const now = new Date();
+        const hoursDiff =
+          (now.getTime() - itemDate.getTime()) / (1000 * 60 * 60);
+
+        if (hoursDiff < 24) {
+          await addToCart(
+            pendingItem.item,
+            pendingItem.quantity,
+            pendingItem.specialInstructions
+          );
+          showToast(`${pendingItem.item.name} added to cart!`, 'success');
+        }
+
+        // Clear the pending item
+        localStorage.removeItem('bakars_pending_cart_item');
+      } catch (error) {
+        console.error('Failed to add pending item to cart:', error);
+      }
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -100,8 +137,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     // Remove all non-digits
     let cleaned = phone.replace(/\D/g, '');
 
-    console.log('🔍 [DEBUG] Original phone:', phone);
-    console.log('🔍 [DEBUG] Cleaned phone:', cleaned);
+    console.log('📞 [DEBUG] Original phone:', phone);
+    console.log('📞 [DEBUG] Cleaned phone:', cleaned);
 
     // If starts with 0, replace with 61
     if (cleaned.startsWith('0')) {
@@ -199,9 +236,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     const errorMessages: string[] = [];
 
     console.log(
-      '╔═══════════════════════════════════════════════════════════════'
+      '═══════════════════════════════════════════════════════════════'
     );
-    console.log('║ 🔴 BACKEND ERROR ANALYSIS');
+    console.log('║ 🔍 BACKEND ERROR ANALYSIS');
     console.log(
       '╠═══════════════════════════════════════════════════════════════'
     );
@@ -235,7 +272,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
       // FastAPI returns array of validation errors
       if (Array.isArray(detail)) {
-        console.log(`📋 Found ${detail.length} validation errors`);
+        console.log(`🔴 Found ${detail.length} validation errors`);
 
         detail.forEach((err: any, index: number) => {
           console.log(
@@ -270,11 +307,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           }
         });
       } else if (typeof detail === 'string') {
-        console.log('📝 Detail is a string:', detail);
+        console.log('🟡 Detail is a string:', detail);
         errorMessages.push(detail);
       } else if (typeof detail === 'object' && detail !== null) {
         console.log(
-          '📦 Detail is an object (stringified):',
+          '🟢 Detail is an object (stringified):',
           JSON.stringify(detail, null, 2)
         );
         errorMessages.push(JSON.stringify(detail));
@@ -283,19 +320,19 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     // Generic error message
     else if (error.response?.data?.message) {
       console.log(
-        '📬 Using response.data.message:',
+        '🟨 Using response.data.message:',
         error.response.data.message
       );
       errorMessages.push(error.response.data.message);
     } else if (error.message) {
-      console.log('📨 Using error.message:', error.message);
+      console.log('🟦 Using error.message:', error.message);
       errorMessages.push(error.message);
     } else {
-      console.log('❌ No recognizable error format, using generic message');
+      console.log('⚠️ No recognizable error format, using generic message');
       errorMessages.push('Registration failed. Please try again.');
     }
 
-    console.log('🎯 Final error messages:', errorMessages);
+    console.log('📋 Final error messages:', errorMessages);
     return errorMessages;
   };
 
@@ -334,14 +371,19 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       console.log('✅ Registration successful!');
       showToast("Registration successful! Welcome to Bakar's Food!", 'success');
 
+      // ✅ Check for pending cart item
+      if (hasPendingCartItem) {
+        await addPendingItemToCart();
+      }
+
       // Call onSuccess callback if provided
       if (onSuccess) {
         onSuccess();
       }
 
-      // Redirect if enabled
+      // ✅ Redirect to the intended page or home
       if (redirectOnSuccess) {
-        navigate('/');
+        navigate(from, { replace: true });
       }
     } catch (error: any) {
       console.error('═══════════════════════════════════════════════════');
@@ -371,6 +413,24 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className={`space-y-4 ${className}`}>
+      {/* Show info if there's a pending cart item */}
+      {hasPendingCartItem && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+          <p className="text-sm text-green-800">
+            Sign up to add your selected item to cart
+          </p>
+        </div>
+      )}
+
+      {/* Show info if redirected from a protected page */}
+      {from !== '/' && from !== '/register' && !hasPendingCartItem && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <p className="text-sm text-blue-800">
+            Please sign up to access that page
+          </p>
+        </div>
+      )}
+
       {/* Backend Errors Display */}
       {backendErrors.length > 0 && (
         <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4">

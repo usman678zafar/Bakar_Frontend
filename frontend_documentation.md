@@ -1,6 +1,6 @@
 # Frontend Project Documentation
 
-_Generated on: 2025-10-25 16:38:59_
+_Generated on: 2025-10-26 18:17:48_
 
 ---
 
@@ -175,24 +175,6 @@ export default {
 
 ---
 
-## 📄 .env.example
-
-_Path: `.env.example`_
-
-```bash
-VITE_API_URL=http://localhost:8000/api/v1
-VITE_API_BASE_URL=http://localhost:8000
-VITE_APP_NAME=Bakars
-VITE_STRIPE_PUBLIC_KEY=
-VITE_GOOGLE_MAPS_API_KEY=AIzaSyBzu9lXawVMs341W_6k2kk2wpJLEdljSWY
-# Cloudflare R2 Public URL (for images)
-VITE_R2_PUBLIC_URL=https://6f63dc6260a584c1fd2d7f64d8d5b8d7.r2.cloudflarestorage.com
-VITE_CDN_URL=https://6f63dc6260a584c1fd2d7f64d8d5b8d7.r2.cloudflarestorage.com
-
-```
-
----
-
 ## 📄 tsconfig.json
 
 _Path: `tsconfig.json`_
@@ -246,60 +228,6 @@ _Path: `tsconfig.json`_
 
 ---
 
-## 📄 package.json
-
-_Path: `package.json`_
-
-```json
-{
-  "name": "bakars-frontend",
-  "private": true,
-  "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
-    "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
-    "type-check": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@hookform/resolvers": "^3.10.0",
-    "axios": "^1.12.2",
-    "clsx": "^2.1.1",
-    "date-fns": "^3.6.0",
-    "lucide-react": "^0.446.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-hook-form": "^7.65.0",
-    "react-router-dom": "^6.30.1",
-    "tailwind-merge": "^2.6.0",
-    "zod": "^3.25.76",
-    "zustand": "^4.5.7"
-  },
-  "devDependencies": {
-    "@types/node": "^24.9.1",
-    "@types/react": "^18.3.10",
-    "@types/react-dom": "^18.3.0",
-    "@typescript-eslint/eslint-plugin": "^8.7.0",
-    "@typescript-eslint/parser": "^8.7.0",
-    "@vitejs/plugin-react": "^4.3.2",
-    "autoprefixer": "^10.4.20",
-    "eslint": "^9.11.1",
-    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
-    "eslint-plugin-react-refresh": "^0.4.12",
-    "postcss": "^8.4.47",
-    "prettier": "^3.3.3",
-    "tailwindcss": "^3.4.13",
-    "typescript": "^5.6.2",
-    "vite": "^5.4.8"
-  }
-}
-```
-
----
-
 ## 📄 vite.config.ts
 
 _Path: `vite.config.ts`_
@@ -335,6 +263,81 @@ export default defineConfig({
     },
   },
 });
+```
+
+---
+
+## 📄 package.json
+
+_Path: `package.json`_
+
+```json
+{
+  "name": "bakars-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.10.0",
+    "axios": "^1.12.2",
+    "clsx": "^2.1.1",
+    "date-fns": "^3.6.0",
+    "framer-motion": "^12.23.24",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^0.446.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.65.0",
+    "react-leaflet": "^4.2.1",
+    "react-router-dom": "^6.30.1",
+    "tailwind-merge": "^2.6.0",
+    "zod": "^3.25.76",
+    "zustand": "^4.5.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.9.1",
+    "@types/react": "^18.3.10",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.7.0",
+    "@typescript-eslint/parser": "^8.7.0",
+    "@vitejs/plugin-react": "^4.3.2",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.11.1",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.12",
+    "postcss": "^8.4.47",
+    "prettier": "^3.3.3",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.8"
+  }
+}
+```
+
+---
+
+## 📄 .env.example
+
+_Path: `.env.example`_
+
+```bash
+VITE_API_URL=http://localhost:8000/api/v1
+VITE_API_BASE_URL=http://localhost:8000
+VITE_APP_NAME=Bakars
+VITE_STRIPE_PUBLIC_KEY=
+VITE_GOOGLE_MAPS_API_KEY=AIzaSyBzu9lXawVMs341W_6k2kk2wpJLEdljSWY
+# Cloudflare R2 Public URL (for images)
+VITE_R2_PUBLIC_URL=https://6f63dc6260a584c1fd2d7f64d8d5b8d7.r2.cloudflarestorage.com
+VITE_CDN_URL=https://6f63dc6260a584c1fd2d7f64d8d5b8d7.r2.cloudflarestorage.com
+
 ```
 
 ---
@@ -430,16 +433,30 @@ export const adminAPI = {
     apiClient.delete<ApiResponse<void>>(`/admin/sidelines/${sidelineId}`),
 
   /**
-   * Get all menu items (admin)
+   * Get all menu items (admin) - ✅ FIXED: Include ALL items regardless of availability
+   * Admin should see ALL items including unavailable ones
    */
-  getAllMenuItems: () =>
-    apiClient.get<ApiResponse<MenuItem[]>>('/admin/menu-items'),
+  getAllMenuItems: () => {
+    console.log(
+      '🔍 [Admin API] Fetching ALL menu items including unavailable...'
+    );
+    // Add include_unavailable parameter to explicitly request all items
+    return apiClient.get<ApiResponse<MenuItem[]>>(
+      '/admin/menu-items?include_unavailable=true&include_all=true'
+    );
+  },
 
   /**
-   * Get all sidelines (admin)
+   * Get all sidelines (admin) - ✅ FIXED: Include ALL items regardless of availability
    */
-  getAllSidelines: () =>
-    apiClient.get<ApiResponse<Sideline[]>>('/admin/sidelines'),
+  getAllSidelines: () => {
+    console.log(
+      '🔍 [Admin API] Fetching ALL sidelines including unavailable...'
+    );
+    return apiClient.get<ApiResponse<Sideline[]>>(
+      '/admin/sidelines?include_unavailable=true&include_all=true'
+    );
+  },
 };
 ```
 
@@ -661,28 +678,59 @@ export const menuAPI = {
       params.append('is_vegan', String(filters.is_vegan));
     if (filters?.search) params.append('search', filters.search);
 
+    // Add filter for weekly available items
+    if (filters?.order_type === 'weekly_subscription') {
+      params.append('is_available_for_weekly', 'true');
+    }
+
     return apiClient.get<ApiResponse<MenuItem[]>>(
       `/menu/daily?${params.toString()}`
     );
   },
 
   /**
-   * Get weekly menu items
-   * ✅ FIX: Provide default delivery_date if not specified
+   * Get weekly menu items with improved error handling
    */
   getWeeklyMenu: (delivery_date?: string) => {
     // If no date provided, use next Monday
     if (!delivery_date) {
       const today = new Date();
       const dayOfWeek = today.getDay();
-      const daysUntilMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek; // If Sunday, add 1 day, else calculate days to next Monday
+      const daysUntilMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek;
       const nextMonday = new Date(today);
       nextMonday.setDate(today.getDate() + daysUntilMonday);
-      delivery_date = nextMonday.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+      delivery_date = nextMonday.toISOString().split('T')[0];
     }
 
     const params = `?delivery_date=${delivery_date}`;
-    return apiClient.get<ApiResponse<any>>(`/menu/weekly${params}`);
+
+    console.log('🔍 Fetching weekly menu for date:', delivery_date);
+
+    return apiClient
+      .get<ApiResponse<any>>(`/menu/weekly${params}`)
+      .catch((error) => {
+        // If 404, don't throw - let the component handle it
+        if (error.response?.status === 404) {
+          console.log('📝 No weekly menu found for date:', delivery_date);
+          // Return a valid but empty response structure
+          return {
+            data: {
+              success: true,
+              data: {
+                delivery_date,
+                menu_rotation: null,
+                items: [],
+              },
+            },
+            status: 404,
+            statusText: 'Not Found',
+            headers: {},
+            config: error.config,
+          };
+        }
+        // Re-throw other errors
+        throw error;
+      });
   },
 
   /**
@@ -5481,18 +5529,23 @@ _Path: `src\components\layout\Layout.tsx`_
 
 ```tsx
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 
 const Layout: React.FC = () => {
+  const location = useLocation();
+
+  // Only show footer on home page
+  const showFooter = location.pathname === '/';
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
       <main className="flex-grow">
         <Outlet />
       </main>
-      <Footer />
+      {showFooter && <Footer />}
     </div>
   );
 };
@@ -7881,7 +7934,15 @@ import Button from '@components/common/Button';
 import Card from '@components/common/Card';
 import Modal from '@components/common/Modal';
 import Input from '@components/common/Input';
-import { Plus, Search, Filter, RefreshCcw } from 'lucide-react';
+import {
+  Plus,
+  Search,
+  Filter,
+  RefreshCcw,
+  Eye,
+  EyeOff,
+  Info,
+} from 'lucide-react';
 import { MenuItem } from '@types/menu.types';
 
 const MenuManagement: React.FC = () => {
@@ -7899,6 +7960,7 @@ const MenuManagement: React.FC = () => {
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [showUnavailable, setShowUnavailable] = useState(true); // ✅ DEFAULT: Show ALL items including unavailable
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
@@ -7907,8 +7969,11 @@ const MenuManagement: React.FC = () => {
 
   const loadData = async () => {
     try {
+      console.log('🔄 Loading menu management data...');
       await Promise.all([fetchManagedMenuItems(), fetchManagedCategories()]);
+      console.log('✅ Menu management data loaded');
     } catch (error) {
+      console.error('❌ Failed to load menu data:', error);
       showToast('Failed to load menu data', 'error');
     }
   };
@@ -7943,15 +8008,15 @@ const MenuManagement: React.FC = () => {
 
   const handleCloseEdit = () => {
     setEditingItem(null);
-    loadData();
+    loadData(); // Refresh data after edit
   };
 
   const handleCloseAdd = () => {
     setShowAddModal(false);
-    loadData();
+    loadData(); // Refresh data after add
   };
 
-  // Filter menu items based on search and category
+  // ✅ FIXED: Filter menu items - Admin sees ALL items by default
   const filteredItems = managedMenuItems.filter((item) => {
     const matchesSearch =
       searchQuery === '' ||
@@ -7961,7 +8026,27 @@ const MenuManagement: React.FC = () => {
     const matchesCategory =
       selectedCategory === '' || item.category === selectedCategory;
 
-    return matchesSearch && matchesCategory;
+    // ✅ FIXED: Only filter by availability if admin chooses to hide unavailable items
+    const matchesAvailability = showUnavailable || item.is_available;
+
+    return matchesSearch && matchesCategory && matchesAvailability;
+  });
+
+  // ✅ Calculate stats including ALL items (don't filter managedMenuItems)
+  const totalItems = managedMenuItems.length;
+  const availableItems = managedMenuItems.filter(
+    (item) => item.is_available
+  ).length;
+  const unavailableItems = managedMenuItems.filter(
+    (item) => !item.is_available
+  ).length;
+
+  console.log('📊 Menu Management Stats:', {
+    total: totalItems,
+    available: availableItems,
+    unavailable: unavailableItems,
+    filtered: filteredItems.length,
+    showingUnavailable: showUnavailable,
   });
 
   if (isLoading && managedMenuItems.length === 0) {
@@ -8009,12 +8094,12 @@ const MenuManagement: React.FC = () => {
           </div>
         </div>
 
-        {/* Stats Cards */}
+        {/* ✅ Stats Cards - Shows counts of ALL items */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card padding="lg">
             <div className="text-center">
               <h3 className="text-3xl font-bold text-primary mb-2">
-                {managedMenuItems.length}
+                {totalItems}
               </h3>
               <p className="text-sm text-gray-600">Total Items</p>
             </div>
@@ -8023,7 +8108,7 @@ const MenuManagement: React.FC = () => {
           <Card padding="lg">
             <div className="text-center">
               <h3 className="text-3xl font-bold text-green-600 mb-2">
-                {managedMenuItems.filter((item) => item.is_available).length}
+                {availableItems}
               </h3>
               <p className="text-sm text-gray-600">Available</p>
             </div>
@@ -8032,7 +8117,7 @@ const MenuManagement: React.FC = () => {
           <Card padding="lg">
             <div className="text-center">
               <h3 className="text-3xl font-bold text-orange-600 mb-2">
-                {managedMenuItems.filter((item) => !item.is_available).length}
+                {unavailableItems}
               </h3>
               <p className="text-sm text-gray-600">Unavailable</p>
             </div>
@@ -8090,13 +8175,38 @@ const MenuManagement: React.FC = () => {
               </div>
             </div>
 
+            {/* ✅ FIXED: Availability Toggle - Default shows all */}
+            <div className="md:w-auto">
+              <button
+                onClick={() => setShowUnavailable(!showUnavailable)}
+                className={`flex items-center space-x-2 px-4 py-3 border-2 rounded-lg transition-all ${
+                  showUnavailable
+                    ? 'border-primary bg-primary text-white'
+                    : 'border-orange-500 bg-orange-500 text-white'
+                }`}
+              >
+                {showUnavailable ? (
+                  <>
+                    <Eye size={20} />
+                    <span>Showing All</span>
+                  </>
+                ) : (
+                  <>
+                    <EyeOff size={20} />
+                    <span>Available Only</span>
+                  </>
+                )}
+              </button>
+            </div>
+
             {/* Clear Filters */}
-            {(searchQuery || selectedCategory) && (
+            {(searchQuery || selectedCategory || !showUnavailable) && (
               <Button
                 variant="ghost"
                 onClick={() => {
                   setSearchQuery('');
                   setSelectedCategory('');
+                  setShowUnavailable(true);
                 }}
               >
                 Clear Filters
@@ -8105,7 +8215,7 @@ const MenuManagement: React.FC = () => {
           </div>
 
           {/* Active Filters Display */}
-          {(searchQuery || selectedCategory) && (
+          {(searchQuery || selectedCategory || !showUnavailable) && (
             <div className="mt-4 flex items-center space-x-2">
               <span className="text-sm text-gray-600">Active filters:</span>
               {searchQuery && (
@@ -8118,11 +8228,30 @@ const MenuManagement: React.FC = () => {
                   Category: {selectedCategory}
                 </span>
               )}
+              {!showUnavailable && (
+                <span className="inline-block px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-sm">
+                  Available Only
+                </span>
+              )}
               <span className="text-sm text-gray-600 ml-2">
-                ({filteredItems.length} results)
+                ({filteredItems.length} of {managedMenuItems.length} items)
               </span>
             </div>
           )}
+
+          {/* ✅ IMPROVED: Info Message for Admin */}
+          <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <p className="text-sm text-blue-800 flex items-start space-x-2">
+              <Info size={16} className="text-blue-600 mt-0.5 flex-shrink-0" />
+              <span>
+                <strong>Admin View:</strong> You can see and manage ALL menu
+                items regardless of their availability status. Items marked as{' '}
+                <span className="font-semibold">unavailable</span> will not be
+                shown to customers but remain visible here for management. Use
+                the toggle above to filter your view.
+              </span>
+            </p>
+          </div>
         </Card>
 
         {/* Menu Items List */}
@@ -10847,6 +10976,9 @@ import {
   AlertCircle,
   Truck,
   Clock,
+  RefreshCcw,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 
 // ===========================
@@ -10855,15 +10987,21 @@ import {
 
 interface MenuItem {
   _id: string;
+  id?: string;
   name: string;
   description: string;
   category: string;
   price: number;
   image_url?: string;
   is_available: boolean;
+  is_available_for_weekly?: boolean;
   is_vegetarian: boolean;
   is_vegan: boolean;
+  is_halal?: boolean;
+  allergens?: string[];
+  spice_level?: string;
   serving_size?: string;
+  max_boxes_per_menu?: number;
 }
 
 interface SubscriptionPlan {
@@ -10896,7 +11034,7 @@ const formatCurrency = (amount: number): string => {
 };
 
 // ===========================
-// SUBSCRIPTION PLANS DATA (Business Logic - Not from Backend)
+// SUBSCRIPTION PLANS DATA
 // ===========================
 
 const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
@@ -10909,7 +11047,7 @@ const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     totalMeals: 10,
     duration: 'weekly',
     deliveries: 1,
-    pricePerMeal: 9.9, // From backend docs: $99 / 10 meals
+    pricePerMeal: 9.9,
     totalPrice: 99.0,
     regularPrice: 150.0,
     savings: 51.0,
@@ -10932,7 +11070,7 @@ const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     totalMeals: 20,
     duration: 'fortnightly',
     deliveries: 2,
-    pricePerMeal: 9.9, // From backend docs: $198 / 20 meals
+    pricePerMeal: 9.9,
     totalPrice: 198.0,
     regularPrice: 300.0,
     savings: 102.0,
@@ -10955,7 +11093,7 @@ const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     totalMeals: 40,
     duration: 'monthly',
     deliveries: 4,
-    pricePerMeal: 9.9, // From backend docs: $396 / 40 meals
+    pricePerMeal: 9.9,
     totalPrice: 396.0,
     regularPrice: 600.0,
     savings: 204.0,
@@ -10976,7 +11114,6 @@ const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
 // SIMPLE COMPONENTS
 // ===========================
 
-// Loading Spinner Component
 const LoadingSpinner: React.FC<{ message?: string }> = ({ message }) => (
   <div className="flex flex-col items-center justify-center py-12">
     <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#FF6B35]"></div>
@@ -10984,7 +11121,6 @@ const LoadingSpinner: React.FC<{ message?: string }> = ({ message }) => (
   </div>
 );
 
-// Button Component
 interface ButtonProps {
   children: React.ReactNode;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -10993,6 +11129,7 @@ interface ButtonProps {
   disabled?: boolean;
   size?: 'sm' | 'md' | 'lg';
   className?: string;
+  type?: 'button' | 'submit';
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -11003,6 +11140,7 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   size = 'md',
   className = '',
+  type = 'button',
 }) => {
   const baseClasses =
     'font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
@@ -11026,6 +11164,7 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
+      type={type}
       onClick={onClick}
       disabled={disabled}
       className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${widthClass} ${className}`}
@@ -11035,7 +11174,6 @@ const Button: React.FC<ButtonProps> = ({
   );
 };
 
-// Card Component
 interface CardProps {
   children: React.ReactNode;
   className?: string;
@@ -11091,14 +11229,12 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, isSelected, onSelect }) => {
       onClick={() => onSelect(plan.id)}
       padding="lg"
     >
-      {/* Badge */}
       {plan.badge && (
         <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[#FF6B35] to-[#E55A2B] text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg uppercase tracking-wide">
           {plan.badge}
         </div>
       )}
 
-      {/* Selection Indicator */}
       <div className="flex justify-end mb-3">
         <div
           className={`w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${
@@ -11111,7 +11247,6 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, isSelected, onSelect }) => {
         </div>
       </div>
 
-      {/* Icon */}
       <div className="flex justify-center mb-6">
         <div
           className={`w-24 h-24 rounded-full flex items-center justify-center transition-all ${
@@ -11127,7 +11262,6 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, isSelected, onSelect }) => {
         </div>
       </div>
 
-      {/* Plan Details */}
       <h3 className="font-['Playfair_Display'] text-2xl font-bold text-[#2E2E2E] text-center mb-2">
         {plan.name}
       </h3>
@@ -11135,7 +11269,6 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, isSelected, onSelect }) => {
         {plan.description}
       </p>
 
-      {/* Pricing */}
       <div className="text-center mb-6 bg-gradient-to-br from-gray-50 to-[#FFF5F2] rounded-xl p-5 border border-gray-100">
         <div className="flex items-center justify-center space-x-3 mb-2">
           <span className="text-gray-400 line-through text-lg font-['Montserrat']">
@@ -11157,7 +11290,6 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, isSelected, onSelect }) => {
         </div>
       </div>
 
-      {/* Features */}
       <ul className="space-y-3 mb-6">
         {plan.features.map((feature, index) => (
           <li key={index} className="flex items-start space-x-3 text-sm">
@@ -11167,7 +11299,6 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, isSelected, onSelect }) => {
         ))}
       </ul>
 
-      {/* Select Button */}
       <Button
         variant={isSelected ? 'primary' : 'outline'}
         fullWidth
@@ -11199,6 +11330,8 @@ interface MealCardProps {
   isSelected: boolean;
   onSelect: (mealId: string) => void;
   disabled?: boolean;
+  maxAllowed?: number;
+  currentCount?: number;
 }
 
 const MealCard: React.FC<MealCardProps> = ({
@@ -11206,7 +11339,11 @@ const MealCard: React.FC<MealCardProps> = ({
   isSelected,
   onSelect,
   disabled,
+  maxAllowed = 2,
+  currentCount = 0,
 }) => {
+  const mealId = meal._id || meal.id || '';
+
   return (
     <Card
       className={`cursor-pointer transition-all relative overflow-hidden ${
@@ -11216,10 +11353,9 @@ const MealCard: React.FC<MealCardProps> = ({
             ? 'ring-4 ring-[#FF6B35] border-[#FF6B35] shadow-lg'
             : 'hover:shadow-xl hover:scale-102 border-gray-200'
       }`}
-      onClick={() => !disabled && onSelect(meal._id)}
+      onClick={() => !disabled && onSelect(mealId)}
       padding="none"
     >
-      {/* Image Container */}
       <div className="relative h-48 overflow-hidden bg-gray-100">
         <img
           src={
@@ -11234,16 +11370,12 @@ const MealCard: React.FC<MealCardProps> = ({
           }}
         />
 
-        {/* Selection Overlay */}
-        {isSelected && (
-          <div className="absolute inset-0 bg-[#FF6B35] bg-opacity-30 flex items-center justify-center backdrop-blur-sm">
-            <div className="bg-[#FF6B35] text-white rounded-full p-4 shadow-2xl animate-pulse">
-              <CheckCircle size={40} strokeWidth={3} />
-            </div>
+        {isSelected && currentCount > 0 && (
+          <div className="absolute top-3 left-3 bg-[#FF6B35] text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+            {currentCount}x Selected
           </div>
         )}
 
-        {/* Dietary Badges */}
         <div className="absolute top-3 right-3 flex flex-col space-y-2">
           {meal.is_vegetarian && (
             <div className="bg-green-500 text-white p-2 rounded-full shadow-lg">
@@ -11255,9 +11387,23 @@ const MealCard: React.FC<MealCardProps> = ({
               VEGAN
             </div>
           )}
+          {meal.is_halal && (
+            <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+              HALAL
+            </div>
+          )}
         </div>
 
-        {/* Availability Badge */}
+        {meal.spice_level && (
+          <div className="absolute bottom-3 left-3">
+            <div className="bg-white px-2 py-1 rounded-full shadow-md text-xs font-semibold">
+              {meal.spice_level === 'mild' && '🌶️ Mild'}
+              {meal.spice_level === 'medium' && '🌶️🌶️ Medium'}
+              {meal.spice_level === 'hot' && '🌶️🌶️🌶️ Hot'}
+            </div>
+          </div>
+        )}
+
         {!meal.is_available && (
           <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center">
             <span className="bg-red-500 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg">
@@ -11267,24 +11413,32 @@ const MealCard: React.FC<MealCardProps> = ({
         )}
       </div>
 
-      {/* Content */}
       <div className="p-5">
-        {/* Category */}
         <span className="inline-block px-3 py-1 bg-[#FFF5F2] text-[#FF6B35] text-xs font-bold rounded-full mb-3 uppercase tracking-wide">
           {meal.category}
         </span>
 
-        {/* Name */}
         <h3 className="font-['Playfair_Display'] font-bold text-[#2E2E2E] text-xl mb-2 line-clamp-1">
           {meal.name}
         </h3>
 
-        {/* Description */}
         <p className="font-['Montserrat'] text-sm text-gray-600 line-clamp-2 mb-4 min-h-[40px]">
           {meal.description}
         </p>
 
-        {/* Footer */}
+        {meal.allergens && meal.allergens.length > 0 && (
+          <div className="flex items-start space-x-2 mb-3 text-xs text-orange-700 bg-orange-50 p-2 rounded">
+            <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
+            <span>Contains: {meal.allergens.join(', ')}</span>
+          </div>
+        )}
+
+        {maxAllowed && (
+          <p className="text-xs text-gray-500 mb-3">
+            Max {maxAllowed} boxes per item
+          </p>
+        )}
+
         <div className="flex items-center justify-between">
           <div>
             <div className="text-[#FF6B35] font-['Playfair_Display'] font-bold text-2xl">
@@ -11316,34 +11470,113 @@ const WeeklySubscriptionPage: React.FC = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
 
-  // State
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
-  const [selectedMealIds, setSelectedMealIds] = useState<string[]>([]);
+  const [selectedMealCounts, setSelectedMealCounts] = useState<{
+    [key: string]: number;
+  }>({});
   const [deliveryOption, setDeliveryOption] = useState<'delivery' | 'pickup'>(
     'delivery'
   );
   const [isLoading, setIsLoading] = useState(true);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [menuNotFound, setMenuNotFound] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
-  // Get selected plan
   const selectedPlan = SUBSCRIPTION_PLANS.find((p) => p.id === selectedPlanId);
 
-  // ✅ Fetch menu items from backend API
+  // Calculate total selected meals
+  const totalSelectedMeals = Object.values(selectedMealCounts).reduce(
+    (sum, count) => sum + count,
+    0
+  );
+
+  // Fetch menu items from backend - REMOVED showToast notifications
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
         setIsLoading(true);
+        setError(null);
+        setMenuNotFound(false);
 
-        // Fetch weekly menu from backend
-        const response = await menuAPI.getWeeklyMenu();
-        const menuData = response.data.data;
+        // Try to fetch weekly menu first
+        try {
+          const response = await menuAPI.getWeeklyMenu();
+          const menuData = response.data.data;
 
-        // Set menu items from API response
-        if (menuData && menuData.items) {
-          setMenuItems(menuData.items);
-        } else if (Array.isArray(menuData)) {
-          setMenuItems(menuData);
+          if (menuData && menuData.items && menuData.items.length > 0) {
+            setMenuItems(menuData.items);
+          } else if (Array.isArray(menuData) && menuData.length > 0) {
+            setMenuItems(menuData);
+          } else {
+            // No items in weekly menu
+            setMenuNotFound(true);
+            console.log(
+              '📝 No weekly menu items found, fetching daily menu as fallback...'
+            );
+
+            // Try to fetch daily menu as fallback
+            try {
+              const dailyResponse = await menuAPI.getDailyMenu();
+              const dailyData = dailyResponse.data.data;
+
+              // Filter daily items that are available for weekly subscription
+              const weeklyAvailableItems = (
+                Array.isArray(dailyData) ? dailyData : []
+              ).filter((item: any) => item.is_available_for_weekly !== false);
+
+              if (weeklyAvailableItems.length > 0) {
+                setMenuItems(weeklyAvailableItems);
+                // REMOVED: showToast('Showing available items from daily menu', 'info');
+              } else {
+                setMenuItems([]);
+                setMenuNotFound(true);
+              }
+            } catch (dailyError) {
+              console.error(
+                'Failed to fetch daily menu as fallback:',
+                dailyError
+              );
+              setMenuItems([]);
+              setMenuNotFound(true);
+            }
+          }
+        } catch (weeklyError: any) {
+          // If 404 (no weekly menu scheduled), try to fetch daily menu as fallback
+          if (weeklyError.response?.status === 404) {
+            console.log(
+              '📝 No weekly menu scheduled, fetching daily menu as fallback...'
+            );
+            setMenuNotFound(true);
+
+            try {
+              const dailyResponse = await menuAPI.getDailyMenu();
+              const dailyData = dailyResponse.data.data;
+
+              // Filter daily items that are available for weekly subscription
+              const weeklyAvailableItems = (
+                Array.isArray(dailyData) ? dailyData : []
+              ).filter((item: any) => item.is_available_for_weekly !== false);
+
+              if (weeklyAvailableItems.length > 0) {
+                setMenuItems(weeklyAvailableItems);
+                // REMOVED: showToast('Showing available items from daily menu', 'info');
+                setMenuNotFound(false);
+              } else {
+                setMenuItems([]);
+                // REMOVED: showToast('No items available for weekly subscription at the moment', 'warning');
+              }
+            } catch (dailyError) {
+              console.error(
+                'Failed to fetch daily menu as fallback:',
+                dailyError
+              );
+              setMenuItems([]);
+            }
+          } else {
+            // Other error, re-throw
+            throw weeklyError;
+          }
         }
 
         setError(null);
@@ -11354,55 +11587,71 @@ const WeeklySubscriptionPage: React.FC = () => {
         setError(errorMessage);
         showToast(errorMessage, 'error');
         console.error('Error loading menu:', err);
+        setMenuItems([]);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchMenuItems();
-  }, []);
+  }, [retryCount]);
 
-  // Handle plan selection
+  const handleRetry = () => {
+    setRetryCount((prev) => prev + 1);
+  };
+
   const handlePlanSelect = (planId: string) => {
     setSelectedPlanId(planId);
-    setSelectedMealIds([]);
+    setSelectedMealCounts({});
     showToast(
       `${SUBSCRIPTION_PLANS.find((p) => p.id === planId)?.shortName} plan selected`,
       'success'
     );
   };
 
-  // Handle meal selection
   const handleMealSelect = (mealId: string) => {
     if (!selectedPlan) {
       showToast('Please select a plan first', 'warning');
       return;
     }
 
-    if (selectedMealIds.includes(mealId)) {
-      setSelectedMealIds(selectedMealIds.filter((id) => id !== mealId));
-      showToast('Meal removed', 'info');
+    const currentCount = selectedMealCounts[mealId] || 0;
+    const maxPerItem =
+      menuItems.find((m) => (m._id || m.id) === mealId)?.max_boxes_per_menu ||
+      2;
+
+    if (currentCount > 0) {
+      // Remove one instance
+      const newCount = currentCount - 1;
+      if (newCount === 0) {
+        const newCounts = { ...selectedMealCounts };
+        delete newCounts[mealId];
+        setSelectedMealCounts(newCounts);
+        showToast('Meal removed', 'info');
+      } else {
+        setSelectedMealCounts({ ...selectedMealCounts, [mealId]: newCount });
+      }
     } else {
-      if (selectedMealIds.length >= selectedPlan.totalMeals) {
+      // Add meal
+      if (totalSelectedMeals >= selectedPlan.totalMeals) {
         showToast(
           `You can only select ${selectedPlan.totalMeals} meals for this plan`,
           'warning'
         );
       } else {
-        setSelectedMealIds([...selectedMealIds, mealId]);
+        setSelectedMealCounts({ ...selectedMealCounts, [mealId]: 1 });
         showToast('Meal added', 'success');
       }
     }
   };
 
-  // Handle proceed to checkout
   const handleProceedToCheckout = () => {
     if (!selectedPlan) {
       showToast('Please select a subscription plan', 'error');
       return;
     }
 
-    if (selectedMealIds.length !== selectedPlan.totalMeals) {
+    if (totalSelectedMeals !== selectedPlan.totalMeals) {
       showToast(
         `Please select ${selectedPlan.totalMeals} meals to continue`,
         'error'
@@ -11410,11 +11659,16 @@ const WeeklySubscriptionPage: React.FC = () => {
       return;
     }
 
-    const selectedMeals = menuItems.filter((item) =>
-      selectedMealIds.includes(item._id)
-    );
+    const selectedMeals: MenuItem[] = [];
+    Object.entries(selectedMealCounts).forEach(([mealId, count]) => {
+      const meal = menuItems.find((item) => (item._id || item.id) === mealId);
+      if (meal) {
+        for (let i = 0; i < count; i++) {
+          selectedMeals.push(meal);
+        }
+      }
+    });
 
-    // Navigate to checkout with subscription details
     navigate('/checkout', {
       state: {
         subscriptionDetails: {
@@ -11426,9 +11680,8 @@ const WeeklySubscriptionPage: React.FC = () => {
     });
   };
 
-  // Calculate progress
   const progress = selectedPlan
-    ? Math.round((selectedMealIds.length / selectedPlan.totalMeals) * 100)
+    ? Math.round((totalSelectedMeals / selectedPlan.totalMeals) * 100)
     : 0;
 
   // Loading state
@@ -11436,22 +11689,6 @@ const WeeklySubscriptionPage: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F9F9F9]">
         <LoadingSpinner message="Loading subscription plans..." />
-      </div>
-    );
-  }
-
-  // Error state
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F9F9F9]">
-        <Card padding="lg" className="max-w-md text-center">
-          <AlertCircle className="mx-auto h-16 w-16 text-red-500 mb-4" />
-          <h2 className="font-['Playfair_Display'] text-2xl font-bold text-[#2E2E2E] mb-2">
-            Oops! Something went wrong
-          </h2>
-          <p className="font-['Montserrat'] text-gray-600 mb-6">{error}</p>
-          <Button onClick={() => window.location.reload()}>Try Again</Button>
-        </Card>
       </div>
     );
   }
@@ -11474,6 +11711,27 @@ const WeeklySubscriptionPage: React.FC = () => {
             with our flexible subscription packages!
           </p>
         </div>
+
+        {/* ALERT IF NO WEEKLY MENU */}
+        {menuNotFound && menuItems.length > 0 && (
+          <div className="max-w-4xl mx-auto mb-8">
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <div className="flex items-start space-x-3">
+                <Info
+                  size={20}
+                  className="text-amber-600 flex-shrink-0 mt-0.5"
+                />
+                <div>
+                  <p className="font-['Montserrat'] text-sm text-amber-900">
+                    <strong>Note:</strong> No weekly menu is currently
+                    scheduled. Showing items available for weekly subscription
+                    from our daily menu.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* STEP INDICATOR */}
         <div className="max-w-4xl mx-auto mb-12">
@@ -11502,11 +11760,11 @@ const WeeklySubscriptionPage: React.FC = () => {
 
             {/* Step 2 */}
             <div
-              className={`flex items-center space-x-3 ${selectedPlanId && selectedMealIds.length > 0 ? 'text-[#FF6B35]' : 'text-gray-400'}`}
+              className={`flex items-center space-x-3 ${selectedPlanId && totalSelectedMeals > 0 ? 'text-[#FF6B35]' : 'text-gray-400'}`}
             >
               <div
                 className={`w-12 h-12 rounded-full flex items-center justify-center font-['Playfair_Display'] font-bold text-xl transition-all ${
-                  selectedPlanId && selectedMealIds.length > 0
+                  selectedPlanId && totalSelectedMeals > 0
                     ? 'bg-[#FF6B35] text-white shadow-lg scale-110'
                     : 'bg-gray-200'
                 }`}
@@ -11519,17 +11777,16 @@ const WeeklySubscriptionPage: React.FC = () => {
             </div>
 
             <div
-              className={`w-20 h-1 rounded transition-all ${selectedPlan && selectedMealIds.length === selectedPlan.totalMeals ? 'bg-[#FF6B35]' : 'bg-gray-300'}`}
+              className={`w-20 h-1 rounded transition-all ${selectedPlan && totalSelectedMeals === selectedPlan.totalMeals ? 'bg-[#FF6B35]' : 'bg-gray-300'}`}
             ></div>
 
             {/* Step 3 */}
             <div
-              className={`flex items-center space-x-3 ${selectedPlan && selectedMealIds.length === selectedPlan.totalMeals ? 'text-[#FF6B35]' : 'text-gray-400'}`}
+              className={`flex items-center space-x-3 ${selectedPlan && totalSelectedMeals === selectedPlan.totalMeals ? 'text-[#FF6B35]' : 'text-gray-400'}`}
             >
               <div
                 className={`w-12 h-12 rounded-full flex items-center justify-center font-['Playfair_Display'] font-bold text-xl transition-all ${
-                  selectedPlan &&
-                  selectedMealIds.length === selectedPlan.totalMeals
+                  selectedPlan && totalSelectedMeals === selectedPlan.totalMeals
                     ? 'bg-[#FF6B35] text-white shadow-lg scale-110'
                     : 'bg-gray-200'
                 }`}
@@ -11617,7 +11874,7 @@ const WeeklySubscriptionPage: React.FC = () => {
                     </p>
                   </div>
 
-                  {selectedMealIds.length === selectedPlan.totalMeals && (
+                  {totalSelectedMeals === selectedPlan.totalMeals && (
                     <div className="flex items-center space-x-2 text-green-600 bg-green-50 px-4 py-2 rounded-full">
                       <CheckCircle size={24} />
                       <span className="font-['Montserrat'] font-semibold">
@@ -11636,7 +11893,7 @@ const WeeklySubscriptionPage: React.FC = () => {
                     <span className="font-['Montserrat'] text-sm font-semibold text-[#2E2E2E]">
                       Meals Selected:{' '}
                       <span className="text-[#FF6B35]">
-                        {selectedMealIds.length}
+                        {totalSelectedMeals}
                       </span>{' '}
                       / {selectedPlan.totalMeals}
                     </span>
@@ -11654,35 +11911,90 @@ const WeeklySubscriptionPage: React.FC = () => {
                   </div>
                 </Card>
 
-                {/* Meal Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {menuItems.map((meal) => (
-                    <MealCard
-                      key={meal._id}
-                      meal={meal}
-                      isSelected={selectedMealIds.includes(meal._id)}
-                      onSelect={handleMealSelect}
-                      disabled={
-                        !meal.is_available ||
-                        (!selectedMealIds.includes(meal._id) &&
-                          selectedMealIds.length >= selectedPlan.totalMeals)
-                      }
-                    />
-                  ))}
-                </div>
+                {/* Meal Grid or Empty State */}
+                {menuItems.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {menuItems.map((meal) => {
+                      const mealId = meal._id || meal.id || '';
+                      const currentCount = selectedMealCounts[mealId] || 0;
+                      const maxAllowed = meal.max_boxes_per_menu || 2;
+                      const remainingTotal =
+                        selectedPlan.totalMeals - totalSelectedMeals;
+                      const canAddMore =
+                        currentCount < maxAllowed &&
+                        (currentCount > 0 || remainingTotal > 0);
 
-                {menuItems.length === 0 && (
+                      return (
+                        <MealCard
+                          key={mealId}
+                          meal={meal}
+                          isSelected={currentCount > 0}
+                          onSelect={handleMealSelect}
+                          disabled={
+                            !meal.is_available ||
+                            (!canAddMore && currentCount === 0)
+                          }
+                          maxAllowed={maxAllowed}
+                          currentCount={currentCount}
+                        />
+                      );
+                    })}
+                  </div>
+                ) : (
                   <Card padding="lg">
                     <div className="text-center py-16">
                       <Package className="mx-auto h-20 w-20 text-gray-300 mb-6" />
                       <h3 className="font-['Playfair_Display'] text-2xl font-bold text-[#2E2E2E] mb-2">
-                        No Meals Available
+                        No Menu Available
                       </h3>
-                      <p className="font-['Montserrat'] text-gray-500">
-                        Check back soon for our delicious weekly menu!
+                      <p className="font-['Montserrat'] text-gray-600 mb-6">
+                        {error
+                          ? "We're having trouble loading the menu. Please try again later."
+                          : 'No meals are currently scheduled for weekly subscription.'}
                       </p>
+                      <p className="font-['Montserrat'] text-sm text-gray-400 mb-8">
+                        Please contact us for custom meal arrangements or check
+                        back soon.
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <Button variant="outline" onClick={handleRetry}>
+                          <RefreshCcw size={18} className="mr-2" />
+                          Refresh Page
+                        </Button>
+                        <Button
+                          variant="primary"
+                          onClick={() => navigate('/contact')}
+                        >
+                          Contact Us
+                        </Button>
+                      </div>
                     </div>
                   </Card>
+                )}
+
+                {/* If there are some items but not enough for a full plan */}
+                {menuItems.length > 0 && menuItems.length < 10 && (
+                  <div className="mt-4">
+                    <Card padding="md" className="bg-amber-50 border-amber-200">
+                      <div className="flex items-start space-x-3">
+                        <Info
+                          size={20}
+                          className="text-amber-600 flex-shrink-0 mt-0.5"
+                        />
+                        <div>
+                          <p className="font-['Montserrat'] text-sm text-amber-900">
+                            <strong>Limited Menu Available</strong>
+                          </p>
+                          <p className="font-['Montserrat'] text-xs text-amber-700 mt-1">
+                            Only {menuItems.length} items are currently
+                            available. You may need to select items multiple
+                            times (up to {menuItems[0]?.max_boxes_per_menu || 2}{' '}
+                            boxes per item) or contact us for more options.
+                          </p>
+                        </div>
+                      </div>
+                    </Card>
+                  </div>
                 )}
               </div>
             )}
@@ -11739,13 +12051,13 @@ const WeeklySubscriptionPage: React.FC = () => {
                     </div>
 
                     {/* Selected Meals Summary */}
-                    {selectedMealIds.length > 0 && (
+                    {totalSelectedMeals > 0 && (
                       <div className="pb-6 border-b border-gray-200">
                         <h4 className="font-['Montserrat'] font-bold text-[#2E2E2E] mb-4 text-sm flex items-center justify-between">
-                          <span>Selected Meals ({selectedMealIds.length})</span>
-                          {selectedMealIds.length > 0 && (
+                          <span>Selected Meals ({totalSelectedMeals})</span>
+                          {totalSelectedMeals > 0 && (
                             <button
-                              onClick={() => setSelectedMealIds([])}
+                              onClick={() => setSelectedMealCounts({})}
                               className="text-red-500 hover:text-red-700 text-xs"
                             >
                               Clear All
@@ -11753,31 +12065,33 @@ const WeeklySubscriptionPage: React.FC = () => {
                           )}
                         </h4>
                         <div className="space-y-2 max-h-60 overflow-y-auto custom-scrollbar">
-                          {selectedMealIds.map((mealId) => {
-                            const meal = menuItems.find(
-                              (m) => m._id === mealId
-                            );
-                            if (!meal) return null;
-                            return (
-                              <div
-                                key={mealId}
-                                className="flex items-center justify-between text-xs bg-gray-50 rounded-lg p-2 hover:bg-gray-100 transition-colors"
-                              >
-                                <span className="font-['Montserrat'] text-gray-700 flex-1 mr-2">
-                                  {meal.name}
-                                </span>
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleMealSelect(mealId);
-                                  }}
-                                  className="text-red-500 hover:text-red-700 flex-shrink-0 p-1 hover:bg-red-50 rounded"
+                          {Object.entries(selectedMealCounts).map(
+                            ([mealId, count]) => {
+                              const meal = menuItems.find(
+                                (m) => (m._id || m.id) === mealId
+                              );
+                              if (!meal) return null;
+                              return (
+                                <div
+                                  key={mealId}
+                                  className="flex items-center justify-between text-xs bg-gray-50 rounded-lg p-2 hover:bg-gray-100 transition-colors"
                                 >
-                                  <X size={14} />
-                                </button>
-                              </div>
-                            );
-                          })}
+                                  <span className="font-['Montserrat'] text-gray-700 flex-1 mr-2">
+                                    {count}x {meal.name}
+                                  </span>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleMealSelect(mealId);
+                                    }}
+                                    className="text-red-500 hover:text-red-700 flex-shrink-0 p-1 hover:bg-red-50 rounded"
+                                  >
+                                    <X size={14} />
+                                  </button>
+                                </div>
+                              );
+                            }
+                          )}
                         </div>
                       </div>
                     )}
@@ -11873,17 +12187,20 @@ const WeeklySubscriptionPage: React.FC = () => {
                       onClick={handleProceedToCheckout}
                       disabled={
                         !selectedPlan ||
-                        selectedMealIds.length !== selectedPlan.totalMeals
+                        totalSelectedMeals !== selectedPlan.totalMeals ||
+                        menuItems.length === 0
                       }
                       className="shadow-2xl hover:shadow-3xl transition-shadow font-['Montserrat']"
                     >
-                      {selectedMealIds.length === selectedPlan.totalMeals ? (
+                      {menuItems.length === 0 ? (
+                        'No Menu Available'
+                      ) : totalSelectedMeals === selectedPlan.totalMeals ? (
                         <span className="flex items-center justify-center space-x-2">
                           <CheckCircle size={20} />
                           <span>Proceed to Checkout</span>
                         </span>
                       ) : (
-                        `Select ${selectedPlan.totalMeals - selectedMealIds.length} More ${selectedPlan.totalMeals - selectedMealIds.length === 1 ? 'Meal' : 'Meals'}`
+                        `Select ${selectedPlan.totalMeals - totalSelectedMeals} More ${selectedPlan.totalMeals - totalSelectedMeals === 1 ? 'Meal' : 'Meals'}`
                       )}
                     </Button>
 
@@ -11922,191 +12239,6 @@ const WeeklySubscriptionPage: React.FC = () => {
               </Card>
             </div>
           </div>
-        </div>
-
-        {/* BENEFITS SECTION */}
-        <div className="mt-24 pt-16 border-t-2 border-gray-200">
-          <h2 className="font-['Playfair_Display'] text-4xl font-bold text-[#2E2E2E] text-center mb-4">
-            Why Subscribe to Our{' '}
-            <span className="text-[#FF6B35]">Meal Plans?</span>
-          </h2>
-          <p className="font-['Montserrat'] text-gray-600 text-center mb-16 max-w-2xl mx-auto">
-            Join hundreds of satisfied customers enjoying convenient, delicious
-            meals every week
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <Card
-              padding="lg"
-              className="text-center hover:shadow-xl transition-shadow"
-            >
-              <div className="w-24 h-24 bg-gradient-to-br from-[#FF6B35] to-[#E55A2B] rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
-                <span className="text-5xl">💰</span>
-              </div>
-              <h3 className="font-['Playfair_Display'] font-bold text-[#2E2E2E] mb-3 text-xl">
-                Save Money
-              </h3>
-              <p className="font-['Montserrat'] text-sm text-gray-600 leading-relaxed">
-                Up to 35% off regular menu prices with our subscription packages
-              </p>
-            </Card>
-
-            <Card
-              padding="lg"
-              className="text-center hover:shadow-xl transition-shadow"
-            >
-              <div className="w-24 h-24 bg-gradient-to-br from-[#FF6B35] to-[#E55A2B] rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
-                <span className="text-5xl">⏰</span>
-              </div>
-              <h3 className="font-['Playfair_Display'] font-bold text-[#2E2E2E] mb-3 text-xl">
-                Save Time
-              </h3>
-              <p className="font-['Montserrat'] text-sm text-gray-600 leading-relaxed">
-                No more daily menu decisions. Your meals are planned and ready
-                to enjoy
-              </p>
-            </Card>
-
-            <Card
-              padding="lg"
-              className="text-center hover:shadow-xl transition-shadow"
-            >
-              <div className="w-24 h-24 bg-gradient-to-br from-[#FF6B35] to-[#E55A2B] rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
-                <span className="text-5xl">🍱</span>
-              </div>
-              <h3 className="font-['Playfair_Display'] font-bold text-[#2E2E2E] mb-3 text-xl">
-                Fresh Quality
-              </h3>
-              <p className="font-['Montserrat'] text-sm text-gray-600 leading-relaxed">
-                All meals prepared fresh daily with premium, authentic
-                ingredients
-              </p>
-            </Card>
-
-            <Card
-              padding="lg"
-              className="text-center hover:shadow-xl transition-shadow"
-            >
-              <div className="w-24 h-24 bg-gradient-to-br from-[#FF6B35] to-[#E55A2B] rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
-                <span className="text-5xl">🔄</span>
-              </div>
-              <h3 className="font-['Playfair_Display'] font-bold text-[#2E2E2E] mb-3 text-xl">
-                Flexible Plans
-              </h3>
-              <p className="font-['Montserrat'] text-sm text-gray-600 leading-relaxed">
-                Change meals, pause, or cancel your subscription anytime, no
-                questions asked
-              </p>
-            </Card>
-          </div>
-        </div>
-
-        {/* FAQ SECTION */}
-        <div className="mt-24 max-w-4xl mx-auto">
-          <h2 className="font-['Playfair_Display'] text-4xl font-bold text-[#2E2E2E] text-center mb-4">
-            Frequently Asked <span className="text-[#FF6B35]">Questions</span>
-          </h2>
-          <p className="font-['Montserrat'] text-gray-600 text-center mb-12">
-            Everything you need to know about our meal subscriptions
-          </p>
-
-          <div className="space-y-4">
-            <Card padding="lg" className="hover:shadow-lg transition-shadow">
-              <h3 className="font-['Playfair_Display'] font-bold text-[#2E2E2E] mb-3 text-lg flex items-center space-x-2">
-                <span className="w-8 h-8 bg-[#FF6B35] text-white rounded-full flex items-center justify-center text-sm font-bold">
-                  Q
-                </span>
-                <span>Can I change my meal selections?</span>
-              </h3>
-              <p className="font-['Montserrat'] text-sm text-gray-600 ml-10 leading-relaxed">
-                Yes! You can update your meal selections up to 24 hours before
-                your scheduled delivery. Simply log into your account and make
-                changes to your upcoming orders.
-              </p>
-            </Card>
-
-            <Card padding="lg" className="hover:shadow-lg transition-shadow">
-              <h3 className="font-['Playfair_Display'] font-bold text-[#2E2E2E] mb-3 text-lg flex items-center space-x-2">
-                <span className="w-8 h-8 bg-[#FF6B35] text-white rounded-full flex items-center justify-center text-sm font-bold">
-                  Q
-                </span>
-                <span>What if I need to skip a week?</span>
-              </h3>
-              <p className="font-['Montserrat'] text-sm text-gray-600 ml-10 leading-relaxed">
-                You can pause or skip deliveries anytime from your account
-                dashboard. There are no penalties or fees for pausing your
-                subscription.
-              </p>
-            </Card>
-
-            <Card padding="lg" className="hover:shadow-lg transition-shadow">
-              <h3 className="font-['Playfair_Display'] font-bold text-[#2E2E2E] mb-3 text-lg flex items-center space-x-2">
-                <span className="w-8 h-8 bg-[#FF6B35] text-white rounded-full flex items-center justify-center text-sm font-bold">
-                  Q
-                </span>
-                <span>Are dietary restrictions accommodated?</span>
-              </h3>
-              <p className="font-['Montserrat'] text-sm text-gray-600 ml-10 leading-relaxed">
-                Absolutely! Our menu includes vegetarian, vegan, and various
-                dietary-friendly options, all clearly marked with icons. You can
-                filter meals based on your dietary preferences.
-              </p>
-            </Card>
-
-            <Card padding="lg" className="hover:shadow-lg transition-shadow">
-              <h3 className="font-['Playfair_Display'] font-bold text-[#2E2E2E] mb-3 text-lg flex items-center space-x-2">
-                <span className="w-8 h-8 bg-[#FF6B35] text-white rounded-full flex items-center justify-center text-sm font-bold">
-                  Q
-                </span>
-                <span>How does delivery work?</span>
-              </h3>
-              <p className="font-['Montserrat'] text-sm text-gray-600 ml-10 leading-relaxed">
-                We offer free delivery within 6km of Guildford 2161. Meals are
-                delivered fresh on your chosen days each week. You'll receive
-                delivery notifications via WhatsApp with tracking information.
-              </p>
-            </Card>
-
-            <Card padding="lg" className="hover:shadow-lg transition-shadow">
-              <h3 className="font-['Playfair_Display'] font-bold text-[#2E2E2E] mb-3 text-lg flex items-center space-x-2">
-                <span className="w-8 h-8 bg-[#FF6B35] text-white rounded-full flex items-center justify-center text-sm font-bold">
-                  Q
-                </span>
-                <span>Can I cancel my subscription?</span>
-              </h3>
-              <p className="font-['Montserrat'] text-sm text-gray-600 ml-10 leading-relaxed">
-                Yes, you can cancel your subscription at any time with no
-                cancellation fees. Your subscription will remain active until
-                the end of your current billing period.
-              </p>
-            </Card>
-          </div>
-        </div>
-
-        {/* CTA SECTION */}
-        <div className="mt-24 mb-12">
-          <Card
-            padding="lg"
-            className="bg-gradient-to-br from-[#FF6B35] to-[#E55A2B] text-white text-center shadow-2xl"
-          >
-            <h2 className="font-['Playfair_Display'] text-4xl font-bold mb-4">
-              Ready to Start Your Subscription?
-            </h2>
-            <p className="font-['Montserrat'] text-lg mb-8 max-w-2xl mx-auto opacity-90">
-              Join our community of food lovers and enjoy delicious, hassle-free
-              meals every week
-            </p>
-            <Button
-              variant="outline"
-              size="lg"
-              className="bg-white text-[#FF6B35] hover:bg-gray-100 border-white font-['Montserrat'] font-bold px-12"
-              onClick={() => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-            >
-              Choose Your Plan Now
-            </Button>
-          </Card>
         </div>
       </div>
 
@@ -12564,7 +12696,6 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       console.log('📡 Fetching all orders...');
       const response = await adminAPI.getAllOrders(filters);
 
-      // ✅ Unwrap response properly
       const ordersData = response.data.data || response.data;
       const orders = Array.isArray(ordersData) ? ordersData : [];
 
@@ -12590,14 +12721,10 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       console.log('📡 Fetching dashboard stats...');
       const response = await adminAPI.getDashboardStats();
 
-      console.log('📦 Dashboard response:', response.data);
-
-      // ✅ Unwrap response properly
       const statsData = response.data.data || response.data;
 
       console.log('✅ Stats loaded:', statsData);
 
-      // ✅ Provide default values if stats are null/undefined
       set({
         orderStats: statsData || {
           total_orders: 0,
@@ -12614,7 +12741,6 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     } catch (error: any) {
       console.error('❌ Failed to fetch dashboard stats:', error);
 
-      // ✅ Set default stats on error
       set({
         orderStats: {
           total_orders: 0,
@@ -12659,24 +12785,70 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     }
   },
 
-  // ✅ Fetch managed menu items
+  // ✅ FIXED: Fetch ALL menu items for admin (including unavailable)
   fetchManagedMenuItems: async () => {
     set({ isLoading: true, error: null });
     try {
-      console.log('📡 Fetching menu items...');
+      console.log(
+        '📡 [ADMIN] Fetching ALL menu items (including unavailable)...'
+      );
+
+      // Use admin API that includes unavailable items
       const response = await adminAPI.getAllMenuItems();
+      console.log('📦 [ADMIN] Raw response:', response);
 
       const menuData = response.data.data || response.data;
-      const items = Array.isArray(menuData) ? menuData : [];
+      let items = Array.isArray(menuData) ? menuData : [];
 
-      console.log('✅ Menu items loaded:', items.length);
+      // If admin endpoint doesn't exist or returns empty, fallback to regular endpoint
+      if (items.length === 0) {
+        console.log(
+          '⚠️ [ADMIN] Admin endpoint empty, trying fallback to daily menu...'
+        );
+        try {
+          const fallbackResponse = await menuAPI.getDailyMenu();
+          const fallbackData =
+            fallbackResponse.data.data || fallbackResponse.data;
+          items = Array.isArray(fallbackData) ? fallbackData : [];
+          console.log('✅ [ADMIN] Fallback loaded:', items.length, 'items');
+        } catch (fallbackError) {
+          console.error('❌ [ADMIN] Fallback also failed:', fallbackError);
+        }
+      }
+
+      // Log availability status for debugging
+      const availableCount = items.filter((item) => item.is_available).length;
+      const unavailableCount = items.filter(
+        (item) => !item.is_available
+      ).length;
+
+      console.log('✅ [ADMIN] All menu items loaded:', items.length);
+      console.log(
+        `📊 [ADMIN] Available: ${availableCount}, Unavailable: ${unavailableCount}`
+      );
+
+      // Log sample items for debugging
+      if (items.length > 0) {
+        console.log(
+          '📦 [ADMIN] Sample items:',
+          items.slice(0, 3).map((item) => ({
+            id: item._id,
+            name: item.name,
+            is_available: item.is_available,
+            category: item.category,
+          }))
+        );
+      }
 
       set({
-        managedMenuItems: items,
+        managedMenuItems: items, // Store ALL items without filtering
         isLoading: false,
       });
     } catch (error: any) {
-      console.error('❌ Failed to fetch menu items:', error);
+      console.error('❌ [ADMIN] Failed to fetch menu items:', error);
+      console.error('Error details:', error.response?.data);
+
+      // Even on error, try to use cached data if available
       set({
         error: error.response?.data?.message || 'Failed to fetch menu items',
         isLoading: false,
@@ -12684,24 +12856,48 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     }
   },
 
-  // ✅ Fetch managed sidelines
+  // ✅ FIXED: Fetch ALL sidelines for admin (including unavailable)
   fetchManagedSidelines: async () => {
     set({ isLoading: true, error: null });
     try {
-      console.log('📡 Fetching sidelines...');
+      console.log(
+        '📡 [ADMIN] Fetching ALL sidelines (including unavailable)...'
+      );
       const response = await adminAPI.getAllSidelines();
 
       const sidelinesData = response.data.data || response.data;
-      const sidelines = Array.isArray(sidelinesData) ? sidelinesData : [];
+      let sidelines = Array.isArray(sidelinesData) ? sidelinesData : [];
 
-      console.log('✅ Sidelines loaded:', sidelines.length);
+      // If admin endpoint doesn't exist or returns empty, fallback
+      if (sidelines.length === 0) {
+        console.log('⚠️ [ADMIN] Admin endpoint empty, trying fallback...');
+        try {
+          const fallbackResponse = await menuAPI.getSidelines();
+          const fallbackData =
+            fallbackResponse.data.data || fallbackResponse.data;
+          sidelines = Array.isArray(fallbackData) ? fallbackData : [];
+        } catch (fallbackError) {
+          console.error('❌ [ADMIN] Fallback failed:', fallbackError);
+        }
+      }
+
+      // Log availability status
+      const availableCount = sidelines.filter(
+        (item) => item.is_available
+      ).length;
+      const unavailableCount = sidelines.filter(
+        (item) => !item.is_available
+      ).length;
+      console.log(
+        `📊 [ADMIN] Sidelines - Available: ${availableCount}, Unavailable: ${unavailableCount}`
+      );
 
       set({
-        managedSidelines: sidelines,
+        managedSidelines: sidelines, // Store ALL items without filtering
         isLoading: false,
       });
     } catch (error: any) {
-      console.error('❌ Failed to fetch sidelines:', error);
+      console.error('❌ [ADMIN] Failed to fetch sidelines:', error);
       set({
         error: error.response?.data?.message || 'Failed to fetch sidelines',
         isLoading: false,
@@ -12739,17 +12935,24 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     set({ isUpdating: true, error: null });
     try {
       console.log('📡 Creating menu item...');
+
+      // Log form data for debugging
+      for (let [key, value] of data.entries()) {
+        console.log(`  ${key}: ${value}`);
+      }
+
       const response = await adminAPI.createMenuItem(data);
       const newItem = response.data.data || response.data;
 
       console.log('✅ Menu item created:', newItem);
 
-      set({
-        managedMenuItems: [...get().managedMenuItems, newItem],
-        isUpdating: false,
-      });
+      // Refresh the entire list to ensure consistency
+      await get().fetchManagedMenuItems();
+
+      set({ isUpdating: false });
     } catch (error: any) {
       console.error('❌ Failed to create menu item:', error);
+      console.error('Error details:', error.response?.data);
       set({
         error: error.response?.data?.message || 'Failed to create menu item',
         isUpdating: false,
@@ -12762,15 +12965,32 @@ export const useAdminStore = create<AdminState>((set, get) => ({
   updateMenuItem: async (itemId: string, data: FormData) => {
     set({ isUpdating: true, error: null });
     try {
+      console.log('📡 Updating menu item:', itemId);
+
+      // Log form data for debugging
+      for (let [key, value] of data.entries()) {
+        console.log(`  ${key}: ${value}`);
+      }
+
       const response = await adminAPI.updateMenuItem(itemId, data);
       const updatedItem = response.data.data || response.data;
+
+      console.log('✅ Menu item updated:', updatedItem);
+
+      // Update the item in the list WITHOUT filtering
+      const currentItems = get().managedMenuItems;
       set({
-        managedMenuItems: get().managedMenuItems.map((item) =>
+        managedMenuItems: currentItems.map((item) =>
           item._id === itemId ? updatedItem : item
         ),
         isUpdating: false,
       });
+
+      // Optional: Refresh entire list to ensure consistency
+      // await get().fetchManagedMenuItems();
     } catch (error: any) {
+      console.error('❌ Failed to update menu item:', error);
+      console.error('Error details:', error.response?.data);
       set({
         error: error.response?.data?.message || 'Failed to update menu item',
         isUpdating: false,
@@ -12805,10 +13025,11 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     try {
       const response = await adminAPI.createSideline(data);
       const newSideline = response.data.data || response.data;
-      set({
-        managedSidelines: [...get().managedSidelines, newSideline],
-        isUpdating: false,
-      });
+
+      // Refresh the entire list
+      await get().fetchManagedSidelines();
+
+      set({ isUpdating: false });
     } catch (error: any) {
       set({
         error: error.response?.data?.message || 'Failed to create sideline',
@@ -12824,8 +13045,11 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     try {
       const response = await adminAPI.updateSideline(sidelineId, data);
       const updatedSideline = response.data.data || response.data;
+
+      // Update the item in the list WITHOUT filtering
+      const currentSidelines = get().managedSidelines;
       set({
-        managedSidelines: get().managedSidelines.map((sideline) =>
+        managedSidelines: currentSidelines.map((sideline) =>
           sideline._id === sidelineId ? updatedSideline : sideline
         ),
         isUpdating: false,

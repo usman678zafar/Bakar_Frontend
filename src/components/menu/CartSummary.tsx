@@ -40,26 +40,9 @@ const CartSummary: React.FC<CartSummaryProps> = ({ sticky = true }) => {
     }
   }, [isAuthenticated]);
 
-  // Not authenticated state
+  // Only show cart if authenticated
   if (!isAuthenticated) {
-    return (
-      <Card className={sticky ? 'sticky top-24' : ''} padding="lg">
-        <div className="text-center py-8">
-          <ShoppingCart className="mx-auto h-16 w-16 text-gray-300 mb-4" />
-          <h3 className="font-semibold text-gray-500 mb-2">
-            Login to view cart
-          </h3>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => navigate('/login')}
-            fullWidth
-          >
-            Login Now
-          </Button>
-        </div>
-      </Card>
-    );
+    return null;
   }
 
   // Loading state
