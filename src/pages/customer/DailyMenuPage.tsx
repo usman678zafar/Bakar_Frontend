@@ -99,10 +99,10 @@ const DailyMenuPage: React.FC = () => {
       <div className="container-custom">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <h1 className="font-heading text-5xl font-bold text-text mb-4">
+          <h1 className="font-heading text-4xl sm:text-5xl font-bold text-text mb-4">
             Daily Menu
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
             Fresh meals prepared daily. Order for pickup or delivery within 6km
             of Guildford.
           </p>

@@ -83,7 +83,7 @@ const HomePage: React.FC = () => {
     <div className="min-h-screen">
       {/* Hero */}
       <section
-        className="relative bg-gradient-to-br from-primary/90 to-primary-600/90 text-white py-24 md:py-32 overflow-hidden"
+        className="relative bg-gradient-to-br from-primary/90 to-primary-600/90 text-white py-20 sm:py-24 lg:py-32 overflow-hidden"
         style={{
           backgroundImage: `linear-gradient(rgba(255, 107, 53, 0.85), rgba(255, 90, 43, 0.85)), url('https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')`,
           backgroundSize: 'cover',
@@ -93,15 +93,15 @@ const HomePage: React.FC = () => {
       >
         <div className="container-custom relative z-10">
           <motion.div initial="hidden" animate="visible" variants={fadeUp}>
-            <div className="max-w-3xl mx-auto text-center">
-              <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-white">
+            <div className="max-w-3xl mx-auto text-center px-2">
+              <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-white">
                 Authentic Cuisine
                 <br />
                 <span className="text-white opacity-95">
                   Delivered Fresh Daily
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl mb-10 text-white opacity-90 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl mb-10 text-white opacity-90 max-w-2xl mx-auto leading-relaxed">
                 Enjoy bold, aromatic dishes prepared from high-quality
                 ingredients and delivered to your door.
               </p>
@@ -172,7 +172,7 @@ const HomePage: React.FC = () => {
       {/* Stats */}
       <section className="py-16 bg-white">
         <div className="container-custom">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, idx) => (
               <motion.div
                 key={idx}
@@ -534,7 +534,7 @@ const HomePage: React.FC = () => {
                 center={[BUSINESS_LATITUDE, BUSINESS_LONGITUDE]}
                 zoom={12}
                 scrollWheelZoom={false}
-                className="w-full h-96"
+                className="w-full h-[320px] sm:h-96"
               >
                 <TileLayer
                   attribution="&copy; OpenStreetMap contributors"

@@ -521,7 +521,7 @@ const ProfilePage: React.FC = () => {
             required
           />
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
               type="text"
               label="Suburb"

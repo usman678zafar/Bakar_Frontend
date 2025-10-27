@@ -41,7 +41,7 @@ const Header: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="sticky top-0 z-40 bg-white shadow-md">
+    <header className="sticky top-0 z-40 bg-white shadow-md relative">
       <div className="container-custom">
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
@@ -162,9 +162,12 @@ const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <nav className="lg:hidden py-4 border-t border-gray-200">
+      </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <nav className="lg:hidden absolute inset-x-0 top-full bg-white shadow-lg border-t border-gray-200">
+          <div className="container-custom py-4">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
@@ -204,9 +207,9 @@ const Header: React.FC = () => {
                 </Button>
               </div>
             )}
-          </nav>
-        )}
-      </div>
+          </div>
+        </nav>
+      )}
     </header>
   );
 };

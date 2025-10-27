@@ -399,7 +399,7 @@ const CheckoutPage: React.FC = () => {
                   <span>Delivery Method</span>
                 </h2>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <button
                     type="button"
                     onClick={() => setDeliveryMethod('delivery')}
@@ -519,7 +519,7 @@ const CheckoutPage: React.FC = () => {
                         }
                         required={deliveryMethod === 'delivery'}
                       />
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <Input
                           type="text"
                           label="Suburb"

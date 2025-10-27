@@ -4,6 +4,7 @@ import Card from '@components/common/Card';
 import Input from '@components/common/Input';
 import Button from '@components/common/Button';
 import { useToast } from '@components/common/Toast';
+import { contactAPI } from '@api';
 
 const ContactPage: React.FC = () => {
   const { showToast } = useToast();
@@ -13,14 +14,28 @@ const ContactPage: React.FC = () => {
     phone: '',
     message: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    showToast(
-      'Message sent successfully! We will contact you soon.',
-      'success'
-    );
-    setFormData({ name: '', email: '', phone: '', message: '' });
+    setIsSubmitting(true);
+
+    try {
+      await contactAPI.sendMessage(formData);
+      showToast(
+        'Message sent successfully! We will contact you soon.',
+        'success'
+      );
+      setFormData({ name: '', email: '', phone: '', message: '' });
+    } catch (error) {
+      console.error('Failed to send contact message', error);
+      showToast(
+        'Failed to send message. Please try again later.',
+        'error'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -87,9 +102,15 @@ const ContactPage: React.FC = () => {
                 />
               </div>
 
-              <Button type="submit" variant="primary" fullWidth size="lg">
+              <Button
+                type="submit"
+                variant="primary"
+                fullWidth
+                size="lg"
+                isLoading={isSubmitting}
+              >
                 <Send size={20} className="mr-2" />
-                Send Message
+                {isSubmitting ? 'Sending...' : 'Send Message'}
               </Button>
             </form>
           </Card>

@@ -16,14 +16,14 @@ export const OrderStats: React.FC = () => {
     },
     {
       label: 'Confirmed',
-      count: 15, // Example - should come from API
+      count: orderStats?.confirmed_orders || 0,
       icon: <Package size={24} />,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
     },
     {
       label: 'Out for Delivery',
-      count: 8, // Example
+      count: orderStats?.out_for_delivery_orders || 0,
       icon: <Truck size={24} />,
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
@@ -50,7 +50,7 @@ export const OrderStats: React.FC = () => {
         Order Status Overview
       </h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
         {statuses.map((status, index) => (
           <div
             key={index}

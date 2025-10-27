@@ -31,6 +31,7 @@ import AdminDashboard from '@pages/admin/AdminDashboard';
 import MenuManagement from '@pages/admin/MenuManagement';
 import OrderManagement from '@pages/admin/OrderManagement';
 import SidelinesManagement from '@pages/admin/SidelinesManagement';
+import CategoryManagement from '@pages/admin/CategoryManagement';
 
 function App() {
   const { checkAuth, isLoading, isAuthenticated } = useAuthStore();
@@ -77,6 +78,7 @@ function App() {
               <Route path="admin/menu" element={<MenuManagement />} />
               <Route path="admin/orders" element={<OrderManagement />} />
               <Route path="admin/sidelines" element={<SidelinesManagement />} />
+              <Route path="admin/categories" element={<CategoryManagement />} />
             </Route>
           </Route>
 

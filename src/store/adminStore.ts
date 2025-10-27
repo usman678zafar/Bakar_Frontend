@@ -2,17 +2,18 @@ import { create } from 'zustand';
 import { adminAPI } from '@api/endpoints/admin';
 import { menuAPI } from '@api/endpoints/menu';
 import { Order } from '@types/order.types';
-import { MenuItem, Sideline } from '@types/menu.types';
+import { MenuItem, Sideline, MenuCategory } from '@types/menu.types';
+import { DashboardStats } from '@models/admin.types';
 
 interface AdminState {
   // Orders
   allOrders: Order[];
-  orderStats: any | null;
+  orderStats: DashboardStats | null;
 
   // Menu
   managedMenuItems: MenuItem[];
   managedSidelines: Sideline[];
-  managedCategories: any[];
+  managedCategories: MenuCategory[];
 
   // Loading
   isLoading: boolean;
@@ -36,8 +37,55 @@ interface AdminState {
   updateSideline: (sidelineId: string, data: FormData) => Promise<void>;
   deleteSideline: (sidelineId: string) => Promise<void>;
 
+  createCategory: (payload: CreateCategoryInput) => Promise<void>;
+  updateCategory: (
+    categoryId: string,
+    payload: UpdateCategoryInput
+  ) => Promise<void>;
+  deleteCategory: (categoryId: string) => Promise<void>;
+
   clearError: () => void;
 }
+
+type CreateCategoryInput = {
+  name: string;
+  display_name: string;
+  description?: string;
+  is_active: boolean;
+  sort_order?: number;
+  imageFile?: File | null;
+};
+
+type UpdateCategoryInput = {
+  display_name?: string;
+  description?: string;
+  is_active?: boolean;
+  sort_order?: number;
+  imageFile?: File | null;
+};
+
+const createEmptyDashboardStats = (): DashboardStats => ({
+  total_orders: 0,
+  total_orders_growth_percent: 0,
+  pending_orders: 0,
+  pending_orders_weekly_change_percent: 0,
+  confirmed_orders: 0,
+  preparing_orders: 0,
+  out_for_delivery_orders: 0,
+  completed_orders: 0,
+  cancelled_orders: 0,
+  today_revenue: 0,
+  today_vs_yesterday_percent: 0,
+  weekly_revenue: 0,
+  weekly_growth_percent: 0,
+  monthly_revenue: 0,
+  monthly_growth_percent: 0,
+  total_revenue: 0,
+  total_revenue_growth_percent: 0,
+  weekly_revenue_breakdown: [],
+  active_subscriptions: 0,
+  upcoming_catering_events: 0,
+});
 
 export const useAdminStore = create<AdminState>((set, get) => ({
   allOrders: [],
@@ -81,37 +129,20 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       console.log('📡 Fetching dashboard stats...');
       const response = await adminAPI.getDashboardStats();
 
-      const statsData = response.data.data || response.data;
+      const statsData =
+        (response.data?.data as DashboardStats) || createEmptyDashboardStats();
 
       console.log('✅ Stats loaded:', statsData);
 
       set({
-        orderStats: statsData || {
-          total_orders: 0,
-          pending_orders: 0,
-          completed_orders: 0,
-          cancelled_orders: 0,
-          today_revenue: 0,
-          weekly_revenue: 0,
-          monthly_revenue: 0,
-          total_revenue: 0,
-        },
+        orderStats: statsData,
         isLoading: false,
       });
     } catch (error: any) {
       console.error('❌ Failed to fetch dashboard stats:', error);
 
       set({
-        orderStats: {
-          total_orders: 0,
-          pending_orders: 0,
-          completed_orders: 0,
-          cancelled_orders: 0,
-          today_revenue: 0,
-          weekly_revenue: 0,
-          monthly_revenue: 0,
-          total_revenue: 0,
-        },
+        orderStats: createEmptyDashboardStats(),
         error: error.response?.data?.message || 'Failed to fetch stats',
         isLoading: false,
       });
@@ -248,13 +279,13 @@ export const useAdminStore = create<AdminState>((set, get) => ({
   fetchManagedCategories: async () => {
     set({ isLoading: true, error: null });
     try {
-      console.log('📡 Fetching categories...');
-      const response = await menuAPI.getCategories();
+      console.log('📡 [ADMIN] Fetching categories...');
+      const response = await adminAPI.getAllCategories();
 
-      const categoriesData = response.data.data || response.data;
+      const categoriesData = response.data?.data || response.data;
       const categories = Array.isArray(categoriesData) ? categoriesData : [];
 
-      console.log('✅ Categories loaded:', categories);
+      console.log('✅ Categories loaded:', categories.length);
 
       set({
         managedCategories: categories,
@@ -263,6 +294,7 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     } catch (error: any) {
       console.error('❌ Failed to fetch categories:', error);
       set({
+        managedCategories: [],
         error: error.response?.data?.message || 'Failed to fetch categories',
         isLoading: false,
       });
@@ -417,6 +449,93 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     } catch (error: any) {
       set({
         error: error.response?.data?.message || 'Failed to delete sideline',
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
+  // ✅ Create category
+  createCategory: async (payload: CreateCategoryInput) => {
+    set({ isUpdating: true, error: null });
+    try {
+      const formData = new FormData();
+      formData.append('name', payload.name.trim());
+      formData.append('display_name', payload.display_name.trim());
+      if (payload.description) formData.append('description', payload.description.trim());
+      formData.append('is_active', String(payload.is_active));
+      if (payload.sort_order !== undefined && payload.sort_order !== null) {
+        formData.append('sort_order', String(payload.sort_order));
+      }
+      if (payload.imageFile) {
+        formData.append('image', payload.imageFile);
+      }
+
+      await adminAPI.createCategory(formData);
+      await get().fetchManagedCategories();
+      set({ isUpdating: false });
+    } catch (error: any) {
+      console.error('❌ Failed to create category:', error);
+      set({
+        error: error.response?.data?.message || 'Failed to create category',
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
+  // ✅ Update category
+  updateCategory: async (
+    categoryId: string,
+    payload: UpdateCategoryInput
+  ) => {
+    set({ isUpdating: true, error: null });
+    try {
+      const formData = new FormData();
+      if (payload.display_name !== undefined) {
+        formData.append('display_name', payload.display_name.trim());
+      }
+      if (payload.description !== undefined) {
+        formData.append('description', payload.description.trim());
+      }
+      if (payload.is_active !== undefined) {
+        formData.append('is_active', String(payload.is_active));
+      }
+      if (payload.sort_order !== undefined && payload.sort_order !== null) {
+        formData.append('sort_order', String(payload.sort_order));
+      }
+      if (payload.imageFile) {
+        formData.append('image', payload.imageFile);
+      }
+
+      await adminAPI.updateCategory(categoryId, formData);
+      await get().fetchManagedCategories();
+      set({ isUpdating: false });
+    } catch (error: any) {
+      console.error('❌ Failed to update category:', error);
+      set({
+        error: error.response?.data?.message || 'Failed to update category',
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
+  // ✅ Delete category
+  deleteCategory: async (categoryId: string) => {
+    set({ isUpdating: true, error: null });
+    try {
+      await adminAPI.deleteCategory(categoryId);
+      set({
+        managedCategories: get().managedCategories.filter(
+          (category) => category._id !== categoryId
+        ),
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      console.error('❌ Failed to delete category:', error);
+      set({
+        error: error.response?.data?.message || 'Failed to delete category',
         isUpdating: false,
       });
       throw error;

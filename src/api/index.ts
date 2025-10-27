@@ -6,5 +6,6 @@ export { deliveryAPI } from './endpoints/delivery'
 export { paymentsAPI } from './endpoints/payments'
 export { notificationsAPI } from './endpoints/notifications'
 export { adminAPI } from './endpoints/admin'
+export { contactAPI } from './endpoints/contact'
 
 export { default as apiClient } from './client'

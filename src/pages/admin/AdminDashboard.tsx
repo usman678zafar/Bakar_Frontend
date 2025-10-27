@@ -14,9 +14,9 @@ import {
   CheckCircle,
   XCircle,
   Truck,
-  Users,
   AlertCircle,
 } from 'lucide-react';
+import AdminSidebar from '@components/admin/AdminSidebar';
 
 // ===========================
 // SIMPLE COMPONENTS (No External Dependencies)
@@ -186,13 +186,40 @@ const AdminDashboard: React.FC = () => {
   // Default stats if API fails
   const stats = orderStats || {
     total_orders: 0,
+    total_orders_growth_percent: 0,
     pending_orders: 0,
+    pending_orders_weekly_change_percent: 0,
+    confirmed_orders: 0,
+    preparing_orders: 0,
+    out_for_delivery_orders: 0,
     completed_orders: 0,
     cancelled_orders: 0,
     today_revenue: 0,
+    today_vs_yesterday_percent: 0,
     weekly_revenue: 0,
+    weekly_growth_percent: 0,
     monthly_revenue: 0,
+    monthly_growth_percent: 0,
     total_revenue: 0,
+    total_revenue_growth_percent: 0,
+    weekly_revenue_breakdown: [],
+    active_subscriptions: 0,
+    upcoming_catering_events: 0,
+  };
+
+  const formatPercent = (value?: number) => {
+    if (
+      value === undefined ||
+      value === null ||
+      Number.isNaN(value) ||
+      !Number.isFinite(value)
+    ) {
+      return '—';
+    }
+    const rounded = value.toFixed(1);
+    const numeric = Number(rounded);
+    const sign = numeric > 0 ? '+' : '';
+    return `${sign}${rounded}%`;
   };
 
   const statsCards = [
@@ -203,7 +230,7 @@ const AdminDashboard: React.FC = () => {
       color: 'from-blue-500 to-blue-600',
       textColor: 'text-blue-600',
       bgColor: 'bg-blue-50',
-      change: '+12%',
+      change: formatPercent(stats.total_orders_growth_percent),
     },
     {
       title: 'Pending Orders',
@@ -212,7 +239,7 @@ const AdminDashboard: React.FC = () => {
       color: 'from-orange-500 to-orange-600',
       textColor: 'text-orange-600',
       bgColor: 'bg-orange-50',
-      change: '-3%',
+      change: formatPercent(stats.pending_orders_weekly_change_percent),
     },
     {
       title: "Today's Revenue",
@@ -221,7 +248,7 @@ const AdminDashboard: React.FC = () => {
       color: 'from-green-500 to-green-600',
       textColor: 'text-green-600',
       bgColor: 'bg-green-50',
-      change: '+25%',
+      change: formatPercent(stats.today_vs_yesterday_percent),
     },
     {
       title: 'Total Revenue',
@@ -230,7 +257,7 @@ const AdminDashboard: React.FC = () => {
       color: 'from-purple-500 to-purple-600',
       textColor: 'text-purple-600',
       bgColor: 'bg-purple-50',
-      change: '+18%',
+      change: formatPercent(stats.total_revenue_growth_percent),
     },
   ];
 
@@ -244,14 +271,14 @@ const AdminDashboard: React.FC = () => {
     },
     {
       label: 'Confirmed',
-      count: 15,
+      count: stats.confirmed_orders || 0,
       icon: <Package size={24} />,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
     },
     {
       label: 'Out for Delivery',
-      count: 8,
+      count: stats.out_for_delivery_orders || 0,
       icon: <Truck size={24} />,
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
@@ -272,98 +299,121 @@ const AdminDashboard: React.FC = () => {
     },
   ];
 
+  const successRate =
+    stats.total_orders && stats.total_orders > 0
+      ? ((stats.completed_orders || 0) / stats.total_orders) * 100
+      : 0;
+
+  const weeklyRevenueBreakdown =
+    stats.weekly_revenue_breakdown && stats.weekly_revenue_breakdown.length
+      ? stats.weekly_revenue_breakdown
+      : [
+          { label: 'Mon', date: '', total: 0 },
+          { label: 'Tue', date: '', total: 0 },
+          { label: 'Wed', date: '', total: 0 },
+          { label: 'Thu', date: '', total: 0 },
+          { label: 'Fri', date: '', total: 0 },
+          { label: 'Sat', date: '', total: 0 },
+          { label: 'Sun', date: '', total: 0 },
+        ];
+
+  const maxDailyRevenue = Math.max(
+    ...weeklyRevenueBreakdown.map((day) => day.total || 0),
+    1
+  );
+
   return (
-    <div className="min-h-screen bg-[#F9F9F9] py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="font-['Playfair_Display'] text-4xl font-bold text-[#2E2E2E] mb-2">
-              Admin Dashboard
-            </h1>
-            <p className="text-gray-600 flex items-center space-x-2">
-              <Calendar size={16} />
-              <span>
-                {new Date().toLocaleDateString('en-AU', {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </span>
-            </p>
-          </div>
-          <Button onClick={handleRefresh} disabled={refreshing}>
-            <RefreshCcw
-              size={18}
-              className={`mr-2 ${refreshing ? 'animate-spin' : ''}`}
-            />
-            {refreshing ? 'Refreshing...' : 'Refresh Data'}
-          </Button>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {statsCards.map((stat, index) => (
-            <Card
-              key={index}
-              className="hover:shadow-xl transition-all duration-300"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div
-                  className={`w-16 h-16 rounded-full ${stat.bgColor} flex items-center justify-center ${stat.textColor}`}
-                >
-                  {stat.icon}
-                </div>
-                <span className="text-sm font-semibold text-green-600">
-                  {stat.change}
+    <div className="min-h-screen bg-[#F9F9F9]">
+      <AdminSidebar />
+      <div className="py-8 px-4 sm:px-6 lg:px-8 pl-20 md:pl-28">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="font-['Playfair_Display'] text-4xl font-bold text-[#2E2E2E] mb-2">
+                Admin Dashboard
+              </h1>
+              <p className="text-gray-600 flex items-center space-x-2">
+                <Calendar size={16} />
+                <span>
+                  {new Date().toLocaleDateString('en-AU', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
                 </span>
-              </div>
-              <h3 className="text-gray-600 text-sm font-medium mb-1">
-                {stat.title}
-              </h3>
-              <p className="font-['Playfair_Display'] text-3xl font-bold text-[#2E2E2E]">
-                {stat.value}
               </p>
-            </Card>
-          ))}
-        </div>
+            </div>
+            <Button onClick={handleRefresh} disabled={refreshing}>
+              <RefreshCcw
+                size={18}
+                className={`mr-2 ${refreshing ? 'animate-spin' : ''}`}
+              />
+              {refreshing ? 'Refreshing...' : 'Refresh Data'}
+            </Button>
+          </div>
 
-        {/* Order Status Overview */}
-        <Card className="mb-8">
-          <h2 className="font-['Playfair_Display'] text-2xl font-bold text-[#2E2E2E] mb-6">
-            Order Status Overview
-          </h2>
-
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {orderStatusCards.map((status, index) => (
-              <div
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {statsCards.map((stat, index) => (
+              <Card
                 key={index}
-                className={`${status.bgColor} rounded-lg p-4 text-center transition-transform hover:scale-105`}
+                className="hover:shadow-xl transition-all duration-300"
               >
-                <div className={`${status.color} flex justify-center mb-3`}>
-                  {status.icon}
+                <div className="flex items-center justify-between mb-4">
+                  <div
+                    className={`w-16 h-16 rounded-full ${stat.bgColor} flex items-center justify-center ${stat.textColor}`}
+                  >
+                    {stat.icon}
+                  </div>
+                  <span className="text-sm font-semibold text-green-600">
+                    {stat.change}
+                  </span>
                 </div>
-                <p className="font-['Playfair_Display'] text-3xl font-bold text-[#2E2E2E] mb-1">
-                  {status.count}
+                <h3 className="text-gray-600 text-sm font-medium mb-1">
+                  {stat.title}
+                </h3>
+                <p className="font-['Playfair_Display'] text-3xl font-bold text-[#2E2E2E]">
+                  {stat.value}
                 </p>
-                <p className="text-sm text-gray-600">{status.label}</p>
-              </div>
+              </Card>
             ))}
           </div>
-        </Card>
 
-        {/* Quick Actions & Performance */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Revenue Chart Placeholder */}
-          <div className="lg:col-span-2">
+          {/* Order Status Overview */}
+          <Card className="mb-8">
+            <h2 className="font-['Playfair_Display'] text-2xl font-bold text-[#2E2E2E] mb-6">
+              Order Status Overview
+            </h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+              {orderStatusCards.map((status, index) => (
+                <div
+                  key={index}
+                  className={`${status.bgColor} rounded-lg p-4 text-center transition-transform hover:scale-105`}
+                >
+                  <div className={`${status.color} flex justify-center mb-3`}>
+                    {status.icon}
+                  </div>
+                  <p className="font-['Playfair_Display'] text-3xl font-bold text-[#2E2E2E] mb-1">
+                    {status.count}
+                  </p>
+                  <p className="text-sm text-gray-600">{status.label}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Revenue and Operational Snapshot */}
+          <div className="space-y-8">
             <Card>
               <h3 className="font-['Playfair_Display'] text-xl font-bold text-[#2E2E2E] mb-6">
                 Weekly Revenue
               </h3>
 
               {/* Summary Stats */}
-              <div className="grid grid-cols-3 gap-4 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                 <div className="bg-blue-50 rounded-lg p-4">
                   <p className="text-sm text-gray-600 mb-1">This Week</p>
                   <p className="font-['Playfair_Display'] text-2xl font-bold text-blue-600">
@@ -375,112 +425,106 @@ const AdminDashboard: React.FC = () => {
                   <p className="font-['Playfair_Display'] text-2xl font-bold text-green-600">
                     {formatCurrency(stats.monthly_revenue || 0)}
                   </p>
+                  <p className="text-sm font-semibold text-green-600">
+                    {formatPercent(stats.monthly_growth_percent)}
+                  </p>
                 </div>
                 <div className="bg-purple-50 rounded-lg p-4">
                   <p className="text-sm text-gray-600 mb-1">Growth</p>
                   <div className="flex items-center space-x-1">
                     <TrendingUp className="text-purple-600" size={20} />
                     <p className="font-['Playfair_Display'] text-2xl font-bold text-purple-600">
-                      +12%
+                      {formatPercent(stats.weekly_growth_percent)}
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Simple bar chart mockup */}
+              {/* Revenue by Day */}
               <div className="space-y-4">
-                {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(
-                  (day, i) => {
-                    const revenue = [450, 680, 520, 890, 1100, 950, 780][i];
-                    const width = (revenue / 1100) * 100;
-                    return (
-                      <div key={day} className="flex items-center space-x-4">
-                        <div className="w-12 text-sm font-medium text-gray-700">
-                          {day}
-                        </div>
-                        <div className="flex-1">
-                          <div className="relative h-10 bg-gray-100 rounded-lg overflow-hidden">
-                            <div
-                              className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#FF6B35] to-[#E55A2B] rounded-lg flex items-center justify-end px-3 transition-all duration-500"
-                              style={{ width: `${width}%` }}
-                            >
+                {weeklyRevenueBreakdown.map((day) => {
+                  const revenue = day.total || 0;
+                  const width =
+                    revenue > 0
+                      ? Math.max((revenue / maxDailyRevenue) * 100, 8)
+                      : 0;
+
+                  return (
+                    <div key={day.label} className="flex items-center space-x-4">
+                      <div className="w-12 text-sm font-medium text-gray-700">
+                        {day.label}
+                      </div>
+                      <div className="flex-1">
+                        <div className="relative h-10 bg-gray-100 rounded-lg overflow-hidden">
+                          <div
+                            className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#FF6B35] to-[#E55A2B] rounded-lg flex items-center justify-end px-3 transition-all duration-500"
+                            style={{ width: `${width}%` }}
+                          >
+                            {revenue > 0 && (
                               <span className="text-white font-semibold text-sm">
                                 {formatCurrency(revenue)}
                               </span>
-                            </div>
+                            )}
                           </div>
+                          {revenue === 0 && (
+                            <div className="absolute inset-0 flex items-center justify-end px-3">
+                              <span className="text-gray-400 text-sm">
+                                {formatCurrency(0)}
+                              </span>
+                            </div>
+                          )}
                         </div>
                       </div>
-                    );
-                  }
-                )}
+                    </div>
+                  );
+                })}
               </div>
             </Card>
-          </div>
 
-          {/* Quick Actions */}
-          <div>
             <Card>
               <h3 className="font-['Playfair_Display'] text-xl font-bold text-[#2E2E2E] mb-6">
-                Quick Actions
+                Operational Snapshot
               </h3>
 
-              <div className="space-y-3">
-                <Button
-                  onClick={() => navigate('/admin/orders')}
-                  className="w-full"
-                >
-                  <ShoppingBag size={18} className="mr-2 inline" />
-                  View All Orders
-                </Button>
-
-                <button
-                  onClick={() => navigate('/admin/menu')}
-                  className="w-full px-6 py-3 border-2 border-[#FF6B35] text-[#FF6B35] rounded-lg font-semibold hover:bg-[#FF6B35] hover:text-white transition-colors"
-                >
-                  <Package size={18} className="mr-2 inline" />
-                  Manage Menu
-                </button>
-
-                <button
-                  onClick={() => navigate('/admin/sidelines')}
-                  className="w-full px-6 py-3 border-2 border-[#FF6B35] text-[#FF6B35] rounded-lg font-semibold hover:bg-[#FF6B35] hover:text-white transition-colors"
-                >
-                  <TrendingUp size={18} className="mr-2 inline" />
-                  Manage Sidelines
-                </button>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-primary-50 rounded-lg p-4">
+                  <p className="text-sm text-gray-600 mb-1">Active Subscriptions</p>
+                  <p className="font-heading text-3xl font-bold text-primary">
+                    {stats.active_subscriptions || 0}
+                  </p>
+                </div>
+                <div className="bg-orange-50 rounded-lg p-4">
+                  <p className="text-sm text-gray-600 mb-1">Upcoming Catering Events</p>
+                  <p className="font-heading text-3xl font-bold text-orange-600">
+                    {stats.upcoming_catering_events || 0}
+                  </p>
+                </div>
+                <div className="bg-emerald-50 rounded-lg p-4">
+                  <p className="text-sm text-gray-600 mb-1">Success Rate</p>
+                  <p className="font-heading text-3xl font-bold text-emerald-600">
+                    {successRate.toFixed(1)}%
+                  </p>
+                </div>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-gray-200">
-                <h4 className="font-semibold text-[#2E2E2E] mb-4">
-                  Performance Summary
-                </h4>
-                <div className="space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Completed Orders:</span>
-                    <span className="font-semibold text-green-600">
-                      {stats.completed_orders || 0}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Cancelled Orders:</span>
-                    <span className="font-semibold text-red-600">
-                      {stats.cancelled_orders || 0}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Success Rate:</span>
-                    <span className="font-semibold text-blue-600">
-                      {stats.total_orders
-                        ? (
-                            ((stats.completed_orders || 0) /
-                              stats.total_orders) *
-                            100
-                          ).toFixed(1)
-                        : 0}
-                      %
-                    </span>
-                  </div>
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="flex flex-col bg-gray-50 p-4 rounded-lg border border-gray-100">
+                  <span className="text-sm text-gray-500">Completed Orders</span>
+                  <span className="text-2xl font-semibold text-green-600">
+                    {stats.completed_orders || 0}
+                  </span>
+                </div>
+                <div className="flex flex-col bg-gray-50 p-4 rounded-lg border border-gray-100">
+                  <span className="text-sm text-gray-500">Cancelled Orders</span>
+                  <span className="text-2xl font-semibold text-red-500">
+                    {stats.cancelled_orders || 0}
+                  </span>
+                </div>
+                <div className="flex flex-col bg-gray-50 p-4 rounded-lg border border-gray-100">
+                  <span className="text-sm text-gray-500">Pending Queue</span>
+                  <span className="text-2xl font-semibold text-blue-600">
+                    {stats.pending_orders || 0}
+                  </span>
                 </div>
               </div>
             </Card>
