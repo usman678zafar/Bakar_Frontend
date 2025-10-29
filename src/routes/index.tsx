@@ -12,7 +12,7 @@ import ContactPage from '@pages/public/ContactPage';
 
 // Customer Pages
 import DailyMenuPage from '@pages/customer/DailyMenuPage';
-import WeeklySubscriptionPage from '@pages/customer/WeeklySubscriptionPage';
+import MealsSubscriptionPage from '@pages/customer/MealsSubscriptionPage';
 import CateringPage from '@pages/customer/CateringPage';
 import CheckoutPage from '@pages/customer/CheckoutPage';
 import ProfilePage from '@pages/customer/ProfilePage';
@@ -22,6 +22,7 @@ import AdminDashboard from '@pages/admin/AdminDashboard';
 import OrderManagement from '@pages/admin/OrderManagement';
 import MenuManagement from '@pages/admin/MenuManagement';
 import SidelinesManagement from '@pages/admin/SidelinesManagement';
+import MealPlanManagement from '@pages/admin/MealPlanManagement';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -35,7 +36,7 @@ const AppRoutes: React.FC = () => {
 
         {/* ✅ Menu Pages - Accessible without login */}
         <Route path="/menu/daily" element={<DailyMenuPage />} />
-        <Route path="/menu/weekly" element={<WeeklySubscriptionPage />} />
+        <Route path="/menu/meals" element={<MealsSubscriptionPage />} />
         <Route path="/catering" element={<CateringPage />} />
 
         {/* ✅ Protected Customer Routes - Login Required */}
@@ -51,6 +52,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/admin/orders" element={<OrderManagement />} />
             <Route path="/admin/menu" element={<MenuManagement />} />
             <Route path="/admin/sidelines" element={<SidelinesManagement />} />
+            <Route path="/admin/meal-plans" element={<MealPlanManagement />} />
           </Route>
         </Route>
 

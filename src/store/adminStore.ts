@@ -3,6 +3,7 @@ import { adminAPI } from '@api/endpoints/admin';
 import { menuAPI } from '@api/endpoints/menu';
 import { Order } from '@types/order.types';
 import { MenuItem, Sideline, MenuCategory } from '@types/menu.types';
+import { MealSubscriptionPlan, DeliveryZone } from '@types/subscription.types';
 import { DashboardStats } from '@models/admin.types';
 
 interface AdminState {
@@ -14,6 +15,8 @@ interface AdminState {
   managedMenuItems: MenuItem[];
   managedSidelines: Sideline[];
   managedCategories: MenuCategory[];
+  mealPlans: MealSubscriptionPlan[];
+  deliveryZones: DeliveryZone[];
 
   // Loading
   isLoading: boolean;
@@ -43,6 +46,22 @@ interface AdminState {
     payload: UpdateCategoryInput
   ) => Promise<void>;
   deleteCategory: (categoryId: string) => Promise<void>;
+
+  fetchMealPlans: (tab?: string, includeInactive?: boolean) => Promise<void>;
+  createMealPlan: (payload: Partial<MealSubscriptionPlan>) => Promise<void>;
+  updateMealPlan: (
+    planId: string,
+    payload: Partial<MealSubscriptionPlan>
+  ) => Promise<void>;
+  deleteMealPlan: (planId: string) => Promise<void>;
+
+  fetchDeliveryZones: (includeInactive?: boolean) => Promise<void>;
+  createDeliveryZone: (payload: Partial<DeliveryZone>) => Promise<void>;
+  updateDeliveryZone: (
+    zoneId: string,
+    payload: Partial<DeliveryZone>
+  ) => Promise<void>;
+  deleteDeliveryZone: (zoneId: string, permanent?: boolean) => Promise<void>;
 
   clearError: () => void;
 }
@@ -93,6 +112,8 @@ export const useAdminStore = create<AdminState>((set, get) => ({
   managedMenuItems: [],
   managedSidelines: [],
   managedCategories: [],
+  mealPlans: [],
+  deliveryZones: [],
   isLoading: false,
   isUpdating: false,
   error: null,
@@ -536,6 +557,195 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       console.error('❌ Failed to delete category:', error);
       set({
         error: error.response?.data?.message || 'Failed to delete category',
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
+  fetchMealPlans: async (tab?: string, includeInactive: boolean = true) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await adminAPI.getMealPlans(tab, includeInactive);
+      const plans = response.data.data || response.data;
+      set({
+        mealPlans: Array.isArray(plans) ? plans : [],
+        isLoading: false,
+      });
+    } catch (error: any) {
+      const message =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        'Failed to fetch meal plans';
+      set({
+        error: message,
+        isLoading: false,
+      });
+      throw error;
+    }
+  },
+
+  createMealPlan: async (payload: Partial<MealSubscriptionPlan>) => {
+    set({ isUpdating: true, error: null });
+    try {
+      const response = await adminAPI.createMealPlan(payload);
+      const plan = response.data.data || response.data;
+      if (plan) {
+        set({
+          mealPlans: [plan, ...get().mealPlans.filter((p) => p._id !== plan._id)],
+          isUpdating: false,
+        });
+      } else {
+        set({ isUpdating: false });
+      }
+    } catch (error: any) {
+      const message =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        'Failed to create meal plan';
+      set({
+        error: message,
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
+  updateMealPlan: async (
+    planId: string,
+    payload: Partial<MealSubscriptionPlan>
+  ) => {
+    set({ isUpdating: true, error: null });
+    try {
+      const response = await adminAPI.updateMealPlan(planId, payload);
+      const updated = response.data.data || response.data;
+      if (!updated) {
+        set({ isUpdating: false });
+        return;
+      }
+      set({
+        mealPlans: get().mealPlans.map((plan) =>
+          plan._id === planId ? updated : plan
+        ),
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      const message =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        'Failed to update meal plan';
+      set({
+        error: message,
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
+  deleteMealPlan: async (planId: string) => {
+    set({ isUpdating: true, error: null });
+    try {
+      await adminAPI.deleteMealPlan(planId);
+      set({
+        mealPlans: get().mealPlans.filter((plan) => plan._id !== planId),
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      set({
+        error: error.response?.data?.message || 'Failed to delete meal plan',
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
+  fetchDeliveryZones: async (includeInactive: boolean = true) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await adminAPI.getDeliveryZones(includeInactive);
+      const zones = response.data.data || response.data;
+      set({
+        deliveryZones: Array.isArray(zones) ? zones : [],
+        isLoading: false,
+      });
+    } catch (error: any) {
+      set({
+        error:
+          error.response?.data?.message || 'Failed to fetch delivery zones',
+        isLoading: false,
+      });
+      throw error;
+    }
+  },
+
+  createDeliveryZone: async (payload: Partial<DeliveryZone>) => {
+    set({ isUpdating: true, error: null });
+    try {
+      const response = await adminAPI.createDeliveryZone(payload);
+      const zone = response.data.data || response.data;
+      if (zone) {
+        set({
+          deliveryZones: [
+            zone,
+            ...get().deliveryZones.filter((z) => z._id !== zone._id),
+          ],
+          isUpdating: false,
+        });
+      } else {
+        set({ isUpdating: false });
+      }
+    } catch (error: any) {
+      set({
+        error:
+          error.response?.data?.message || 'Failed to create delivery zone',
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
+  updateDeliveryZone: async (
+    zoneId: string,
+    payload: Partial<DeliveryZone>
+  ) => {
+    set({ isUpdating: true, error: null });
+    try {
+      const response = await adminAPI.updateDeliveryZone(zoneId, payload);
+      const updated = response.data.data || response.data;
+      if (!updated) {
+        set({ isUpdating: false });
+        return;
+      }
+      set({
+        deliveryZones: get().deliveryZones.map((zone) =>
+          zone._id === zoneId ? updated : zone
+        ),
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      set({
+        error:
+          error.response?.data?.message || 'Failed to update delivery zone',
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
+  deleteDeliveryZone: async (zoneId: string, permanent: boolean = false) => {
+    set({ isUpdating: true, error: null });
+    try {
+      await adminAPI.deleteDeliveryZone(zoneId, permanent);
+      set({
+        deliveryZones: get().deliveryZones.filter(
+          (zone) => zone._id !== zoneId
+        ),
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      set({
+        error:
+          error.response?.data?.message || 'Failed to delete delivery zone',
         isUpdating: false,
       });
       throw error;

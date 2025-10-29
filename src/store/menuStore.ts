@@ -121,7 +121,7 @@ interface MenuState {
   setFilters: (filters: Partial<MenuFilters>) => void;
   clearFilters: () => void;
   getFilteredItems: (
-    orderType: 'daily_menu' | 'weekly_subscription' | 'special_catering'
+    orderType: 'daily_menu' | 'meal_subscription' | 'special_catering'
   ) => MenuItem[];
 }
 
@@ -371,7 +371,7 @@ export const useMenuStore = create<MenuState>((set, get) => ({
 
   // ✅ GET FILTERED ITEMS
   getFilteredItems: (
-    orderType: 'daily_menu' | 'weekly_subscription' | 'special_catering'
+    orderType: 'daily_menu' | 'meal_subscription' | 'special_catering'
   ) => {
     const { activeFilters, searchQuery } = get();
 
@@ -381,7 +381,7 @@ export const useMenuStore = create<MenuState>((set, get) => ({
       case 'daily_menu':
         items = get().dailyMenuItems;
         break;
-      case 'weekly_subscription':
+      case 'meal_subscription':
         items = get().weeklyMenuItems;
         break;
       case 'special_catering':

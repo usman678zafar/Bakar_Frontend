@@ -13,7 +13,7 @@ export const BUSINESS_INFO = {
 
 export const ORDER_TYPES = {
   DAILY_MENU: 'daily_menu',
-  WEEKLY_SUBSCRIPTION: 'weekly_subscription',
+  MEAL_SUBSCRIPTION: 'meal_subscription',
   SPECIAL_CATERING: 'special_catering',
 } as const
 

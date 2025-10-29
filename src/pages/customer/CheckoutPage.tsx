@@ -4,6 +4,7 @@ import { useCart } from '@hooks/useCart';
 import { useAuthStore } from '@store/authStore';
 import { useToast } from '@components/common/Toast';
 import { ordersAPI } from '@api';
+import { MealSubscriptionSelection } from '@types/cart.types';
 import { formatCurrency } from '@utils/formatters';
 import {
   MapPin,
@@ -28,7 +29,7 @@ import LoadingSpinner from '@components/common/LoadingSpinner';
 
 interface CheckoutState {
   cateringDetails?: any;
-  subscriptionDetails?: any;
+  subscriptionDetails?: MealSubscriptionSelection;
 }
 
 const CheckoutPage: React.FC = () => {
@@ -52,6 +53,12 @@ const CheckoutPage: React.FC = () => {
 
   const state = (location.state as CheckoutState) || {};
   const { cateringDetails, subscriptionDetails } = state;
+
+  useEffect(() => {
+    if (subscriptionDetails) {
+      setDeliveryMethod(subscriptionDetails.fulfilment);
+    }
+  }, [subscriptionDetails]);
 
   // State
   const [isProcessing, setIsProcessing] = useState(false);
@@ -160,18 +167,28 @@ const CheckoutPage: React.FC = () => {
       return;
     }
 
-    if (
-      deliveryMethod === 'delivery' &&
-      !selectedAddress &&
-      !showNewAddressForm
-    ) {
-      showToast('Please select or add a delivery address', 'error');
-      return;
-    }
+    if (subscriptionDetails) {
+      if (
+        subscriptionDetails.fulfilment === 'delivery' &&
+        !selectedAddress
+      ) {
+        showToast('Please select a delivery address', 'error');
+        return;
+      }
+    } else {
+      if (
+        deliveryMethod === 'delivery' &&
+        !selectedAddress &&
+        !showNewAddressForm
+      ) {
+        showToast('Please select or add a delivery address', 'error');
+        return;
+      }
 
-    if (!deliveryDate || !deliveryTime) {
-      showToast('Please select delivery/pickup date and time', 'error');
-      return;
+      if (!deliveryDate || !deliveryTime) {
+        showToast('Please select delivery/pickup date and time', 'error');
+        return;
+      }
     }
 
     if (!customerInfo.name || !customerInfo.email || !customerInfo.phone) {
@@ -197,15 +214,33 @@ const CheckoutPage: React.FC = () => {
           contact_info: customerInfo,
         };
       } else if (subscriptionDetails) {
-        // Weekly subscription order
-        orderPayload = {
-          menu_selections: subscriptionDetails.meals.reduce(
-            (acc: any, meal: any) => {
-              acc[meal.id || meal._id] = 1;
+        const plan = subscriptionDetails.plan;
+        const planId = (plan as any)._id || (plan as any).id;
+
+        const planSelections = [
+          {
+            plan_id: planId,
+            quantity: subscriptionDetails.planQuantity,
+          },
+        ];
+
+        const deliverySlots = subscriptionDetails.schedule.map((slot) => ({
+          delivery_date: slot.date,
+          menu_items: slot.items.reduce(
+            (acc: Record<string, number>, entry) => {
+              const id = (entry.item as any)._id || entry.item.id;
+              if (id) {
+                acc[id] = entry.quantity;
+              }
               return acc;
             },
-            {}
+            {} as Record<string, number>
           ),
+        }));
+
+        orderPayload = {
+          plan_selections: planSelections,
+          delivery_slots: deliverySlots,
           sidelines:
             sidelines?.map((s: any) => {
               const sidelineData = s.sideline || s;
@@ -214,13 +249,11 @@ const CheckoutPage: React.FC = () => {
                 quantity: s.quantity || 1,
               };
             }) || [],
-          delivery_dates: [deliveryDate],
-          delivery_address:
-            deliveryMethod === 'delivery'
-              ? showNewAddressForm
-                ? newAddress
-                : selectedAddress
-              : null,
+          delivery_address_id:
+            subscriptionDetails.fulfilment === 'delivery'
+              ? selectedAddress?._id || selectedAddress?.id
+              : undefined,
+          fulfilment_method: subscriptionDetails.fulfilment,
           is_express: false,
           delivery_instructions: specialInstructions,
           notes: '',
@@ -266,7 +299,7 @@ const CheckoutPage: React.FC = () => {
       if (cateringDetails) {
         orderResponse = await ordersAPI.createCateringOrder(orderPayload);
       } else if (subscriptionDetails) {
-        orderResponse = await ordersAPI.createWeeklyOrder(orderPayload);
+        orderResponse = await ordersAPI.createMealSubscriptionOrder(orderPayload);
       } else {
         orderResponse = await ordersAPI.createDailyOrder(orderPayload);
       }

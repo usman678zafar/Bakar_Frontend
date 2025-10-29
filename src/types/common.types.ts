@@ -24,7 +24,7 @@ export interface PaginatedResponse<T> {
   pages: number
 }
 
-export type OrderType = 'daily_menu' | 'weekly_subscription' | 'special_catering'
+export type OrderType = 'daily_menu' | 'meal_subscription' | 'special_catering'
 export type DeliveryOption = 'pickup' | 'delivery'
 export type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'out_for_delivery' | 'delivered' | 'cancelled'
 export type PaymentStatus = 'pending' | 'completed' | 'failed' | 'refunded'

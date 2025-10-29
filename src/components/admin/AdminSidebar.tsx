@@ -6,6 +6,7 @@ import {
   Utensils,
   Salad,
   Tags,
+  CalendarRange,
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -29,6 +30,11 @@ const NAV_ITEMS = [
     label: 'Sidelines',
     icon: Salad,
     path: '/admin/sidelines',
+  },
+  {
+    label: 'Meal Plans',
+    icon: CalendarRange,
+    path: '/admin/meal-plans',
   },
   {
     label: 'Categories',

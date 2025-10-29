@@ -1,5 +1,6 @@
 import apiClient from '../client';
 import { MenuItem, Sideline, MenuFilters } from '@types/menu.types';
+import { MealSubscriptionPlan } from '@types/subscription.types';
 import { ApiResponse } from '@types/common.types';
 
 export const menuAPI = {
@@ -16,12 +17,22 @@ export const menuAPI = {
     if (filters?.search) params.append('search', filters.search);
     
     // Add filter for weekly available items
-    if (filters?.order_type === 'weekly_subscription') {
+    if (filters?.order_type === 'meal_subscription') {
       params.append('is_available_for_weekly', 'true');
     }
 
     return apiClient.get<ApiResponse<MenuItem[]>>(
       `/menu/daily?${params.toString()}`
+    );
+  },
+
+  /**
+   * Get configurable meal subscription plans
+   */
+  getMealSubscriptionPlans: (tab?: string) => {
+    const params = tab ? `?tab=${encodeURIComponent(tab)}` : '';
+    return apiClient.get<ApiResponse<MealSubscriptionPlan[]>>(
+      `/menu/subscription/plans${params}`
     );
   },
 

@@ -171,7 +171,7 @@ const OrderManagement: React.FC = () => {
               >
                 <option value="">All Types</option>
                 <option value="daily_menu">Daily Menu</option>
-                <option value="weekly_subscription">Weekly Subscription</option>
+                <option value="meal_subscription">Meals Subscription</option>
                 <option value="special_catering">Special Catering</option>
               </select>
             </div>

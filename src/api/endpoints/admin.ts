@@ -1,5 +1,6 @@
 import apiClient from '../client';
 import { MenuItem, Sideline, MenuCategory } from '@types/menu.types';
+import { MealSubscriptionPlan, DeliveryZone } from '@types/subscription.types';
 import { Order } from '@types/order.types';
 import { ApiResponse } from '@types/common.types';
 import { DashboardStats } from '@models/admin.types';
@@ -100,4 +101,53 @@ export const adminAPI = {
     ),
   deleteCategory: (categoryId: string) =>
     apiClient.delete<ApiResponse<void>>(`/admin/categories/${categoryId}`),
+
+  /**
+   * Meal subscription plans (admin)
+   */
+  getMealPlans: (tab?: string, includeInactive: boolean = true) => {
+    const params = new URLSearchParams();
+    if (tab) params.append('tab', tab);
+    if (!includeInactive) params.append('include_inactive', 'false');
+    const suffix = params.size ? `?${params.toString()}` : '';
+    return apiClient.get<ApiResponse<MealSubscriptionPlan[]>>(
+      `/admin/meal-plans${suffix}`
+    );
+  },
+  createMealPlan: (payload: Partial<MealSubscriptionPlan>) =>
+    apiClient.post<ApiResponse<MealSubscriptionPlan>>('/admin/meal-plans', payload),
+  updateMealPlan: (
+    planId: string,
+    payload: Partial<MealSubscriptionPlan>
+  ) =>
+    apiClient.put<ApiResponse<MealSubscriptionPlan>>(
+      `/admin/meal-plans/${planId}`,
+      payload
+    ),
+  deleteMealPlan: (planId: string) =>
+    apiClient.delete<ApiResponse<void>>(`/admin/meal-plans/${planId}`),
+
+  /**
+   * Delivery zones (admin)
+   */
+  getDeliveryZones: (includeInactive: boolean = true) => {
+    const suffix = includeInactive ? '' : '?include_inactive=false';
+    return apiClient.get<ApiResponse<DeliveryZone[]>>(
+      `/admin/delivery-zones${suffix}`
+    );
+  },
+  createDeliveryZone: (payload: Partial<DeliveryZone>) =>
+    apiClient.post<ApiResponse<DeliveryZone>>('/admin/delivery-zones', payload),
+  updateDeliveryZone: (
+    zoneId: string,
+    payload: Partial<DeliveryZone>
+  ) =>
+    apiClient.put<ApiResponse<DeliveryZone>>(
+      `/admin/delivery-zones/${zoneId}`,
+      payload
+    ),
+  deleteDeliveryZone: (zoneId: string, permanent: boolean = false) =>
+    apiClient.delete<ApiResponse<void>>(
+      `/admin/delivery-zones/${zoneId}?permanent=${String(permanent)}`
+    ),
 };

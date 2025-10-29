@@ -1,5 +1,6 @@
 import { MenuItem, Sideline } from './menu.types'
 import { Address } from './auth.types'
+import { MealSubscriptionPlan } from './subscription.types'
 
 export interface CartItem {
   menu_item: MenuItem
@@ -15,7 +16,7 @@ export interface CartSideline {
 export interface Cart {
   items: CartItem[]
   sidelines: CartSideline[]
-  order_type: 'daily_menu' | 'weekly_subscription' | 'special_catering'
+  order_type: 'daily_menu' | 'meal_subscription' | 'special_catering'
   delivery_option: 'pickup' | 'delivery'
   selected_address?: Address
   delivery_date?: string
@@ -31,12 +32,15 @@ export interface CartSummary {
   item_count: number
 }
 
-export interface WeeklySubscriptionSelection {
-  plan_type: 'weekly' | 'fortnightly' | 'monthly'
-  meals_per_week: number
-  selected_meals: { [key: string]: MenuItem[] } // day => meals
-  start_date: string
-  delivery_days: string[]
+export interface MealSubscriptionSelection {
+  plan: MealSubscriptionPlan
+  planQuantity: number
+  fulfilment: 'delivery' | 'pickup'
+  schedule: Array<{ date: string; items: { item: MenuItem; quantity: number }[] }>
+  includedBoxes: number
+  totalBoxes: number
+  extraBoxes: number
+  maxPerMeal?: number | null
 }
 
 export interface CateringDetails {

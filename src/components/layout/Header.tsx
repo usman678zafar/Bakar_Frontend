@@ -33,7 +33,7 @@ const Header: React.FC = () => {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Daily Menu', path: '/menu/daily' },
-    { name: 'Weekly Subscription', path: '/menu/weekly' },
+    { name: 'Meals Subscription', path: '/menu/meals' },
     { name: 'Catering', path: '/catering' },
     { name: 'Contact', path: '/contact' },
   ];
@@ -43,14 +43,14 @@ const Header: React.FC = () => {
   return (
     <header className="sticky top-0 z-40 bg-white shadow-md relative">
       <div className="container-custom">
-        <div className="flex items-center justify-between py-4">
+        <div className="flex flex-wrap lg:flex-nowrap items-center justify-between gap-4 py-4">
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
             <Logo />
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
+          <nav className="hidden lg:flex flex-1 items-center justify-center gap-8 min-w-0">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
@@ -67,7 +67,7 @@ const Header: React.FC = () => {
           </nav>
 
           {/* Right Side Actions */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-3 ml-auto">
             {/* Cart Icon - Only show if authenticated */}
             {isAuthenticated && (
               <button

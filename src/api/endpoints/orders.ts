@@ -10,9 +10,9 @@ export const ordersAPI = {
     apiClient.post<ApiResponse<Order>>('/orders/daily', payload),
 
   /**
-   * Create weekly subscription order
+   * Create meal subscription order
    */
-  createWeeklyOrder: (payload: any) =>
+  createMealSubscriptionOrder: (payload: any) =>
     apiClient.post<ApiResponse<Order>>('/orders/weekly', payload),
 
   /**

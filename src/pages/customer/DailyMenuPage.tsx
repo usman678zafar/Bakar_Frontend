@@ -6,18 +6,7 @@ import FilterBar from '@components/menu/FilterBar';
 import LoadingSpinner from '@components/common/LoadingSpinner';
 import Card from '@components/common/Card';
 import Button from '@components/common/Button';
-import {
-  Package,
-  RefreshCcw,
-  AlertCircle,
-  Truck,
-  Award,
-  Clock,
-  Shield,
-  MapPin,
-  ChefHat,
-  Sparkles,
-} from 'lucide-react';
+import { Package, RefreshCcw, AlertCircle } from 'lucide-react';
 import { useToast } from '@components/common/Toast';
 
 const DailyMenuPage: React.FC = () => {
@@ -170,61 +159,6 @@ const DailyMenuPage: React.FC = () => {
               </div>
             </Card>
           )}
-        </div>
-
-        {/* Additional Feature Cards */}
-        <div className="mt-12 bg-gradient-to-br from-primary-50 to-orange-50 rounded-xl p-8">
-          <h2 className="font-heading text-2xl font-bold text-text mb-6 text-center">
-            Why Choose Our Daily Menu?
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Order Anytime */}
-            <div className="flex items-start space-x-3">
-              <Clock className="text-primary flex-shrink-0 mt-1" size={24} />
-              <div>
-                <h4 className="font-semibold text-text mb-1">Order Anytime</h4>
-                <p className="text-sm text-gray-600">
-                  11:00 AM - 9:00 PM, 7 days a week
-                </p>
-              </div>
-            </div>
-
-            {/* Free Delivery */}
-            <div className="flex items-start space-x-3">
-              <MapPin className="text-primary flex-shrink-0 mt-1" size={24} />
-              <div>
-                <h4 className="font-semibold text-text mb-1">Free Delivery</h4>
-                <p className="text-sm text-gray-600">
-                  On orders above $50 within 6km
-                </p>
-              </div>
-            </div>
-
-            {/* Safe & Hygienic */}
-            <div className="flex items-start space-x-3">
-              <Shield className="text-primary flex-shrink-0 mt-1" size={24} />
-              <div>
-                <h4 className="font-semibold text-text mb-1">
-                  Safe & Hygienic
-                </h4>
-                <p className="text-sm text-gray-600">
-                  Strict quality control standards
-                </p>
-              </div>
-            </div>
-
-            {/* Best Quality */}
-            <div className="flex items-start space-x-3">
-              <Sparkles className="text-primary flex-shrink-0 mt-1" size={24} />
-              <div>
-                <h4 className="font-semibold text-text mb-1">Best Quality</h4>
-                <p className="text-sm text-gray-600">
-                  Premium ingredients only
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

@@ -123,7 +123,7 @@ const HomePage: React.FC = () => {
                 <Button
                   variant="outline"
                   size="lg"
-                  onClick={() => navigate('/menu/weekly')}
+                  onClick={() => navigate('/menu/meals')}
                   className="bg-white text-primary hover:bg-gray-100 border-white font-bold group"
                 >
                   View Subscriptions
@@ -438,10 +438,10 @@ const HomePage: React.FC = () => {
               </div>
             </Card>
 
-            {/* Weekly Subscription Card */}
+            {/* Meals Subscription Card */}
             <Card
               className="relative overflow-hidden group cursor-pointer hover:shadow-2xl transition-all duration-300"
-              onClick={() => navigate('/menu/weekly')}
+              onClick={() => navigate('/menu/meals')}
             >
               <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold z-10">
                 SAVE 35%
@@ -455,7 +455,7 @@ const HomePage: React.FC = () => {
                 <div className="h-full flex items-end p-6">
                   <div className="text-white">
                     <h3 className="font-heading text-2xl font-bold mb-2">
-                      Weekly Plans
+                      Meals Subscription
                     </h3>
                     <p className="text-sm opacity-90">Subscribe & save</p>
                   </div>
@@ -463,8 +463,8 @@ const HomePage: React.FC = () => {
               </div>
               <div className="p-6">
                 <p className="text-gray-600 mb-4">
-                  Save time and money with our flexible weekly meal
-                  subscriptions.
+                  Build personalised meal plans with flexible weekly, fortnight,
+                  or monthly deliveries tailored to your schedule.
                 </p>
                 <div className="flex items-center text-primary font-semibold group-hover:translate-x-2 transition-transform">
                   <span>View Plans</span>

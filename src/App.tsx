@@ -20,7 +20,7 @@ import ContactPage from '@pages/public/ContactPage';
 
 // Customer Pages
 import DailyMenuPage from '@pages/customer/DailyMenuPage';
-import WeeklySubscriptionPage from '@pages/customer/WeeklySubscriptionPage';
+import MealsSubscriptionPage from '@pages/customer/MealsSubscriptionPage';
 import CateringPage from '@pages/customer/CateringPage';
 import CartPage from '@pages/customer/CartPage';
 import CheckoutPage from '@pages/customer/CheckoutPage';
@@ -32,6 +32,7 @@ import MenuManagement from '@pages/admin/MenuManagement';
 import OrderManagement from '@pages/admin/OrderManagement';
 import SidelinesManagement from '@pages/admin/SidelinesManagement';
 import CategoryManagement from '@pages/admin/CategoryManagement';
+import MealPlanManagement from '@pages/admin/MealPlanManagement';
 
 function App() {
   const { checkAuth, isLoading, isAuthenticated } = useAuthStore();
@@ -62,7 +63,7 @@ function App() {
 
             {/* Menu Routes (Public) */}
             <Route path="menu/daily" element={<DailyMenuPage />} />
-            <Route path="menu/weekly" element={<WeeklySubscriptionPage />} />
+            <Route path="menu/meals" element={<MealsSubscriptionPage />} />
             <Route path="catering" element={<CateringPage />} />
 
             {/* Protected Customer Routes */}
@@ -79,6 +80,7 @@ function App() {
               <Route path="admin/orders" element={<OrderManagement />} />
               <Route path="admin/sidelines" element={<SidelinesManagement />} />
               <Route path="admin/categories" element={<CategoryManagement />} />
+              <Route path="admin/meal-plans" element={<MealPlanManagement />} />
             </Route>
           </Route>
 

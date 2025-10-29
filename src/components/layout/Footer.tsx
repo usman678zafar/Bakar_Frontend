@@ -43,10 +43,10 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <Link
-                  to="/menu/weekly"
+                  to="/menu/meals"
                   className="text-gray-300 hover:text-primary transition-colors"
                 >
-                  Weekly Subscription
+                  Meals Subscription
                 </Link>
               </li>
               <li>

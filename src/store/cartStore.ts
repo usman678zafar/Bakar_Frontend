@@ -28,7 +28,7 @@ interface CartStore {
   error: string | null;
   
   // Order type and delivery option (local state)
-  orderType: 'daily_menu' | 'weekly_subscription' | 'special_catering' | null;
+  orderType: 'daily_menu' | 'meal_subscription' | 'special_catering' | null;
   deliveryOption: 'delivery' | 'pickup';
   
   // Actions
@@ -40,7 +40,7 @@ interface CartStore {
   clearCart: () => Promise<void>;
   
   // Local state setters
-  setOrderType: (type: 'daily_menu' | 'weekly_subscription' | 'special_catering') => void;
+  setOrderType: (type: 'daily_menu' | 'meal_subscription' | 'special_catering') => void;
   setDeliveryOption: (option: 'delivery' | 'pickup') => void;
   clearError: () => void;
 
@@ -332,7 +332,7 @@ export const useCartStore = create<CartStore>((set, get) => ({
   /**
    * Set order type (local state)
    */
-  setOrderType: (type: 'daily_menu' | 'weekly_subscription' | 'special_catering') => {
+  setOrderType: (type: 'daily_menu' | 'meal_subscription' | 'special_catering') => {
     set({ orderType: type });
   },
 

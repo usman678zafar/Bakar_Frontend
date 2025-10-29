@@ -58,5 +58,5 @@ export interface MenuFilters {
   is_vegetarian?: boolean;
   is_vegan?: boolean;
   search?: string;
-  order_type?: 'daily_menu' | 'weekly_subscription' | 'special_catering';
+  order_type?: 'daily_menu' | 'meal_subscription' | 'special_catering';
 }

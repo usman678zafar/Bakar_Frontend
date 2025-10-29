@@ -286,7 +286,7 @@ export const EditMenuItem: React.FC<EditMenuItemProps> = ({
             }
             className="rounded border-gray-300 text-primary focus:ring-primary"
           />
-          <span className="text-sm text-gray-700">Weekly Subscription</span>
+          <span className="text-sm text-gray-700">Meals Subscription</span>
         </label>
 
         <label className="flex items-center space-x-2 cursor-pointer">
@@ -309,7 +309,7 @@ export const EditMenuItem: React.FC<EditMenuItemProps> = ({
       {formData.is_available_for_weekly && (
         <Input
           type="number"
-          label="Max Boxes Per Weekly Menu"
+          label="Max Boxes Per Meal Plan"
           value={String(formData.max_boxes_per_menu)}
           onChange={(e) =>
             setFormData({

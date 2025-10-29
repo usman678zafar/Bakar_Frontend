@@ -4,7 +4,7 @@ import { Address } from './auth.types'
 export interface Order {
   _id: string
   user_id: string
-  order_type: 'daily_menu' | 'weekly_subscription' | 'special_catering'
+  order_type: 'daily_menu' | 'meal_subscription' | 'special_catering'
   items: CartItem[]
   sidelines: CartSideline[]
   delivery_option: 'pickup' | 'delivery'
@@ -26,7 +26,7 @@ export interface Order {
 }
 
 export interface CreateOrderPayload {
-  order_type: 'daily_menu' | 'weekly_subscription' | 'special_catering'
+  order_type: 'daily_menu' | 'meal_subscription' | 'special_catering'
   items: { menu_item_id: string; quantity: number; special_instructions?: string }[]
   sidelines?: { sideline_id: string; quantity: number }[]
   delivery_option: 'pickup' | 'delivery'

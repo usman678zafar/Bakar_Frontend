@@ -1,5 +1,6 @@
 import apiClient from '../client'
 import { Address, CreateAddressPayload, DeliveryValidation } from '@types/address.types'
+import { DeliveryZone } from '@types/subscription.types'
 import { ApiResponse } from '@types/common.types'
 
 export const deliveryAPI = {
@@ -50,4 +51,10 @@ export const deliveryAPI = {
    */
   calculateDeliveryFee: (addressId: string) => 
     apiClient.post<ApiResponse<{ fee: number; distance_km: number }>>('/delivery/calculate', { address_id: addressId }),
+
+  /**
+   * Get configured delivery zones with pricing
+   */
+  getDeliveryZones: () =>
+    apiClient.get<ApiResponse<DeliveryZone[]>>('/delivery/zones'),
 }

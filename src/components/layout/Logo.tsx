@@ -7,19 +7,21 @@ interface LogoProps {
 
 const Logo: React.FC<LogoProps> = ({ variant = 'default', size = 'md' }) => {
   const sizeClasses = {
-    sm: 'text-xl',
-    md: 'text-2xl',
-    lg: 'text-3xl',
+    sm: 'text-lg sm:text-xl',
+    md: 'text-xl sm:text-2xl',
+    lg: 'text-2xl sm:text-3xl',
   };
 
   const colorClass = variant === 'white' ? 'text-white' : 'text-primary';
 
   return (
     <div
-      className={`font-heading font-bold ${sizeClasses[size]} ${colorClass}`}
+      className={`font-heading font-bold leading-tight ${sizeClasses[size]} ${colorClass}`}
     >
-      <span className="tracking-tight">Bakar's</span>
-      <span className="text-secondary ml-2">Food & Catering</span>
+      <span className="tracking-tight whitespace-nowrap">Bakar's</span>
+      <span className="text-secondary block sm:inline sm:ml-2 whitespace-nowrap">
+        Food & Catering
+      </span>
     </div>
   );
 };

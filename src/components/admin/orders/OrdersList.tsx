@@ -59,7 +59,7 @@ export const OrdersList: React.FC<OrdersListProps> = ({
   const getOrderTypeLabel = (type: string) => {
     const labels = {
       daily_menu: 'Daily Menu',
-      weekly_subscription: 'Weekly Sub',
+      meal_subscription: 'Meals Subscription',
       special_catering: 'Catering',
     };
     return labels[type as keyof typeof labels] || type;
