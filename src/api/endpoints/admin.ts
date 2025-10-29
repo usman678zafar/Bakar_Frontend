@@ -1,8 +1,8 @@
 import apiClient from '../client';
-import { MenuItem, Sideline, MenuCategory } from '@types/menu.types';
-import { MealSubscriptionPlan, DeliveryZone } from '@types/subscription.types';
-import { Order } from '@types/order.types';
-import { ApiResponse } from '@types/common.types';
+import { MenuItem, Sideline, MenuCategory } from '@models/menu.types';
+import { MealSubscriptionPlan, DeliveryZone } from '@models/subscription.types';
+import { Order } from '@models/order.types';
+import { ApiResponse } from '@models/common.types';
 import { DashboardStats } from '@models/admin.types';
 
 export const adminAPI = {

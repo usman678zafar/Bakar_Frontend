@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { ordersAPI } from '@api/endpoints/orders'
-import { Order, CreateOrderPayload, OrderTracking } from '@types/order.types'
-import { PaginatedResponse } from '@types/common.types'
+import { Order, CreateOrderPayload, OrderTracking } from '@models/order.types'
+import { PaginatedResponse } from '@models/common.types'
 
 interface OrderState {
   // Current order being created

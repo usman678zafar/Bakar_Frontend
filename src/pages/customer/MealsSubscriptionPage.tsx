@@ -7,8 +7,8 @@ import React, {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { menuAPI } from '@api/endpoints/menu';
-import { MealSubscriptionPlan } from '@types/subscription.types';
-import { MenuItem } from '@types/menu.types';
+import { MealSubscriptionPlan } from '@models/subscription.types';
+import { MenuItem } from '@models/menu.types';
 import Card from '@components/common/Card';
 import Button from '@components/common/Button';
 import Modal from '@components/common/Modal';

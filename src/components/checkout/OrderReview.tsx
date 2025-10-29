@@ -4,7 +4,7 @@ interface OrderReviewProps {
   // Add props here
 }
 
-export const OrderReview: React.FC<OrderReviewProps> = (props) => {
+export const OrderReview: React.FC<OrderReviewProps> = () => {
   return (
     <div>
       {/* OrderReview Component */}

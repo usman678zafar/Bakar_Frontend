@@ -4,7 +4,7 @@ interface DeliveryScheduleProps {
   // Add props here
 }
 
-export const DeliverySchedule: React.FC<DeliveryScheduleProps> = (props) => {
+export const DeliverySchedule: React.FC<DeliveryScheduleProps> = () => {
   return (
     <div>
       {/* DeliverySchedule Component */}

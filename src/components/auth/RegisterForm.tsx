@@ -351,7 +351,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
     try {
       // Format data for backend API
-      const registrationData = {
+      const registrationData: RegisterData = {
         first_name: formData.first_name.trim(),
         last_name: formData.last_name.trim(),
         email: formData.email.trim().toLowerCase(),

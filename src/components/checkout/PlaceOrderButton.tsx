@@ -4,7 +4,7 @@ interface PlaceOrderButtonProps {
   // Add props here
 }
 
-export const PlaceOrderButton: React.FC<PlaceOrderButtonProps> = (props) => {
+export const PlaceOrderButton: React.FC<PlaceOrderButtonProps> = () => {
   return (
     <div>
       {/* PlaceOrderButton Component */}

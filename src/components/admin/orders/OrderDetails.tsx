@@ -1,5 +1,5 @@
 import React from 'react';
-import { Order } from '@types/order.types';
+import { Order } from '@models/order.types';
 import { formatCurrency, formatDate } from '@utils/formatters';
 import Button from '@components/common/Button';
 import {
@@ -10,9 +10,6 @@ import {
   Package,
   DollarSign,
   Calendar,
-  Clock,
-  Truck,
-  CreditCard,
   FileText,
 } from 'lucide-react';
 
@@ -27,6 +24,9 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
   onStatusUpdate,
   onClose,
 }) => {
+  const deliveryMethod =
+    order.delivery_method || order.delivery_option || 'delivery';
+
   const getStatusColor = (status: string) => {
     const colors = {
       pending: 'text-yellow-600 bg-yellow-50',
@@ -122,7 +122,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
             <div>
               <p className="text-gray-500 mb-1">Delivery Method</p>
               <p className="font-medium text-text capitalize">
-                {order.delivery_method.replace('_', ' ')}
+                {deliveryMethod.replace('_', ' ')}
               </p>
             </div>
 

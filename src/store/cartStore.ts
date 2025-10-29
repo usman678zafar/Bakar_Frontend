@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { cartAPI, CartSummary } from '@api/endpoints/cart';
-import { MenuItem, Sideline } from '@types/menu.types';
+import { MenuItem, Sideline } from '@models/menu.types';
 
 // Define the structure for cart items stored locally
 interface LocalCartItem {

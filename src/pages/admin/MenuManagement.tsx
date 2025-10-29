@@ -18,7 +18,7 @@ import {
   EyeOff,
   Info,
 } from 'lucide-react';
-import { MenuItem } from '@types/menu.types';
+import { MenuItem } from '@models/menu.types';
 
 const MenuManagement: React.FC = () => {
   const { showToast } = useToast();

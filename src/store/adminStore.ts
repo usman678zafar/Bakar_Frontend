@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 import { adminAPI } from '@api/endpoints/admin';
 import { menuAPI } from '@api/endpoints/menu';
-import { Order } from '@types/order.types';
-import { MenuItem, Sideline, MenuCategory } from '@types/menu.types';
-import { MealSubscriptionPlan, DeliveryZone } from '@types/subscription.types';
+import { Order } from '@models/order.types';
+import { MenuItem, Sideline, MenuCategory } from '@models/menu.types';
+import { MealSubscriptionPlan, DeliveryZone } from '@models/subscription.types';
 import { DashboardStats } from '@models/admin.types';
 
 interface AdminState {

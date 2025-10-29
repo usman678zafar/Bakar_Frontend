@@ -4,7 +4,7 @@ import { useToast } from '@components/common/Toast';
 import Input from '@components/common/Input';
 import Button from '@components/common/Button';
 import { Upload, X, Save } from 'lucide-react';
-import { Sideline } from '@types/menu.types';
+import { Sideline } from '@models/menu.types';
 
 interface EditSidelineProps {
   sideline: Sideline;

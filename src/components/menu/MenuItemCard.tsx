@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MenuItem } from '@types/menu.types';
+import { MenuItem } from '@models/menu.types';
 import { useCart } from '@hooks/useCart';
 import { useAuthStore } from '@store/authStore';
 import { formatCurrency } from '@utils/formatters';

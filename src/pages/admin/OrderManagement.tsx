@@ -8,7 +8,7 @@ import Button from '@components/common/Button';
 import Card from '@components/common/Card';
 import Modal from '@components/common/Modal';
 import { Filter, RefreshCcw, Calendar, Download } from 'lucide-react';
-import { Order } from '@types/order.types';
+import { Order } from '@models/order.types';
 
 const OrderManagement: React.FC = () => {
   const { showToast } = useToast();

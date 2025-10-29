@@ -4,7 +4,7 @@ interface DeliverySelectorProps {
   // Add props here
 }
 
-export const DeliverySelector: React.FC<DeliverySelectorProps> = (props) => {
+export const DeliverySelector: React.FC<DeliverySelectorProps> = () => {
   return (
     <div>
       {/* DeliverySelector Component */}

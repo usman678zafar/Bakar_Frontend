@@ -1,7 +1,7 @@
 import apiClient from '../client'
-import { Address, CreateAddressPayload, DeliveryValidation } from '@types/address.types'
-import { DeliveryZone } from '@types/subscription.types'
-import { ApiResponse } from '@types/common.types'
+import { Address, CreateAddressPayload, DeliveryValidation } from '@models/address.types'
+import { DeliveryZone } from '@models/subscription.types'
+import { ApiResponse } from '@models/common.types'
 
 export const deliveryAPI = {
   /**

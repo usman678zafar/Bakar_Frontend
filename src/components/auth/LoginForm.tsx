@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, type FC } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@hooks/useAuth';
 import { useCart } from '@hooks/useCart';
@@ -7,7 +7,7 @@ import Input from '@components/common/Input';
 import Button from '@components/common/Button';
 import { Mail, Lock, Loader2 } from 'lucide-react';
 
-const LoginForm: React.FC = () => {
+const LoginForm: FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();

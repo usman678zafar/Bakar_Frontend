@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Input from '@components/common/Input';
 import Button from '@components/common/Button';
-import { MenuCategory } from '@types/menu.types';
+import { MenuCategory } from '@models/menu.types';
 
 export interface CategoryFormValues {
   name: string;

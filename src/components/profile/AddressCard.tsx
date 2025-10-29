@@ -4,7 +4,7 @@ import { useToast } from '@components/common/Toast';
 import Card from '@components/common/Card';
 import Button from '@components/common/Button';
 import { MapPin, Edit, Trash2, Check } from 'lucide-react';
-import { Address } from '@types/address.types';
+import { Address } from '@models/address.types';
 
 interface AddressCardProps {
   address: Address;

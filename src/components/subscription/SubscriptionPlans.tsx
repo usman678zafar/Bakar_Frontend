@@ -4,7 +4,7 @@ interface SubscriptionPlansProps {
   // Add props here
 }
 
-export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = (props) => {
+export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = () => {
   return (
     <div>
       {/* SubscriptionPlans Component */}

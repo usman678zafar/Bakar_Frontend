@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MenuItem } from '@types/menu.types';
+import { MenuItem } from '@models/menu.types';
 import { formatCurrency } from '@utils/formatters';
 import { getImageUrl, handleImageError } from '@utils/images';
 import Button from '@components/common/Button';
@@ -8,8 +8,6 @@ import LoadingSpinner from '@components/common/LoadingSpinner';
 import {
   Edit2,
   Trash2,
-  Eye,
-  EyeOff,
   Leaf,
   CheckCircle,
   XCircle,

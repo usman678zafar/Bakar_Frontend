@@ -4,7 +4,7 @@ import { useToast } from '@components/common/Toast';
 import Input from '@components/common/Input';
 import Button from '@components/common/Button';
 import { Upload, X, Save } from 'lucide-react';
-import { MenuItem } from '@types/menu.types';
+import { MenuItem } from '@models/menu.types';
 
 interface EditMenuItemProps {
   item: MenuItem;

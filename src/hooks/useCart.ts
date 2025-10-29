@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useCartStore } from '@store/cartStore';
 import { useAuthStore } from '@store/authStore';
 import { useToast } from '@components/common/Toast';
-import { MenuItem, Sideline } from '@types/menu.types';
+import { MenuItem, Sideline } from '@models/menu.types';
 
 export const useCart = () => {
   const cartStore = useCartStore();

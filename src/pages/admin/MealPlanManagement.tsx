@@ -9,7 +9,7 @@ import { useToast } from '@components/common/Toast';
 import {
   MealSubscriptionPlan,
   DeliveryZone,
-} from '@types/subscription.types';
+} from '@models/subscription.types';
 
 type PlanFormState = Partial<MealSubscriptionPlan> & {
   suburbs?: string;

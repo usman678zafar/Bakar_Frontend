@@ -1,12 +1,14 @@
 export interface User {
   id: string;
   email: string;
-  full_name: string;
   phone: string;
   role: 'customer' | 'admin';
   addresses: Address[];
   created_at: string;
   updated_at: string;
+  full_name?: string;
+  first_name?: string;
+  last_name?: string;
 }
 
 export interface Address {
@@ -17,6 +19,7 @@ export interface Address {
   postcode: string;
   state: string;
   is_default: boolean;
+  instructions?: string;
 }
 
 export interface LoginCredentials {
@@ -24,13 +27,14 @@ export interface LoginCredentials {
   password: string;
 }
 
-// ✅ FIXED: Make role optional with proper typing
 export interface RegisterData {
   email: string;
   password: string;
-  full_name: string;
   phone: string;
-  role?: 'customer' | 'admin'; // ✅ Optional with union type
+  full_name?: string;
+  first_name?: string;
+  last_name?: string;
+  role?: 'customer' | 'admin';
 }
 
 export interface AuthResponse {

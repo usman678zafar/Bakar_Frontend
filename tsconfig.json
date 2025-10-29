@@ -32,6 +32,7 @@
       "@components/*": ["./src/components/*"],
       "@pages/*": ["./src/pages/*"],
       "@store/*": ["./src/store/*"],
+      "@api": ["./src/api/index"],
       "@api/*": ["./src/api/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@models/*": ["./src/types/*"],

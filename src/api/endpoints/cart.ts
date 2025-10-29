@@ -1,5 +1,5 @@
 import apiClient from '../client'
-import { ApiResponse } from '@types/common.types'
+import { ApiResponse } from '@models/common.types'
 
 export interface CartItem {
   item_id: string;

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { authAPI } from '@api/endpoints/auth';
-import { User, LoginCredentials, RegisterData } from '../types/auth.types'; // ✅ Fixed: Use relative import
+import { User, LoginCredentials, RegisterData, AuthResponse } from '../types/auth.types';
 
 interface AuthState {
   user: User | null;
@@ -27,7 +27,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       const response = await authAPI.login(credentials);
 
       // ✅ Unwrap response properly
-      const authData = response.data.data || response.data;
+      const rawData = response.data as AuthResponse & { data?: AuthResponse };
+      const authData = rawData.data ?? rawData;
       console.log('📦 Auth data:', authData);
 
       const { access_token, user } = authData;
@@ -81,7 +82,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       const response = await authAPI.register(data);
 
       // ✅ Unwrap response properly
-      const authData = response.data.data || response.data;
+      const rawData = response.data as AuthResponse & { data?: AuthResponse };
+      const authData = rawData.data ?? rawData;
       console.log('✅ Registration response:', authData);
 
       const { access_token, user } = authData;
@@ -128,7 +130,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       console.log('🔍 Checking authentication...');
       const response = await authAPI.getProfile();
-      const user = response.data.data || response.data;
+      const rawUser = response.data as User & { data?: User };
+      const user = rawUser.data ?? rawUser;
 
       console.log('✅ User authenticated:', user.email, 'Role:', user.role);
 
@@ -153,7 +156,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   updateProfile: async (data: Partial<User>) => {
     try {
       const response = await authAPI.updateProfile(data);
-      const updatedUser = response.data.data || response.data;
+      const rawUser = response.data as User & { data?: User };
+      const updatedUser = rawUser.data ?? rawUser;
       set({ user: updatedUser });
     } catch (error) {
       throw error;

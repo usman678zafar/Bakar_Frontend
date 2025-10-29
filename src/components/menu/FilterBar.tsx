@@ -1,5 +1,5 @@
 import React from 'react';
-import { MenuFilters } from '@types/menu.types';
+import { MenuFilters } from '@models/menu.types';
 import { Filter, X, Leaf } from 'lucide-react';
 
 interface CategoryObject {

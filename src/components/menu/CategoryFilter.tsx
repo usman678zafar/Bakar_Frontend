@@ -4,7 +4,7 @@ interface CategoryFilterProps {
   // Add props here
 }
 
-export const CategoryFilter: React.FC<CategoryFilterProps> = (props) => {
+export const CategoryFilter: React.FC<CategoryFilterProps> = () => {
   return (
     <div>
       {/* CategoryFilter Component */}

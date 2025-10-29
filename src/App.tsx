@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -35,7 +35,7 @@ import CategoryManagement from '@pages/admin/CategoryManagement';
 import MealPlanManagement from '@pages/admin/MealPlanManagement';
 
 function App() {
-  const { checkAuth, isLoading, isAuthenticated } = useAuthStore();
+  const { checkAuth, isLoading } = useAuthStore();
 
   useEffect(() => {
     checkAuth();

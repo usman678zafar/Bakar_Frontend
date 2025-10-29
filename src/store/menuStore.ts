@@ -5,7 +5,7 @@ import {
   Sideline,
   MenuFilters,
   MenuCategory,
-} from '@types/menu.types';
+} from '@models/menu.types';
 
 // ✅ ============================================
 // NORMALIZATION FUNCTIONS

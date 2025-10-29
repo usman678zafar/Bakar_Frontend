@@ -4,7 +4,7 @@ interface AddressSelectorProps {
   // Add props here
 }
 
-export const AddressSelector: React.FC<AddressSelectorProps> = (props) => {
+export const AddressSelector: React.FC<AddressSelectorProps> = () => {
   return (
     <div>
       {/* AddressSelector Component */}

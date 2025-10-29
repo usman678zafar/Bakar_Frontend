@@ -4,7 +4,7 @@ interface CateringMenuProps {
   // Add props here
 }
 
-export const CateringMenu: React.FC<CateringMenuProps> = (props) => {
+export const CateringMenu: React.FC<CateringMenuProps> = () => {
   return (
     <div>
       {/* CateringMenu Component */}

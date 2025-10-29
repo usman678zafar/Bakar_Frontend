@@ -4,7 +4,7 @@ import { useCart } from '@hooks/useCart';
 import { useAuthStore } from '@store/authStore';
 import { useToast } from '@components/common/Toast';
 import { ordersAPI } from '@api';
-import { MealSubscriptionSelection } from '@types/cart.types';
+import { MealSubscriptionSelection } from '@models/cart.types';
 import { formatCurrency } from '@utils/formatters';
 import {
   MapPin,

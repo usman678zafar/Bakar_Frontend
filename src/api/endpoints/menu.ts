@@ -1,7 +1,7 @@
 import apiClient from '../client';
-import { MenuItem, Sideline, MenuFilters } from '@types/menu.types';
-import { MealSubscriptionPlan } from '@types/subscription.types';
-import { ApiResponse } from '@types/common.types';
+import { MenuItem, Sideline, MenuFilters } from '@models/menu.types';
+import { MealSubscriptionPlan } from '@models/subscription.types';
+import { ApiResponse } from '@models/common.types';
 
 export const menuAPI = {
   /**

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sideline } from '@types/menu.types';
+import { Sideline } from '@models/menu.types';
 import { formatCurrency } from '@utils/formatters';
 import Button from '@components/common/Button';
 import Card from '@components/common/Card';

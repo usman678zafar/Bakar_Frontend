@@ -1,6 +1,6 @@
 import apiClient from '../client';
-import { Order, OrderTracking } from '@types/order.types';
-import { ApiResponse } from '@types/common.types';
+import { Order, OrderTracking } from '@models/order.types';
+import { ApiResponse } from '@models/common.types';
 
 export const ordersAPI = {
   /**

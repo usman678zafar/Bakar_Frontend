@@ -4,7 +4,7 @@ interface CartSummaryProps {
   // Add props here
 }
 
-export const CartSummary: React.FC<CartSummaryProps> = (props) => {
+export const CartSummary: React.FC<CartSummaryProps> = () => {
   return (
     <div>
       {/* CartSummary Component */}

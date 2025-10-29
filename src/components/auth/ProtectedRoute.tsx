@@ -11,7 +11,7 @@ const ProtectedRoute: React.FC<{ children?: React.ReactNode }> = ({
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner size="large" />
+        <LoadingSpinner size="lg" />
       </div>
     );
   }

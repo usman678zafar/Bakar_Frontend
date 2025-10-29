@@ -8,7 +8,7 @@ import LoadingSpinner from '@components/common/LoadingSpinner';
 import Button from '@components/common/Button';
 import Modal from '@components/common/Modal';
 import { Plus, Search } from 'lucide-react';
-import { Sideline } from '@types/menu.types';
+import { Sideline } from '@models/menu.types';
 
 const SidelinesManagement: React.FC = () => {
   const { showToast } = useToast();

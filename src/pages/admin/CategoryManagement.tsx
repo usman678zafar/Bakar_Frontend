@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { MenuCategory } from '@types/menu.types';
+import { MenuCategory } from '@models/menu.types';
 import { useAdminStore } from '@store/adminStore';
 import { useToast } from '@components/common/Toast';
 import AdminSidebar from '@components/admin/AdminSidebar';

@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { deliveryAPI } from '@api/endpoints/delivery'
-import { Address, CreateAddressPayload, DeliveryValidation } from '@types/address.types'
+import { Address, CreateAddressPayload, DeliveryValidation } from '@models/address.types'
 
 interface AddressState {
   addresses: Address[]

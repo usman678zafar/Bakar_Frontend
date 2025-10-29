@@ -1,5 +1,5 @@
 import React from 'react';
-import { Order } from '@types/order.types';
+import { Order } from '@models/order.types';
 import { formatCurrency, formatDate } from '@utils/formatters';
 import Button from '@components/common/Button';
 import Card from '@components/common/Card';
