@@ -143,7 +143,7 @@ const CategoryManagement: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#F9F9F9]">
       <AdminSidebar />
-      <div className="py-8 px-4 sm:px-6 lg:px-8 pl-20 md:pl-28">
+      <div className="py-8 pr-4 sm:pr-6 lg:pr-8 pl-4 sm:pl-24 md:pl-32 lg:pl-72 transition-[padding-left] duration-300">
         <div className="max-w-6xl mx-auto">
           <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
             <div>

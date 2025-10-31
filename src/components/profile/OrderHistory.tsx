@@ -6,10 +6,14 @@ import Button from '@components/common/Button';
 import LoadingSpinner from '@components/common/LoadingSpinner';
 import { Package, Clock, CheckCircle, XCircle, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Modal from '@components/common/Modal';
+import type { Order } from '@models/order.types';
 
 const OrderHistory: React.FC = () => {
   const { orderHistory, fetchOrderHistory, isLoadingHistory } = useOrderStore();
   const navigate = useNavigate();
+  const [isOrderModalOpen, setIsOrderModalOpen] = React.useState(false);
+  const [selectedOrder, setSelectedOrder] = React.useState<Order | null>(null);
 
   useEffect(() => {
     fetchOrderHistory();
@@ -72,6 +76,7 @@ const OrderHistory: React.FC = () => {
   }
 
   return (
+    <>
     <div className="space-y-6">
       <h2 className="font-heading text-2xl font-bold text-text">
         Order History
@@ -136,7 +141,7 @@ const OrderHistory: React.FC = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => navigate(`/orders/${order._id}`)}
+                  onClick={() => { setSelectedOrder(order as unknown as Order); setIsOrderModalOpen(true); }}
                 >
                   <Eye size={16} className="mr-2" />
                   View Details
@@ -147,7 +152,73 @@ const OrderHistory: React.FC = () => {
         ))}
       </div>
     </div>
+
+    {/* Order Details Modal */}
+    <Modal
+      isOpen={isOrderModalOpen}
+      onClose={() => setIsOrderModalOpen(false)}
+      title={selectedOrder ? `Order #${selectedOrder._id?.slice(-8)}` : 'Order Details'}
+    >
+      {!selectedOrder ? (
+        <div className="py-6 text-center text-gray-600">No order selected.</div>
+      ) : (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-500">Placed on</p>
+              <p className="font-medium">{formatDate(selectedOrder.created_at)}</p>
+            </div>
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                selectedOrder.status === 'delivered'
+                  ? 'bg-green-100 text-green-800'
+                  : selectedOrder.status === 'cancelled'
+                  ? 'bg-red-100 text-red-800'
+                  : 'bg-blue-100 text-blue-800'
+              }`}
+            >
+              {selectedOrder.status?.toUpperCase().replace('_', ' ')}
+            </span>
+          </div>
+
+          <div className="divide-y border rounded">
+            {[...(selectedOrder.items || []), ...(selectedOrder.sidelines || [])].map((it: any, idx: number) => (
+              <div key={idx} className="flex items-center justify-between p-3 text-sm">
+                <div className="text-gray-700">
+                  {it.item_name || it.name}
+                  {it.category ? <span className="text-gray-400"> • {it.category}</span> : null}
+                </div>
+                <div className="text-gray-600">x{it.quantity}</div>
+                <div className="font-medium">{formatCurrency(it.subtotal ?? (it.price || 0) * (it.quantity || 1))}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex items-center justify-between pt-2 text-sm">
+            <span className="text-gray-600">Subtotal</span>
+            <span className="font-medium">{formatCurrency(selectedOrder.subtotal || 0)}</span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600">Delivery</span>
+            <span className="font-medium">{formatCurrency(selectedOrder.delivery_fee || 0)}</span>
+          </div>
+          <div className="flex items-center justify-between text-base">
+            <span className="font-semibold">Total</span>
+            <span className="font-semibold">{formatCurrency((selectedOrder as any).total ?? (selectedOrder as any).total_amount ?? 0)}</span>
+          </div>
+
+          <div className="pt-2 text-xs text-gray-500">
+            Delivery method: {String((selectedOrder as any).delivery_option || (selectedOrder as any).delivery_method || 'N/A')}
+          </div>
+        </div>
+      )}
+    </Modal>
+    </>
   );
 };
 
 export default OrderHistory;
+
+// Inline order details modal rendering at the bottom
+// Render modal via a portal-like placement within this component tree
+// to avoid external wiring.

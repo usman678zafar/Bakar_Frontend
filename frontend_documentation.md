@@ -1,6 +1,6 @@
 # Frontend Project Documentation
 
-_Generated on: 2025-10-26 18:17:48_
+_Generated on: 2025-10-31 18:59:02_
 
 ---
 
@@ -15,12 +15,15 @@ _Generated on: 2025-10-26 18:17:48_
 - [admin.ts](#src\api\endpoints\admints)
 - [auth.ts](#src\api\endpoints\authts)
 - [cart.ts](#src\api\endpoints\cartts)
+- [contact.ts](#src\api\endpoints\contactts)
 - [delivery.ts](#src\api\endpoints\deliveryts)
 - [menu.ts](#src\api\endpoints\menuts)
 - [notifications.ts](#src\api\endpoints\notificationsts)
 - [orders.ts](#src\api\endpoints\ordersts)
 - [payments.ts](#src\api\endpoints\paymentsts)
 - [index.ts](#src\api\indexts)
+- [AdminSidebar.tsx](#src\components\admin\adminsidebartsx)
+- [CategoryForm.tsx](#src\components\admin\categories\categoryformtsx)
 - [OrderStats.tsx](#src\components\admin\dashboard\orderstatstsx)
 - [RecentOrders.tsx](#src\components\admin\dashboard\recentorderstsx)
 - [RevenueChart.tsx](#src\components\admin\dashboard\revenuecharttsx)
@@ -53,6 +56,7 @@ _Generated on: 2025-10-26 18:17:48_
 - [Input.tsx](#src\components\common\inputtsx)
 - [LoadingSpinner.tsx](#src\components\common\loadingspinnertsx)
 - [Modal.tsx](#src\components\common\modaltsx)
+- [Pagination.tsx](#src\components\common\paginationtsx)
 - [Toast.tsx](#src\components\common\toasttsx)
 - [CartIcon.tsx](#src\components\layout\carticontsx)
 - [Footer.tsx](#src\components\layout\footertsx)
@@ -83,14 +87,17 @@ _Generated on: 2025-10-26 18:17:48_
 - [useToast.ts](#src\hooks\usetoastts)
 - [main.tsx](#src\maintsx)
 - [AdminDashboard.tsx](#src\pages\admin\admindashboardtsx)
+- [CategoryManagement.tsx](#src\pages\admin\categorymanagementtsx)
+- [MealPlanManagement.tsx](#src\pages\admin\mealplanmanagementtsx)
 - [MenuManagement.tsx](#src\pages\admin\menumanagementtsx)
 - [OrderManagement.tsx](#src\pages\admin\ordermanagementtsx)
 - [SidelinesManagement.tsx](#src\pages\admin\sidelinesmanagementtsx)
+- [CartPage.tsx](#src\pages\customer\cartpagetsx)
 - [CateringPage.tsx](#src\pages\customer\cateringpagetsx)
 - [CheckoutPage.tsx](#src\pages\customer\checkoutpagetsx)
 - [DailyMenuPage.tsx](#src\pages\customer\dailymenupagetsx)
+- [MealsSubscriptionPage.tsx](#src\pages\customer\mealssubscriptionpagetsx)
 - [ProfilePage.tsx](#src\pages\customer\profilepagetsx)
-- [WeeklySubscriptionPage.tsx](#src\pages\customer\weeklysubscriptionpagetsx)
 - [AdminRoutes.tsx](#src\routes\adminroutestsx)
 - [CustomerRoutes.tsx](#src\routes\customerroutestsx)
 - [PublicRoutes.tsx](#src\routes\publicroutestsx)
@@ -103,11 +110,13 @@ _Generated on: 2025-10-26 18:17:48_
 - [orderStore.ts](#src\store\orderstorets)
 - [globals.css](#src\styles\globalscss)
 - [address.types.ts](#src\types\addresstypests)
+- [admin.types.ts](#src\types\admintypests)
 - [auth.types.ts](#src\types\authtypests)
 - [cart.types.ts](#src\types\carttypests)
 - [common.types.ts](#src\types\commontypests)
 - [menu.types.ts](#src\types\menutypests)
 - [order.types.ts](#src\types\ordertypests)
+- [subscription.types.ts](#src\types\subscriptiontypests)
 - [constants.ts](#src\utils\constantsts)
 - [formatters.ts](#src\utils\formattersts)
 - [images.ts](#src\utils\imagests)
@@ -116,6 +125,117 @@ _Generated on: 2025-10-26 18:17:48_
 - [tailwind.config.js](#tailwindconfigjs)
 - [tsconfig.json](#tsconfigjson)
 - [vite.config.ts](#viteconfigts)
+
+---
+
+## 📄 package.json
+
+_Path: `package.json`_
+
+```json
+{
+  "name": "bakars-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.10.0",
+    "axios": "^1.12.2",
+    "clsx": "^2.1.1",
+    "date-fns": "^3.6.0",
+    "framer-motion": "^12.23.24",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^0.446.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.65.0",
+    "react-leaflet": "^4.2.1",
+    "react-router-dom": "^6.30.1",
+    "tailwind-merge": "^2.6.0",
+    "zod": "^3.25.76",
+    "zustand": "^4.5.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.9.1",
+    "@types/react": "^18.3.10",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.7.0",
+    "@typescript-eslint/parser": "^8.7.0",
+    "@vitejs/plugin-react": "^4.3.2",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.11.1",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.12",
+    "postcss": "^8.4.47",
+    "prettier": "^3.3.3",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.8"
+  }
+}
+```
+
+---
+
+## 📄 tsconfig.json
+
+_Path: `tsconfig.json`_
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+
+    /* Path mapping */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@components/*": ["./src/components/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@store/*": ["./src/store/*"],
+      "@api": ["./src/api/index"],
+      "@api/*": ["./src/api/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@models/*": ["./src/types/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@assets/*": ["./src/assets/*"]
+    }
+  },
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}
+```
 
 ---
 
@@ -175,55 +295,20 @@ export default {
 
 ---
 
-## 📄 tsconfig.json
+## 📄 .env.example
 
-_Path: `tsconfig.json`_
+_Path: `.env.example`_
 
-```json
-{
-  "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "skipLibCheck": true,
+```bash
+VITE_API_URL=http://localhost:8000/api/v1
+VITE_API_BASE_URL=http://localhost:8000
+VITE_APP_NAME=Bakars
+VITE_STRIPE_PUBLIC_KEY=
+VITE_GOOGLE_MAPS_API_KEY=AIzaSyBzu9lXawVMs341W_6k2kk2wpJLEdljSWY
+# Cloudflare R2 Public URL (for images)
+VITE_R2_PUBLIC_URL=https://6f63dc6260a584c1fd2d7f64d8d5b8d7.r2.cloudflarestorage.com
+VITE_CDN_URL=https://6f63dc6260a584c1fd2d7f64d8d5b8d7.r2.cloudflarestorage.com
 
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "forceConsistentCasingInFileNames": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-
-    /* Path mapping */
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"],
-      "@components/*": ["./src/components/*"],
-      "@pages/*": ["./src/pages/*"],
-      "@store/*": ["./src/store/*"],
-      "@api/*": ["./src/api/*"],
-      "@hooks/*": ["./src/hooks/*"],
-      "@models/*": ["./src/types/*"],
-      "@utils/*": ["./src/utils/*"],
-      "@assets/*": ["./src/assets/*"]
-    }
-  },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
-}
 ```
 
 ---
@@ -267,99 +352,27 @@ export default defineConfig({
 
 ---
 
-## 📄 package.json
-
-_Path: `package.json`_
-
-```json
-{
-  "name": "bakars-frontend",
-  "private": true,
-  "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
-    "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
-    "type-check": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@hookform/resolvers": "^3.10.0",
-    "axios": "^1.12.2",
-    "clsx": "^2.1.1",
-    "date-fns": "^3.6.0",
-    "framer-motion": "^12.23.24",
-    "leaflet": "^1.9.4",
-    "lucide-react": "^0.446.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-hook-form": "^7.65.0",
-    "react-leaflet": "^4.2.1",
-    "react-router-dom": "^6.30.1",
-    "tailwind-merge": "^2.6.0",
-    "zod": "^3.25.76",
-    "zustand": "^4.5.7"
-  },
-  "devDependencies": {
-    "@types/node": "^24.9.1",
-    "@types/react": "^18.3.10",
-    "@types/react-dom": "^18.3.0",
-    "@typescript-eslint/eslint-plugin": "^8.7.0",
-    "@typescript-eslint/parser": "^8.7.0",
-    "@vitejs/plugin-react": "^4.3.2",
-    "autoprefixer": "^10.4.20",
-    "eslint": "^9.11.1",
-    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
-    "eslint-plugin-react-refresh": "^0.4.12",
-    "postcss": "^8.4.47",
-    "prettier": "^3.3.3",
-    "tailwindcss": "^3.4.13",
-    "typescript": "^5.6.2",
-    "vite": "^5.4.8"
-  }
-}
-```
-
----
-
-## 📄 .env.example
-
-_Path: `.env.example`_
-
-```bash
-VITE_API_URL=http://localhost:8000/api/v1
-VITE_API_BASE_URL=http://localhost:8000
-VITE_APP_NAME=Bakars
-VITE_STRIPE_PUBLIC_KEY=
-VITE_GOOGLE_MAPS_API_KEY=AIzaSyBzu9lXawVMs341W_6k2kk2wpJLEdljSWY
-# Cloudflare R2 Public URL (for images)
-VITE_R2_PUBLIC_URL=https://6f63dc6260a584c1fd2d7f64d8d5b8d7.r2.cloudflarestorage.com
-VITE_CDN_URL=https://6f63dc6260a584c1fd2d7f64d8d5b8d7.r2.cloudflarestorage.com
-
-```
-
----
-
 ## 📄 src\api\endpoints\admin.ts
 
 _Path: `src\api\endpoints\admin.ts`_
 
 ```typescript
 import apiClient from '../client';
-import { MenuItem, Sideline } from '@types/menu.types';
-import { Order } from '@types/order.types';
-import { ApiResponse } from '@types/common.types';
+import { MenuItem, Sideline, MenuCategory } from '@models/menu.types';
+import { MealSubscriptionPlan, DeliveryZone } from '@models/subscription.types';
+import { Order } from '@models/order.types';
+import { ApiResponse } from '@models/common.types';
+import { DashboardStats } from '@models/admin.types';
 
 export const adminAPI = {
   /**
    * Get dashboard statistics
    */
-  getDashboardStats: () => apiClient.get<ApiResponse<any>>('/admin/dashboard'),
+  getDashboardStats: () =>
+    apiClient.get<ApiResponse<DashboardStats>>('/admin/dashboard'),
 
   /**
-   * Get all orders
+   * Get all orders with optional filters
    */
   getAllOrders: (filters?: {
     status?: string;
@@ -370,13 +383,15 @@ export const adminAPI = {
     if (filters?.status) params.append('status', filters.status);
     if (filters?.date_from) params.append('date_from', filters.date_from);
     if (filters?.date_to) params.append('date_to', filters.date_to);
-    return apiClient.get<ApiResponse<Order[]>>(
-      `/admin/orders?${params.toString()}`
-    );
+
+    const query = params.toString();
+    const suffix = query ? `?${query}` : '';
+
+    return apiClient.get<ApiResponse<Order[]>>(`/admin/orders${suffix}`);
   },
 
   /**
-   * Update order status (ADMIN)
+   * Update order status (admin only)
    */
   updateOrderStatus: (orderId: string, status: string, admin_notes?: string) =>
     apiClient.patch<ApiResponse<Order>>(`/admin/orders/${orderId}/status`, {
@@ -385,38 +400,46 @@ export const adminAPI = {
     }),
 
   /**
-   * Create menu item
+   * Menu items (admin)
    */
   createMenuItem: (data: FormData) =>
     apiClient.post<ApiResponse<MenuItem>>('/admin/menu-items', data, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
-
-  /**
-   * Update menu item
-   */
   updateMenuItem: (itemId: string, data: FormData) =>
     apiClient.put<ApiResponse<MenuItem>>(`/admin/menu-items/${itemId}`, data, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
-
-  /**
-   * Delete menu item
-   */
   deleteMenuItem: (itemId: string) =>
     apiClient.delete<ApiResponse<void>>(`/admin/menu-items/${itemId}`),
+  getAllMenuItems: (
+    page: number = 1,
+    pageSize: number = 1000,
+    category?: string
+  ) => {
+    const params = new URLSearchParams();
+    params.append('include_unavailable', 'true');
+    params.append('page', String(page));
+    params.append('page_size', String(pageSize));
+    if (category) params.append('category', category);
+    return apiClient.get<
+      ApiResponse<{
+        items: MenuItem[];
+        total: number;
+        page: number;
+        page_size: number;
+        total_pages: number;
+      }>
+    >(`/admin/menu-items?${params.toString()}`);
+  },
 
   /**
-   * Create sideline
+   * Sidelines (admin)
    */
   createSideline: (data: FormData) =>
     apiClient.post<ApiResponse<Sideline>>('/admin/sidelines', data, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
-
-  /**
-   * Update sideline
-   */
   updateSideline: (sidelineId: string, data: FormData) =>
     apiClient.put<ApiResponse<Sideline>>(
       `/admin/sidelines/${sidelineId}`,
@@ -425,38 +448,116 @@ export const adminAPI = {
         headers: { 'Content-Type': 'multipart/form-data' },
       }
     ),
-
-  /**
-   * Delete sideline
-   */
   deleteSideline: (sidelineId: string) =>
     apiClient.delete<ApiResponse<void>>(`/admin/sidelines/${sidelineId}`),
-
-  /**
-   * Get all menu items (admin) - ✅ FIXED: Include ALL items regardless of availability
-   * Admin should see ALL items including unavailable ones
-   */
-  getAllMenuItems: () => {
-    console.log(
-      '🔍 [Admin API] Fetching ALL menu items including unavailable...'
-    );
-    // Add include_unavailable parameter to explicitly request all items
-    return apiClient.get<ApiResponse<MenuItem[]>>(
-      '/admin/menu-items?include_unavailable=true&include_all=true'
-    );
+  getAllSidelines: (page: number = 1, pageSize: number = 1000) => {
+    const params = new URLSearchParams();
+    params.append('include_unavailable', 'true');
+    params.append('page', String(page));
+    params.append('page_size', String(pageSize));
+    return apiClient.get<
+      ApiResponse<{
+        items: Sideline[];
+        total: number;
+        page: number;
+        page_size: number;
+        total_pages: number;
+      }>
+    >(`/admin/sidelines?${params.toString()}`);
   },
 
   /**
-   * Get all sidelines (admin) - ✅ FIXED: Include ALL items regardless of availability
+   * Categories (admin)
    */
-  getAllSidelines: () => {
-    console.log(
-      '🔍 [Admin API] Fetching ALL sidelines including unavailable...'
-    );
-    return apiClient.get<ApiResponse<Sideline[]>>(
-      '/admin/sidelines?include_unavailable=true&include_all=true'
+  getAllCategories: (page: number = 1, pageSize: number = 1000) => {
+    const params = new URLSearchParams();
+    params.append('include_inactive', 'true');
+    params.append('page', String(page));
+    params.append('page_size', String(pageSize));
+    return apiClient.get<
+      ApiResponse<{
+        categories: MenuCategory[];
+        total: number;
+        page: number;
+        page_size: number;
+        total_pages: number;
+      }>
+    >(`/admin/categories?${params.toString()}`);
+  },
+  createCategory: (data: FormData) =>
+    apiClient.post<ApiResponse<MenuCategory>>('/admin/categories', data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+  updateCategory: (categoryId: string, data: FormData) =>
+    apiClient.put<ApiResponse<MenuCategory>>(
+      `/admin/categories/${categoryId}`,
+      data,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    ),
+  deleteCategory: (categoryId: string) =>
+    apiClient.delete<ApiResponse<void>>(`/admin/categories/${categoryId}`),
+
+  /**
+   * Meal subscription plans (admin)
+   */
+  getMealPlans: (tab?: string, includeInactive: boolean = true) => {
+    const params = new URLSearchParams();
+    if (tab) params.append('tab', tab);
+    if (!includeInactive) params.append('include_inactive', 'false');
+    const suffix = params.size ? `?${params.toString()}` : '';
+    return apiClient.get<ApiResponse<MealSubscriptionPlan[]>>(
+      `/admin/meal-plans${suffix}`
     );
   },
+  createMealPlan: (payload: Partial<MealSubscriptionPlan>) =>
+    apiClient.post<ApiResponse<MealSubscriptionPlan>>(
+      '/admin/meal-plans',
+      payload
+    ),
+  updateMealPlan: (planId: string, payload: Partial<MealSubscriptionPlan>) =>
+    apiClient.put<ApiResponse<MealSubscriptionPlan>>(
+      `/admin/meal-plans/${planId}`,
+      payload
+    ),
+  deleteMealPlan: (planId: string) =>
+    apiClient.delete<ApiResponse<void>>(`/admin/meal-plans/${planId}`),
+
+  /**
+   * Delivery zones (admin)
+   */
+  getDeliveryZones: (
+    includeInactive: boolean = true,
+    page: number = 1,
+    pageSize: number = 1000
+  ) => {
+    const params = new URLSearchParams();
+    if (!includeInactive) params.append('include_inactive', 'false');
+    else params.append('include_inactive', 'true');
+    params.append('page', String(page));
+    params.append('page_size', String(pageSize));
+    return apiClient.get<
+      ApiResponse<{
+        zones: DeliveryZone[];
+        total: number;
+        page: number;
+        page_size: number;
+        total_pages: number;
+      }>
+    >(`/admin/delivery-zones?${params.toString()}`);
+  },
+  createDeliveryZone: (payload: Partial<DeliveryZone>) =>
+    apiClient.post<ApiResponse<DeliveryZone>>('/admin/delivery-zones', payload),
+  updateDeliveryZone: (zoneId: string, payload: Partial<DeliveryZone>) =>
+    apiClient.put<ApiResponse<DeliveryZone>>(
+      `/admin/delivery-zones/${zoneId}`,
+      payload
+    ),
+  deleteDeliveryZone: (zoneId: string, permanent: boolean = false) =>
+    apiClient.delete<ApiResponse<void>>(
+      `/admin/delivery-zones/${zoneId}?permanent=${String(permanent)}`
+    ),
 };
 ```
 
@@ -473,7 +574,7 @@ import {
   RegisterData,
   AuthResponse,
   User,
-} from '@types/auth.types';
+} from '@models/auth.types';
 
 export const authAPI = {
   login: (credentials: LoginCredentials) =>
@@ -499,7 +600,7 @@ _Path: `src\api\endpoints\cart.ts`_
 
 ```typescript
 import apiClient from '../client';
-import { ApiResponse } from '@types/common.types';
+import { ApiResponse } from '@models/common.types';
 
 export interface CartItem {
   item_id: string;
@@ -586,6 +687,30 @@ export const cartAPI = {
 
 ---
 
+## 📄 src\api\endpoints\contact.ts
+
+_Path: `src\api\endpoints\contact.ts`_
+
+```typescript
+import apiClient from '../client';
+
+export interface ContactPayload {
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+}
+
+export const contactAPI = {
+  async sendMessage(payload: ContactPayload) {
+    const response = await apiClient.post('/contact', payload);
+    return response.data;
+  },
+};
+```
+
+---
+
 ## 📄 src\api\endpoints\delivery.ts
 
 _Path: `src\api\endpoints\delivery.ts`_
@@ -595,9 +720,11 @@ import apiClient from '../client';
 import {
   Address,
   CreateAddressPayload,
+  DeliveryAvailability,
   DeliveryValidation,
-} from '@types/address.types';
-import { ApiResponse } from '@types/common.types';
+} from '@models/address.types';
+import { DeliveryZone } from '@models/subscription.types';
+import { ApiResponse } from '@models/common.types';
 
 export const deliveryAPI = {
   /**
@@ -651,6 +778,27 @@ export const deliveryAPI = {
       '/delivery/calculate',
       { address_id: addressId }
     ),
+
+  /**
+   * Check delivery availability for an address
+   */
+  checkAvailability: (
+    address: string,
+    orderType: 'daily' | 'weekly' | 'catering'
+  ) =>
+    apiClient.post<ApiResponse<DeliveryAvailability>>(
+      '/delivery/check-availability',
+      {
+        address,
+        order_type: orderType,
+      }
+    ),
+
+  /**
+   * Get configured delivery zones with pricing
+   */
+  getDeliveryZones: () =>
+    apiClient.get<ApiResponse<DeliveryZone[]>>('/delivery/zones'),
 };
 ```
 
@@ -662,8 +810,9 @@ _Path: `src\api\endpoints\menu.ts`_
 
 ```typescript
 import apiClient from '../client';
-import { MenuItem, Sideline, MenuFilters } from '@types/menu.types';
-import { ApiResponse } from '@types/common.types';
+import { MenuItem, Sideline, MenuFilters } from '@models/menu.types';
+import { MealSubscriptionPlan } from '@models/subscription.types';
+import { ApiResponse } from '@models/common.types';
 
 export const menuAPI = {
   /**
@@ -679,12 +828,22 @@ export const menuAPI = {
     if (filters?.search) params.append('search', filters.search);
 
     // Add filter for weekly available items
-    if (filters?.order_type === 'weekly_subscription') {
+    if (filters?.order_type === 'meal_subscription') {
       params.append('is_available_for_weekly', 'true');
     }
 
     return apiClient.get<ApiResponse<MenuItem[]>>(
       `/menu/daily?${params.toString()}`
+    );
+  },
+
+  /**
+   * Get configurable meal subscription plans
+   */
+  getMealSubscriptionPlans: (tab?: string) => {
+    const params = tab ? `?tab=${encodeURIComponent(tab)}` : '';
+    return apiClient.get<ApiResponse<MealSubscriptionPlan[]>>(
+      `/menu/subscription/plans${params}`
     );
   },
 
@@ -783,7 +942,7 @@ _Path: `src\api\endpoints\notifications.ts`_
 
 ```typescript
 import apiClient from '../client';
-import { ApiResponse } from '@types/common.types';
+import { ApiResponse } from '@models/common.types';
 
 export interface Notification {
   id: string;
@@ -830,8 +989,8 @@ _Path: `src\api\endpoints\orders.ts`_
 
 ```typescript
 import apiClient from '../client';
-import { Order, OrderTracking } from '@types/order.types';
-import { ApiResponse } from '@types/common.types';
+import { Order, OrderTracking } from '@models/order.types';
+import { ApiResponse } from '@models/common.types';
 
 export const ordersAPI = {
   /**
@@ -841,9 +1000,9 @@ export const ordersAPI = {
     apiClient.post<ApiResponse<Order>>('/orders/daily', payload),
 
   /**
-   * Create weekly subscription order
+   * Create meal subscription order
    */
-  createWeeklyOrder: (payload: any) =>
+  createMealSubscriptionOrder: (payload: any) =>
     apiClient.post<ApiResponse<Order>>('/orders/weekly', payload),
 
   /**
@@ -901,7 +1060,7 @@ _Path: `src\api\endpoints\payments.ts`_
 
 ```typescript
 import apiClient from '../client';
-import { ApiResponse } from '@types/common.types';
+import { ApiResponse } from '@models/common.types';
 
 export interface PaymentIntent {
   client_secret: string;
@@ -1011,8 +1170,192 @@ export { deliveryAPI } from './endpoints/delivery';
 export { paymentsAPI } from './endpoints/payments';
 export { notificationsAPI } from './endpoints/notifications';
 export { adminAPI } from './endpoints/admin';
+export { contactAPI } from './endpoints/contact';
 
 export { default as apiClient } from './client';
+```
+
+---
+
+## 📄 src\components\admin\categories\CategoryForm.tsx
+
+_Path: `src\components\admin\categories\CategoryForm.tsx`_
+
+```tsx
+import React, { useEffect, useState } from 'react';
+import Input from '@components/common/Input';
+import Button from '@components/common/Button';
+import { MenuCategory } from '@models/menu.types';
+
+export interface CategoryFormValues {
+  name: string;
+  display_name: string;
+  description: string;
+  is_active: boolean;
+  sort_order?: number;
+  imageFile: File | null;
+}
+
+interface CategoryFormProps {
+  mode: 'create' | 'edit';
+  initialValues: CategoryFormValues;
+  existingCategory?: MenuCategory | null;
+  isSubmitting: boolean;
+  onSubmit: (values: CategoryFormValues) => Promise<void>;
+  onCancel: () => void;
+}
+
+export const CategoryForm: React.FC<CategoryFormProps> = ({
+  mode,
+  initialValues,
+  existingCategory,
+  isSubmitting,
+  onSubmit,
+  onCancel,
+}) => {
+  const [values, setValues] = useState<CategoryFormValues>(initialValues);
+
+  useEffect(() => {
+    setValues(initialValues);
+  }, [initialValues]);
+
+  const handleChange =
+    (field: keyof CategoryFormValues) =>
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const value =
+        field === 'sort_order'
+          ? event.target.value === ''
+            ? undefined
+            : Number(event.target.value)
+          : event.target.value;
+      setValues((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    };
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValues((prev) => ({
+      ...prev,
+      is_active: event.target.checked,
+    }));
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+    setValues((prev) => ({
+      ...prev,
+      imageFile: file,
+    }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    await onSubmit(values);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Input
+          type="text"
+          label="Internal Name"
+          value={values.name}
+          onChange={handleChange('name')}
+          placeholder="e.g., daily_specials"
+          required={mode === 'create'}
+          disabled={mode === 'edit'}
+        />
+        <Input
+          type="text"
+          label="Display Name"
+          value={values.display_name}
+          onChange={handleChange('display_name')}
+          placeholder="Visible label for customers"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-text mb-2">
+          Description
+        </label>
+        <textarea
+          value={values.description}
+          onChange={handleChange('description')}
+          rows={4}
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+          placeholder="Optional description shown to customers"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Input
+          type="number"
+          label="Sort Order"
+          value={values.sort_order ?? ''}
+          onChange={handleChange('sort_order')}
+          placeholder="Optional ordering number"
+          min={0}
+        />
+
+        <div className="flex flex-col space-y-2">
+          <label className="text-sm font-medium text-text">Thumbnail</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="w-full text-sm text-gray-600"
+          />
+          {existingCategory?.image_url && !values.imageFile && (
+            <div className="flex items-center space-x-3">
+              <img
+                src={existingCategory.image_url}
+                alt={existingCategory.display_name}
+                className="w-16 h-16 rounded-lg object-cover border"
+              />
+              <span className="text-xs text-gray-500">
+                Current image – upload a new file to replace
+              </span>
+            </div>
+          )}
+          {values.imageFile && (
+            <div className="text-xs text-gray-500">
+              Selected file: {values.imageFile.name}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="flex items-center space-x-3">
+        <input
+          id="category-active"
+          type="checkbox"
+          checked={values.is_active}
+          onChange={handleCheckboxChange}
+          className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+        />
+        <label htmlFor="category-active" className="text-sm text-gray-700">
+          Category is active and visible to customers
+        </label>
+      </div>
+
+      <div className="flex justify-end space-x-3 pt-4">
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={onCancel}
+          disabled={isSubmitting}
+        >
+          Cancel
+        </Button>
+        <Button type="submit" variant="primary" isLoading={isSubmitting}>
+          {mode === 'create' ? 'Create Category' : 'Save Changes'}
+        </Button>
+      </div>
+    </form>
+  );
+};
 ```
 
 ---
@@ -1040,14 +1383,14 @@ export const OrderStats: React.FC = () => {
     },
     {
       label: 'Confirmed',
-      count: 15, // Example - should come from API
+      count: orderStats?.confirmed_orders || 0,
       icon: <Package size={24} />,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
     },
     {
       label: 'Out for Delivery',
-      count: 8, // Example
+      count: orderStats?.out_for_delivery_orders || 0,
       icon: <Truck size={24} />,
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
@@ -1074,7 +1417,7 @@ export const OrderStats: React.FC = () => {
         Order Status Overview
       </h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
         {statuses.map((status, index) => (
           <div
             key={index}
@@ -1253,21 +1596,42 @@ import Card from '@components/common/Card';
 import { formatCurrency } from '@utils/formatters';
 import { TrendingUp, Calendar } from 'lucide-react';
 
+const formatPercent = (value?: number) => {
+  if (
+    value === undefined ||
+    value === null ||
+    Number.isNaN(value) ||
+    !Number.isFinite(value)
+  ) {
+    return '—';
+  }
+  const rounded = value.toFixed(1);
+  const numeric = Number(rounded);
+  const sign = numeric > 0 ? '+' : '';
+  return `${sign}${rounded}%`;
+};
+
 export const RevenueChart: React.FC = () => {
   const { orderStats } = useAdminStore();
 
-  // Mock chart data - in production, this would come from API
-  const chartData = [
-    { day: 'Mon', revenue: 450 },
-    { day: 'Tue', revenue: 680 },
-    { day: 'Wed', revenue: 520 },
-    { day: 'Thu', revenue: 890 },
-    { day: 'Fri', revenue: 1100 },
-    { day: 'Sat', revenue: 950 },
-    { day: 'Sun', revenue: 780 },
-  ];
+  const weeklyBreakdown =
+    orderStats?.weekly_revenue_breakdown &&
+    orderStats.weekly_revenue_breakdown.length
+      ? orderStats.weekly_revenue_breakdown
+      : [
+          { label: 'Mon', date: '', total: 0 },
+          { label: 'Tue', date: '', total: 0 },
+          { label: 'Wed', date: '', total: 0 },
+          { label: 'Thu', date: '', total: 0 },
+          { label: 'Fri', date: '', total: 0 },
+          { label: 'Sat', date: '', total: 0 },
+          { label: 'Sun', date: '', total: 0 },
+        ];
 
-  const maxRevenue = Math.max(...chartData.map((d) => d.revenue));
+  const maxRevenue = Math.max(
+    ...weeklyBreakdown.map((day) => day.total || 0),
+    1
+  );
 
   return (
     <Card padding="lg">
@@ -1294,13 +1658,16 @@ export const RevenueChart: React.FC = () => {
           <p className="font-heading text-2xl font-bold text-green-600">
             {formatCurrency(orderStats?.monthly_revenue || 0)}
           </p>
+          <p className="text-sm font-semibold text-green-600">
+            {formatPercent(orderStats?.monthly_growth_percent)}
+          </p>
         </div>
         <div className="bg-purple-50 rounded-lg p-4">
           <p className="text-sm text-gray-600 mb-1">Growth</p>
           <div className="flex items-center space-x-1">
             <TrendingUp className="text-purple-600" size={20} />
             <p className="font-heading text-2xl font-bold text-purple-600">
-              +12%
+              {formatPercent(orderStats?.weekly_growth_percent)}
             </p>
           </div>
         </div>
@@ -1308,24 +1675,35 @@ export const RevenueChart: React.FC = () => {
 
       {/* Bar Chart */}
       <div className="space-y-4">
-        {chartData.map((data, index) => {
-          const barWidth = (data.revenue / maxRevenue) * 100;
+        {weeklyBreakdown.map((day) => {
+          const revenue = day.total || 0;
+          const width =
+            revenue > 0 ? Math.max((revenue / maxRevenue) * 100, 8) : 0;
 
           return (
-            <div key={index} className="flex items-center space-x-4">
+            <div key={day.label} className="flex items-center space-x-4">
               <div className="w-12 text-sm font-medium text-gray-700">
-                {data.day}
+                {day.label}
               </div>
               <div className="flex-1">
                 <div className="relative h-10 bg-gray-100 rounded-lg overflow-hidden">
                   <div
                     className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary to-primary-600 rounded-lg transition-all duration-500 flex items-center justify-end px-3"
-                    style={{ width: `${barWidth}%` }}
+                    style={{ width: `${width}%` }}
                   >
-                    <span className="text-white font-semibold text-sm">
-                      {formatCurrency(data.revenue)}
-                    </span>
+                    {revenue > 0 && (
+                      <span className="text-white font-semibold text-sm">
+                        {formatCurrency(revenue)}
+                      </span>
+                    )}
                   </div>
+                  {revenue === 0 && (
+                    <div className="absolute inset-0 flex items-center justify-end px-3">
+                      <span className="text-gray-400 text-sm">
+                        {formatCurrency(0)}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -1612,7 +1990,7 @@ export const AddMenuItem: React.FC<AddMenuItemProps> = ({
             }
             className="rounded border-gray-300 text-primary focus:ring-primary"
           />
-          <span className="text-sm text-gray-700">Weekly Subscription</span>
+          <span className="text-sm text-gray-700">Meals Subscription</span>
         </label>
 
         <label className="flex items-center space-x-2 cursor-pointer">
@@ -1635,7 +2013,7 @@ export const AddMenuItem: React.FC<AddMenuItemProps> = ({
       {formData.is_available_for_weekly && (
         <Input
           type="number"
-          label="Max Boxes Per Weekly Menu"
+          label="Max Boxes Per Meal Plan"
           value={String(formData.max_boxes_per_menu)}
           onChange={(e) =>
             setFormData({
@@ -1746,7 +2124,7 @@ import { useToast } from '@components/common/Toast';
 import Input from '@components/common/Input';
 import Button from '@components/common/Button';
 import { Upload, X, Save } from 'lucide-react';
-import { MenuItem } from '@types/menu.types';
+import { MenuItem } from '@models/menu.types';
 
 interface EditMenuItemProps {
   item: MenuItem;
@@ -2028,7 +2406,7 @@ export const EditMenuItem: React.FC<EditMenuItemProps> = ({
             }
             className="rounded border-gray-300 text-primary focus:ring-primary"
           />
-          <span className="text-sm text-gray-700">Weekly Subscription</span>
+          <span className="text-sm text-gray-700">Meals Subscription</span>
         </label>
 
         <label className="flex items-center space-x-2 cursor-pointer">
@@ -2051,7 +2429,7 @@ export const EditMenuItem: React.FC<EditMenuItemProps> = ({
       {formData.is_available_for_weekly && (
         <Input
           type="number"
-          label="Max Boxes Per Weekly Menu"
+          label="Max Boxes Per Meal Plan"
           value={String(formData.max_boxes_per_menu)}
           onChange={(e) =>
             setFormData({
@@ -2157,18 +2535,17 @@ export default EditMenuItem;
 _Path: `src\components\admin\menu\MenuItemsList.tsx`_
 
 ```tsx
-import React, { useState } from 'react';
-import { MenuItem } from '@types/menu.types';
+import React, { useEffect, useMemo, useState } from 'react';
+import { MenuItem } from '@models/menu.types';
 import { formatCurrency } from '@utils/formatters';
 import { getImageUrl, handleImageError } from '@utils/images';
 import Button from '@components/common/Button';
 import Card from '@components/common/Card';
 import LoadingSpinner from '@components/common/LoadingSpinner';
+import Pagination from '@components/common/Pagination';
 import {
   Edit2,
   Trash2,
-  Eye,
-  EyeOff,
   Leaf,
   CheckCircle,
   XCircle,
@@ -2188,9 +2565,29 @@ export const MenuItemsList: React.FC<MenuItemsListProps> = ({
   onDelete,
   isLoading,
 }) => {
+  const ITEMS_PER_PAGE = 9;
   const [imageLoadStates, setImageLoadStates] = useState<{
     [key: string]: boolean;
   }>({});
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalItems = items.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / ITEMS_PER_PAGE));
+
+  const paginatedItems = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return items.slice(start, start + ITEMS_PER_PAGE);
+  }, [items, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [totalItems]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const handleImageLoad = (itemId: string) => {
     setImageLoadStates((prev) => ({ ...prev, [itemId]: true }));
@@ -2218,168 +2615,179 @@ export const MenuItemsList: React.FC<MenuItemsListProps> = ({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {items.map((item) => {
-        const imageUrl = getImageUrl(item.image_url);
-        const isImageLoaded = imageLoadStates[item._id] || false;
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {paginatedItems.map((item) => {
+          const imageUrl = getImageUrl(item.image_url);
+          const isImageLoaded = imageLoadStates[item._id] || false;
 
-        return (
-          <Card key={item._id} padding="none" className="overflow-hidden">
-            {/* Image */}
-            <div className="relative h-48 bg-gray-100">
-              {/* Loading state */}
-              {!isImageLoaded && (
-                <div className="absolute inset-0 bg-gray-200 animate-pulse flex flex-col items-center justify-center">
-                  <ImageIcon className="text-gray-400 mb-2" size={32} />
-                  <span className="text-gray-400 text-sm">
-                    Loading image...
-                  </span>
-                </div>
-              )}
-
-              <img
-                src={imageUrl}
-                alt={item.name}
-                className={`w-full h-full object-cover transition-opacity duration-300 ${
-                  isImageLoaded ? 'opacity-100' : 'opacity-0'
-                }`}
-                onLoad={() => handleImageLoad(item._id)}
-                onError={handleImageError}
-                loading="lazy"
-              />
-
-              {/* Debug info for missing images in development */}
-              {import.meta.env.DEV && !item.image_url && (
-                <div className="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded shadow">
-                  No image_url in data
-                </div>
-              )}
-
-              {/* Availability Badge */}
-              <div className="absolute top-3 right-3">
-                {item.is_available ? (
-                  <div className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center space-x-1 shadow-lg">
-                    <CheckCircle size={14} />
-                    <span>Available</span>
+          return (
+            <Card key={item._id} padding="none" className="overflow-hidden">
+              {/* Image */}
+              <div className="relative h-48 bg-gray-100">
+                {/* Loading state */}
+                {!isImageLoaded && (
+                  <div className="absolute inset-0 bg-gray-200 animate-pulse flex flex-col items-center justify-center">
+                    <ImageIcon className="text-gray-400 mb-2" size={32} />
+                    <span className="text-gray-400 text-sm">
+                      Loading image...
+                    </span>
                   </div>
-                ) : (
-                  <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center space-x-1 shadow-lg">
-                    <XCircle size={14} />
-                    <span>Unavailable</span>
+                )}
+
+                <img
+                  src={imageUrl}
+                  alt={item.name}
+                  className={`w-full h-full object-cover transition-opacity duration-300 ${
+                    isImageLoaded ? 'opacity-100' : 'opacity-0'
+                  }`}
+                  onLoad={() => handleImageLoad(item._id)}
+                  onError={handleImageError}
+                  loading="lazy"
+                />
+
+                {/* Debug info for missing images in development */}
+                {import.meta.env.DEV && !item.image_url && (
+                  <div className="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded shadow">
+                    No image_url in data
+                  </div>
+                )}
+
+                {/* Availability Badge */}
+                <div className="absolute top-3 right-3">
+                  {item.is_available ? (
+                    <div className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center space-x-1 shadow-lg">
+                      <CheckCircle size={14} />
+                      <span>Available</span>
+                    </div>
+                  ) : (
+                    <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center space-x-1 shadow-lg">
+                      <XCircle size={14} />
+                      <span>Unavailable</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Dietary Badges */}
+                <div className="absolute top-3 left-3 flex flex-col space-y-2">
+                  {item.is_vegetarian && (
+                    <div className="bg-green-500 text-white p-1.5 rounded-full shadow-lg">
+                      <Leaf size={14} />
+                    </div>
+                  )}
+                  {item.is_vegan && (
+                    <div className="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
+                      VEGAN
+                    </div>
+                  )}
+                  {item.is_halal && (
+                    <div className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
+                      HALAL
+                    </div>
+                  )}
+                </div>
+
+                {/* Spice level */}
+                {item.spice_level && (
+                  <div className="absolute bottom-3 left-3 bg-white px-2 py-1 rounded-full shadow-md text-xs font-semibold">
+                    {item.spice_level === 'mild' && '🌶️ Mild'}
+                    {item.spice_level === 'medium' && '🌶️🌶️ Medium'}
+                    {item.spice_level === 'hot' && '🌶️🌶️🌶️ Hot'}
                   </div>
                 )}
               </div>
 
-              {/* Dietary Badges */}
-              <div className="absolute top-3 left-3 flex flex-col space-y-2">
-                {item.is_vegetarian && (
-                  <div className="bg-green-500 text-white p-1.5 rounded-full shadow-lg">
-                    <Leaf size={14} />
-                  </div>
-                )}
-                {item.is_vegan && (
-                  <div className="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
-                    VEGAN
-                  </div>
-                )}
-                {item.is_halal && (
-                  <div className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
-                    HALAL
-                  </div>
-                )}
-              </div>
-
-              {/* Spice level */}
-              {item.spice_level && (
-                <div className="absolute bottom-3 left-3 bg-white px-2 py-1 rounded-full shadow-md text-xs font-semibold">
-                  {item.spice_level === 'mild' && '🌶️ Mild'}
-                  {item.spice_level === 'medium' && '🌶️🌶️ Medium'}
-                  {item.spice_level === 'hot' && '🌶️🌶️🌶️ Hot'}
-                </div>
-              )}
-            </div>
-
-            {/* Content */}
-            <div className="p-4">
-              {/* Category */}
-              <span className="inline-block px-3 py-1 bg-primary-50 text-primary text-xs font-bold rounded-full mb-2">
-                {item.category}
-              </span>
-
-              {/* Name */}
-              <h3 className="font-heading text-xl font-bold text-text mb-2 line-clamp-1">
-                {item.name}
-              </h3>
-
-              {/* Description */}
-              <p className="text-sm text-gray-600 mb-4 line-clamp-2 min-h-[40px]">
-                {item.description}
-              </p>
-
-              {/* Availability Info */}
-              <div className="space-y-2 mb-4 text-xs text-gray-600">
-                <div className="flex items-center space-x-2">
-                  {item.is_available_for_daily && (
-                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                      Daily
-                    </span>
-                  )}
-                  {item.is_available_for_weekly && (
-                    <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded">
-                      Weekly
-                    </span>
-                  )}
-                  {item.is_available_for_catering && (
-                    <span className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded">
-                      Catering
-                    </span>
-                  )}
-                </div>
-
-                {item.allergens && item.allergens.length > 0 && (
-                  <p className="text-red-600">
-                    ⚠️ Allergens: {item.allergens.join(', ')}
-                  </p>
-                )}
-              </div>
-
-              {/* Price */}
-              <div className="flex items-center justify-between mb-4">
-                <span className="font-heading text-2xl font-bold text-primary">
-                  {formatCurrency(item.price)}
+              {/* Content */}
+              <div className="p-4">
+                {/* Category */}
+                <span className="inline-block px-3 py-1 bg-primary-50 text-primary text-xs font-bold rounded-full mb-2">
+                  {item.category}
                 </span>
-                {item.max_boxes_per_menu && (
-                  <span className="text-xs text-gray-500">
-                    Max {item.max_boxes_per_menu} boxes
-                  </span>
-                )}
-              </div>
 
-              {/* Actions */}
-              <div className="flex space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onEdit(item)}
-                  className="flex-1"
-                >
-                  <Edit2 size={16} className="mr-1" />
-                  Edit
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onDelete(item._id)}
-                  className="text-red-600 hover:bg-red-50"
-                >
-                  <Trash2 size={16} />
-                </Button>
+                {/* Name */}
+                <h3 className="font-heading text-xl font-bold text-text mb-2 line-clamp-1">
+                  {item.name}
+                </h3>
+
+                {/* Description */}
+                <p className="text-sm text-gray-600 mb-4 line-clamp-2 min-h-[40px]">
+                  {item.description}
+                </p>
+
+                {/* Availability Info */}
+                <div className="space-y-2 mb-4 text-xs text-gray-600">
+                  <div className="flex items-center space-x-2">
+                    {item.is_available_for_daily && (
+                      <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                        Daily
+                      </span>
+                    )}
+                    {item.is_available_for_weekly && (
+                      <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                        Weekly
+                      </span>
+                    )}
+                    {item.is_available_for_catering && (
+                      <span className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded">
+                        Catering
+                      </span>
+                    )}
+                  </div>
+
+                  {item.allergens && item.allergens.length > 0 && (
+                    <p className="text-red-600">
+                      ⚠️ Allergens: {item.allergens.join(', ')}
+                    </p>
+                  )}
+                </div>
+
+                {/* Price */}
+                <div className="flex items-center justify-between mb-4">
+                  <span className="font-heading text-2xl font-bold text-primary">
+                    {formatCurrency(item.price)}
+                  </span>
+                  {item.max_boxes_per_menu && (
+                    <span className="text-xs text-gray-500">
+                      Max {item.max_boxes_per_menu} boxes
+                    </span>
+                  )}
+                </div>
+
+                {/* Actions */}
+                <div className="flex space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onEdit(item)}
+                    className="flex-1"
+                  >
+                    <Edit2 size={16} className="mr-1" />
+                    Edit
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onDelete(item._id)}
+                    className="text-red-600 hover:bg-red-50"
+                  >
+                    <Trash2 size={16} />
+                  </Button>
+                </div>
               </div>
-            </div>
-          </Card>
-        );
-      })}
-    </div>
+            </Card>
+          );
+        })}
+      </div>
+
+      <Pagination
+        currentPage={currentPage}
+        totalItems={totalItems}
+        pageSize={ITEMS_PER_PAGE}
+        onPageChange={setCurrentPage}
+        showSummary
+        className="mt-6"
+      />
+    </>
   );
 };
 
@@ -2399,7 +2807,7 @@ interface OrderActionsProps {
   // Add props here
 }
 
-export const OrderActions: React.FC<OrderActionsProps> = (props) => {
+export const OrderActions: React.FC<OrderActionsProps> = () => {
   return <div>{/* OrderActions Component */}</div>;
 };
 ```
@@ -2412,7 +2820,7 @@ _Path: `src\components\admin\orders\OrderDetails.tsx`_
 
 ```tsx
 import React from 'react';
-import { Order } from '@types/order.types';
+import { Order } from '@models/order.types';
 import { formatCurrency, formatDate } from '@utils/formatters';
 import Button from '@components/common/Button';
 import {
@@ -2423,9 +2831,6 @@ import {
   Package,
   DollarSign,
   Calendar,
-  Clock,
-  Truck,
-  CreditCard,
   FileText,
 } from 'lucide-react';
 
@@ -2440,6 +2845,9 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
   onStatusUpdate,
   onClose,
 }) => {
+  const deliveryMethod =
+    order.delivery_method || order.delivery_option || 'delivery';
+
   const getStatusColor = (status: string) => {
     const colors = {
       pending: 'text-yellow-600 bg-yellow-50',
@@ -2535,7 +2943,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
             <div>
               <p className="text-gray-500 mb-1">Delivery Method</p>
               <p className="font-medium text-text capitalize">
-                {order.delivery_method.replace('_', ' ')}
+                {deliveryMethod.replace('_', ' ')}
               </p>
             </div>
 
@@ -2739,7 +3147,7 @@ _Path: `src\components\admin\orders\OrdersList.tsx`_
 
 ```tsx
 import React from 'react';
-import { Order } from '@types/order.types';
+import { Order } from '@models/order.types';
 import { formatCurrency, formatDate } from '@utils/formatters';
 import Button from '@components/common/Button';
 import Card from '@components/common/Card';
@@ -2799,7 +3207,7 @@ export const OrdersList: React.FC<OrdersListProps> = ({
   const getOrderTypeLabel = (type: string) => {
     const labels = {
       daily_menu: 'Daily Menu',
-      weekly_subscription: 'Weekly Sub',
+      meal_subscription: 'Meals Subscription',
       special_catering: 'Catering',
     };
     return labels[type as keyof typeof labels] || type;
@@ -3203,7 +3611,7 @@ import { useToast } from '@components/common/Toast';
 import Input from '@components/common/Input';
 import Button from '@components/common/Button';
 import { Upload, X, Save } from 'lucide-react';
-import { Sideline } from '@types/menu.types';
+import { Sideline } from '@models/menu.types';
 
 interface EditSidelineProps {
   sideline: Sideline;
@@ -3453,7 +3861,7 @@ _Path: `src\components\admin\sidelines\SidelinesList.tsx`_
 
 ```tsx
 import React from 'react';
-import { Sideline } from '@types/menu.types';
+import { Sideline } from '@models/menu.types';
 import { formatCurrency } from '@utils/formatters';
 import Button from '@components/common/Button';
 import Card from '@components/common/Card';
@@ -3586,27 +3994,142 @@ export default SidelinesList;
 
 ---
 
+## 📄 src\components\admin\AdminSidebar.tsx
+
+_Path: `src\components\admin\AdminSidebar.tsx`_
+
+```tsx
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  ShoppingBag,
+  Utensils,
+  Salad,
+  Tags,
+  CalendarRange,
+} from 'lucide-react';
+import clsx from 'clsx';
+
+const NAV_ITEMS = [
+  {
+    label: 'Dashboard',
+    icon: LayoutDashboard,
+    path: '/admin',
+  },
+  {
+    label: 'Orders',
+    icon: ShoppingBag,
+    path: '/admin/orders',
+  },
+  {
+    label: 'Menu Items',
+    icon: Utensils,
+    path: '/admin/menu',
+  },
+  {
+    label: 'Sidelines',
+    icon: Salad,
+    path: '/admin/sidelines',
+  },
+  {
+    label: 'Meal Plans',
+    icon: CalendarRange,
+    path: '/admin/meal-plans',
+  },
+  {
+    label: 'Categories',
+    icon: Tags,
+    path: '/admin/categories',
+  },
+];
+
+const AdminSidebar: React.FC = () => {
+  const location = useLocation();
+
+  return (
+    <aside className="hidden sm:block group fixed left-0 top-20 z-30 h-[calc(100vh-5rem)]">
+      <div className="h-full w-16 group-hover:w-64 transition-all duration-300 ease-in-out bg-white border-r border-gray-200 shadow-lg rounded-tr-2xl rounded-br-2xl overflow-hidden">
+        <div className="flex flex-col h-full py-6">
+          <div className="px-4 pb-6 border-b border-gray-100 hidden group-hover:block">
+            <p className="text-xs uppercase tracking-widest text-gray-400 font-semibold">
+              Admin
+            </p>
+            <p className="mt-1 text-sm font-semibold text-gray-700">
+              Control Center
+            </p>
+          </div>
+
+          <nav className="flex-1 space-y-1 mt-2">
+            {NAV_ITEMS.map((item) => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.path;
+
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  title={item.label}
+                  className={clsx(
+                    'flex items-center mx-2 px-4 py-3 rounded-xl transition-all duration-200',
+                    isActive
+                      ? 'bg-primary text-white shadow-md'
+                      : 'text-gray-600 hover:bg-primary/10 hover:text-primary'
+                  )}
+                >
+                  <Icon size={20} />
+                  <span className="ml-3 text-sm font-semibold hidden group-hover:block">
+                    {item.label}
+                  </span>
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="px-4 pt-4 mt-auto hidden group-hover:block">
+            <p className="text-xs text-gray-400 uppercase font-semibold mb-2">
+              Tips
+            </p>
+            <p className="text-xs text-gray-500 leading-relaxed">
+              Hover over the sidebar to reveal full navigation labels. Use the
+              categories section to organise menu items quickly.
+            </p>
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+};
+
+export default AdminSidebar;
+```
+
+---
+
 ## 📄 src\components\auth\LoginForm.tsx
 
 _Path: `src\components\auth\LoginForm.tsx`_
 
 ```tsx
-import React, { useState } from 'react';
+import { useState, type FC } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@hooks/useAuth';
+import { useCart } from '@hooks/useCart';
 import { useToast } from '@components/common/Toast';
 import Input from '@components/common/Input';
 import Button from '@components/common/Button';
 import { Mail, Lock, Loader2 } from 'lucide-react';
 
-const LoginForm: React.FC = () => {
+const LoginForm: FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
+  const { addToCart } = useCart();
   const { showToast } = useToast();
 
-  // ✅ Get the return URL from state or default to home
+  // ✅ Get the return URL and check for pending cart item
   const from = location.state?.from || '/';
+  const hasPendingCartItem = location.state?.pendingCartItem || false;
 
   const [formData, setFormData] = useState({
     email: '',
@@ -3614,6 +4137,36 @@ const LoginForm: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // ✅ Add pending item to cart after successful login
+  const addPendingItemToCart = async () => {
+    const pendingItemStr = localStorage.getItem('bakars_pending_cart_item');
+    if (pendingItemStr) {
+      try {
+        const pendingItem = JSON.parse(pendingItemStr);
+
+        // Check if the item is not too old (24 hours)
+        const itemDate = new Date(pendingItem.timestamp);
+        const now = new Date();
+        const hoursDiff =
+          (now.getTime() - itemDate.getTime()) / (1000 * 60 * 60);
+
+        if (hoursDiff < 24) {
+          await addToCart(
+            pendingItem.item,
+            pendingItem.quantity,
+            pendingItem.specialInstructions
+          );
+          showToast(`${pendingItem.item.name} added to cart!`, 'success');
+        }
+
+        // Clear the pending item
+        localStorage.removeItem('bakars_pending_cart_item');
+      } catch (error) {
+        console.error('Failed to add pending item to cart:', error);
+      }
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -3623,6 +4176,11 @@ const LoginForm: React.FC = () => {
     try {
       await login(formData);
       showToast('Login successful!', 'success');
+
+      // ✅ Add pending cart item if exists
+      if (hasPendingCartItem) {
+        await addPendingItemToCart();
+      }
 
       // ✅ Navigate to the intended page or home
       navigate(from, { replace: true });
@@ -3643,8 +4201,16 @@ const LoginForm: React.FC = () => {
         </h2>
         <p className="text-gray-600">Sign in to your account to continue</p>
 
-        {/* ✅ Show info if redirected from a protected page */}
-        {from !== '/' && from !== '/login' && (
+        {/* ✅ Show info if there's a pending cart item */}
+        {hasPendingCartItem && (
+          <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-3">
+            <p className="text-sm text-green-800">
+              Login to add your selected item to cart
+            </p>
+          </div>
+        )}
+        {/* Show info if redirected from a protected page */}
+        {from !== '/' && from !== '/login' && !hasPendingCartItem && (
           <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3">
             <p className="text-sm text-blue-800">
               Please login to access that page
@@ -3721,6 +4287,7 @@ const LoginForm: React.FC = () => {
           <span className="text-gray-600">Don't have an account? </span>
           <Link
             to="/register"
+            state={{ from: from, pendingCartItem: hasPendingCartItem }}
             className="text-primary hover:text-primary-600 font-semibold"
           >
             Sign up
@@ -3754,7 +4321,7 @@ const ProtectedRoute: React.FC<{ children?: React.ReactNode }> = ({
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner size="large" />
+        <LoadingSpinner size="lg" />
       </div>
     );
   }
@@ -3777,8 +4344,9 @@ _Path: `src\components\auth\RegisterForm.tsx`_
 
 ```tsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@hooks/useAuth';
+import { useCart } from '@hooks/useCart';
 import { useToast } from '@components/common/Toast';
 import Input from '@components/common/Input';
 import Button from '@components/common/Button';
@@ -3831,8 +4399,14 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   className = '',
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { register } = useAuth();
+  const { addToCart } = useCart();
   const { showToast } = useToast();
+
+  // ✅ Get the return URL and check for pending cart item
+  const from = location.state?.from || '/';
+  const hasPendingCartItem = location.state?.pendingCartItem || false;
 
   const [formData, setFormData] = useState<FormData>({
     first_name: '',
@@ -3849,6 +4423,36 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [backendErrors, setBackendErrors] = useState<string[]>([]);
+
+  // ✅ Add pending item to cart after successful registration
+  const addPendingItemToCart = async () => {
+    const pendingItemStr = localStorage.getItem('bakars_pending_cart_item');
+    if (pendingItemStr) {
+      try {
+        const pendingItem = JSON.parse(pendingItemStr);
+
+        // Check if the item is not too old (24 hours)
+        const itemDate = new Date(pendingItem.timestamp);
+        const now = new Date();
+        const hoursDiff =
+          (now.getTime() - itemDate.getTime()) / (1000 * 60 * 60);
+
+        if (hoursDiff < 24) {
+          await addToCart(
+            pendingItem.item,
+            pendingItem.quantity,
+            pendingItem.specialInstructions
+          );
+          showToast(`${pendingItem.item.name} added to cart!`, 'success');
+        }
+
+        // Clear the pending item
+        localStorage.removeItem('bakars_pending_cart_item');
+      } catch (error) {
+        console.error('Failed to add pending item to cart:', error);
+      }
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -3878,8 +4482,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     // Remove all non-digits
     let cleaned = phone.replace(/\D/g, '');
 
-    console.log('🔍 [DEBUG] Original phone:', phone);
-    console.log('🔍 [DEBUG] Cleaned phone:', cleaned);
+    console.log('📞 [DEBUG] Original phone:', phone);
+    console.log('📞 [DEBUG] Cleaned phone:', cleaned);
 
     // If starts with 0, replace with 61
     if (cleaned.startsWith('0')) {
@@ -3977,9 +4581,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     const errorMessages: string[] = [];
 
     console.log(
-      '╔═══════════════════════════════════════════════════════════════'
+      '═══════════════════════════════════════════════════════════════'
     );
-    console.log('║ 🔴 BACKEND ERROR ANALYSIS');
+    console.log('║ 🔍 BACKEND ERROR ANALYSIS');
     console.log(
       '╠═══════════════════════════════════════════════════════════════'
     );
@@ -4013,7 +4617,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
       // FastAPI returns array of validation errors
       if (Array.isArray(detail)) {
-        console.log(`📋 Found ${detail.length} validation errors`);
+        console.log(`🔴 Found ${detail.length} validation errors`);
 
         detail.forEach((err: any, index: number) => {
           console.log(
@@ -4048,11 +4652,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           }
         });
       } else if (typeof detail === 'string') {
-        console.log('📝 Detail is a string:', detail);
+        console.log('🟡 Detail is a string:', detail);
         errorMessages.push(detail);
       } else if (typeof detail === 'object' && detail !== null) {
         console.log(
-          '📦 Detail is an object (stringified):',
+          '🟢 Detail is an object (stringified):',
           JSON.stringify(detail, null, 2)
         );
         errorMessages.push(JSON.stringify(detail));
@@ -4061,19 +4665,19 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     // Generic error message
     else if (error.response?.data?.message) {
       console.log(
-        '📬 Using response.data.message:',
+        '🟨 Using response.data.message:',
         error.response.data.message
       );
       errorMessages.push(error.response.data.message);
     } else if (error.message) {
-      console.log('📨 Using error.message:', error.message);
+      console.log('🟦 Using error.message:', error.message);
       errorMessages.push(error.message);
     } else {
-      console.log('❌ No recognizable error format, using generic message');
+      console.log('⚠️ No recognizable error format, using generic message');
       errorMessages.push('Registration failed. Please try again.');
     }
 
-    console.log('🎯 Final error messages:', errorMessages);
+    console.log('📋 Final error messages:', errorMessages);
     return errorMessages;
   };
 
@@ -4092,7 +4696,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
     try {
       // Format data for backend API
-      const registrationData = {
+      const registrationData: RegisterData = {
         first_name: formData.first_name.trim(),
         last_name: formData.last_name.trim(),
         email: formData.email.trim().toLowerCase(),
@@ -4112,14 +4716,19 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       console.log('✅ Registration successful!');
       showToast("Registration successful! Welcome to Bakar's Food!", 'success');
 
+      // ✅ Check for pending cart item
+      if (hasPendingCartItem) {
+        await addPendingItemToCart();
+      }
+
       // Call onSuccess callback if provided
       if (onSuccess) {
         onSuccess();
       }
 
-      // Redirect if enabled
+      // ✅ Redirect to the intended page or home
       if (redirectOnSuccess) {
-        navigate('/');
+        navigate(from, { replace: true });
       }
     } catch (error: any) {
       console.error('═══════════════════════════════════════════════════');
@@ -4149,6 +4758,24 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className={`space-y-4 ${className}`}>
+      {/* Show info if there's a pending cart item */}
+      {hasPendingCartItem && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+          <p className="text-sm text-green-800">
+            Sign up to add your selected item to cart
+          </p>
+        </div>
+      )}
+
+      {/* Show info if redirected from a protected page */}
+      {from !== '/' && from !== '/register' && !hasPendingCartItem && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <p className="text-sm text-blue-800">
+            Please sign up to access that page
+          </p>
+        </div>
+      )}
+
       {/* Backend Errors Display */}
       {backendErrors.length > 0 && (
         <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4">
@@ -4474,7 +5101,7 @@ interface CartItemProps {
   // Add props here
 }
 
-export const CartItem: React.FC<CartItemProps> = (props) => {
+export const CartItem: React.FC<CartItemProps> = () => {
   return <div>{/* CartItem Component */}</div>;
 };
 ```
@@ -4492,7 +5119,7 @@ interface CartSummaryProps {
   // Add props here
 }
 
-export const CartSummary: React.FC<CartSummaryProps> = (props) => {
+export const CartSummary: React.FC<CartSummaryProps> = () => {
   return <div>{/* CartSummary Component */}</div>;
 };
 ```
@@ -4510,7 +5137,7 @@ interface DeliverySelectorProps {
   // Add props here
 }
 
-export const DeliverySelector: React.FC<DeliverySelectorProps> = (props) => {
+export const DeliverySelector: React.FC<DeliverySelectorProps> = () => {
   return <div>{/* DeliverySelector Component */}</div>;
 };
 ```
@@ -4528,7 +5155,7 @@ interface CateringMenuProps {
   // Add props here
 }
 
-export const CateringMenu: React.FC<CateringMenuProps> = (props) => {
+export const CateringMenu: React.FC<CateringMenuProps> = () => {
   return <div>{/* CateringMenu Component */}</div>;
 };
 ```
@@ -4546,7 +5173,7 @@ interface CateringSummaryProps {
   // Add props here
 }
 
-export const CateringSummary: React.FC<CateringSummaryProps> = (props) => {
+export const CateringSummary: React.FC<CateringSummaryProps> = () => {
   return <div>{/* CateringSummary Component */}</div>;
 };
 ```
@@ -4564,7 +5191,7 @@ interface EventDetailsProps {
   // Add props here
 }
 
-export const EventDetails: React.FC<EventDetailsProps> = (props) => {
+export const EventDetails: React.FC<EventDetailsProps> = () => {
   return <div>{/* EventDetails Component */}</div>;
 };
 ```
@@ -4582,9 +5209,7 @@ interface HeadCountCalculatorProps {
   // Add props here
 }
 
-export const HeadCountCalculator: React.FC<HeadCountCalculatorProps> = (
-  props
-) => {
+export const HeadCountCalculator: React.FC<HeadCountCalculatorProps> = () => {
   return <div>{/* HeadCountCalculator Component */}</div>;
 };
 ```
@@ -4602,7 +5227,7 @@ interface AddressSelectorProps {
   // Add props here
 }
 
-export const AddressSelector: React.FC<AddressSelectorProps> = (props) => {
+export const AddressSelector: React.FC<AddressSelectorProps> = () => {
   return <div>{/* AddressSelector Component */}</div>;
 };
 ```
@@ -4620,7 +5245,7 @@ interface OrderReviewProps {
   // Add props here
 }
 
-export const OrderReview: React.FC<OrderReviewProps> = (props) => {
+export const OrderReview: React.FC<OrderReviewProps> = () => {
   return <div>{/* OrderReview Component */}</div>;
 };
 ```
@@ -4638,7 +5263,7 @@ interface PaymentFormProps {
   // Add props here
 }
 
-export const PaymentForm: React.FC<PaymentFormProps> = (props) => {
+export const PaymentForm: React.FC<PaymentFormProps> = () => {
   return <div>{/* PaymentForm Component */}</div>;
 };
 ```
@@ -4656,7 +5281,7 @@ interface PlaceOrderButtonProps {
   // Add props here
 }
 
-export const PlaceOrderButton: React.FC<PlaceOrderButtonProps> = (props) => {
+export const PlaceOrderButton: React.FC<PlaceOrderButtonProps> = () => {
   return <div>{/* PlaceOrderButton Component */}</div>;
 };
 ```
@@ -4918,6 +5543,7 @@ _Path: `src\components\common\Modal.tsx`_
 
 ```tsx
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -4959,7 +5585,7 @@ const Modal: React.FC<ModalProps> = ({
     xl: 'max-w-4xl',
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop */}
       <div
@@ -4968,17 +5594,17 @@ const Modal: React.FC<ModalProps> = ({
       />
 
       {/* Modal */}
-      <div className="flex min-h-full items-center justify-center p-4">
+      <div className="flex min-h-full items-center justify-center p-4 sm:p-6">
         <div
           className={clsx(
-            'relative w-full bg-white rounded-xl shadow-2xl transform transition-all',
+            'relative w-full bg-white rounded-xl shadow-2xl transform transition-all flex flex-col overflow-hidden max-h-[calc(100vh-3rem)]',
             sizeClasses[size]
           )}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
           {(title || showCloseButton) && (
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-white">
               {title && (
                 <h2 className="text-2xl font-heading font-bold text-text">
                   {title}
@@ -4996,14 +5622,172 @@ const Modal: React.FC<ModalProps> = ({
           )}
 
           {/* Content */}
-          <div className="p-6">{children}</div>
+          <div className="p-6 overflow-y-auto flex-1">{children}</div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
 export default Modal;
+```
+
+---
+
+## 📄 src\components\common\Pagination.tsx
+
+_Path: `src\components\common\Pagination.tsx`_
+
+```tsx
+import React from 'react';
+import clsx from 'clsx';
+
+interface PaginationProps {
+  currentPage: number;
+  totalItems: number;
+  pageSize: number;
+  onPageChange: (page: number) => void;
+  className?: string;
+  showSummary?: boolean;
+}
+
+const getPageNumbers = (currentPage: number, totalPages: number): number[] => {
+  const maxButtons = 5;
+  let start = Math.max(1, currentPage - 2);
+  let end = Math.min(totalPages, start + maxButtons - 1);
+
+  // Adjust start if we are close to the end
+  start = Math.max(1, end - maxButtons + 1);
+
+  const pages: number[] = [];
+  for (let page = start; page <= end; page += 1) {
+    pages.push(page);
+  }
+  return pages;
+};
+
+const Pagination: React.FC<PaginationProps> = ({
+  currentPage,
+  totalItems,
+  pageSize,
+  onPageChange,
+  className,
+  showSummary = false,
+}) => {
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+
+  if (totalPages <= 1) {
+    return null;
+  }
+
+  const pageNumbers = getPageNumbers(currentPage, totalPages);
+  const isFirstPage = currentPage === 1;
+  const isLastPage = currentPage === totalPages;
+  const firstItemIndex = (currentPage - 1) * pageSize + 1;
+  const lastItemIndex = Math.min(currentPage * pageSize, totalItems);
+
+  const changePage = (page: number) => {
+    if (page === currentPage || page < 1 || page > totalPages) {
+      return;
+    }
+    onPageChange(page);
+  };
+
+  const renderEllipsisBefore = pageNumbers[0] > 1;
+  const renderEllipsisAfter = pageNumbers[pageNumbers.length - 1] < totalPages;
+
+  return (
+    <div
+      className={clsx(
+        'flex flex-col gap-3 items-center justify-between md:flex-row',
+        className
+      )}
+    >
+      {showSummary && (
+        <div className="text-sm text-gray-600">
+          Showing <span className="font-semibold">{firstItemIndex}</span> to{' '}
+          <span className="font-semibold">{lastItemIndex}</span> of{' '}
+          <span className="font-semibold">{totalItems}</span> items
+        </div>
+      )}
+
+      <nav className="flex items-center space-x-1" aria-label="Pagination">
+        <button
+          type="button"
+          className={clsx(
+            'px-3 py-1.5 text-sm rounded-md border transition-colors',
+            isFirstPage
+              ? 'text-gray-400 border-gray-200 cursor-not-allowed bg-gray-50'
+              : 'border-gray-200 text-gray-700 hover:bg-primary hover:text-white'
+          )}
+          onClick={() => changePage(currentPage - 1)}
+          disabled={isFirstPage}
+        >
+          Prev
+        </button>
+
+        {renderEllipsisBefore && (
+          <>
+            <button
+              type="button"
+              className="px-3 py-1.5 text-sm rounded-md border border-gray-200 text-gray-700 hover:bg-primary hover:text-white transition-colors"
+              onClick={() => changePage(1)}
+            >
+              1
+            </button>
+            <span className="px-2 text-gray-400">…</span>
+          </>
+        )}
+
+        {pageNumbers.map((page) => (
+          <button
+            key={page}
+            type="button"
+            className={clsx(
+              'px-3 py-1.5 text-sm rounded-md border transition-colors',
+              page === currentPage
+                ? 'border-primary bg-primary text-white'
+                : 'border-gray-200 text-gray-700 hover:bg-primary hover:text-white'
+            )}
+            onClick={() => changePage(page)}
+          >
+            {page}
+          </button>
+        ))}
+
+        {renderEllipsisAfter && (
+          <>
+            <span className="px-2 text-gray-400">…</span>
+            <button
+              type="button"
+              className="px-3 py-1.5 text-sm rounded-md border border-gray-200 text-gray-700 hover:bg-primary hover:text-white transition-colors"
+              onClick={() => changePage(totalPages)}
+            >
+              {totalPages}
+            </button>
+          </>
+        )}
+
+        <button
+          type="button"
+          className={clsx(
+            'px-3 py-1.5 text-sm rounded-md border transition-colors',
+            isLastPage
+              ? 'text-gray-400 border-gray-200 cursor-not-allowed bg-gray-50'
+              : 'border-gray-200 text-gray-700 hover:bg-primary hover:text-white'
+          )}
+          onClick={() => changePage(currentPage + 1)}
+          disabled={isLastPage}
+        >
+          Next
+        </button>
+      </nav>
+    </div>
+  );
+};
+
+export default Pagination;
 ```
 
 ---
@@ -5087,22 +5871,26 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <div className="fixed top-4 right-4 z-50 space-y-2">
-        {toasts.map((toast) => (
-          <div
-            key={toast.id}
-            className={`flex items-center space-x-3 px-4 py-3 rounded-lg border-2 shadow-lg animate-slide-in ${getStyles(toast.type)} min-w-[300px] max-w-md`}
-          >
-            {getIcon(toast.type)}
-            <p className="flex-1 font-medium text-sm">{toast.message}</p>
-            <button
-              onClick={() => removeToast(toast.id)}
-              className="hover:bg-white/20 rounded p-1 transition-colors"
+      <div className="fixed inset-x-0 top-8 z-50 flex justify-center pointer-events-none px-4">
+        <div className="space-y-3 w-full max-w-md">
+          {toasts.map((toast) => (
+            <div
+              key={toast.id}
+              className={`pointer-events-auto flex items-center space-x-3 px-4 py-3 rounded-lg border-2 shadow-lg animate-slide-in ${getStyles(toast.type)} w-full`}
             >
-              <X size={18} />
-            </button>
-          </div>
-        ))}
+              {getIcon(toast.type)}
+              <p className="flex-1 font-medium text-sm text-center">
+                {toast.message}
+              </p>
+              <button
+                onClick={() => removeToast(toast.id)}
+                className="hover:bg-white/20 rounded p-1 transition-colors"
+              >
+                <X size={18} />
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
     </ToastContext.Provider>
   );
@@ -5122,7 +5910,7 @@ interface CartIconProps {
   // Add props here
 }
 
-export const CartIcon: React.FC<CartIconProps> = (props) => {
+export const CartIcon: React.FC<CartIconProps> = () => {
   return <div>{/* CartIcon Component */}</div>;
 };
 ```
@@ -5179,10 +5967,10 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <Link
-                  to="/menu/weekly"
+                  to="/menu/meals"
                   className="text-gray-300 hover:text-primary transition-colors"
                 >
-                  Weekly Subscription
+                  Meals Subscription
                 </Link>
               </li>
               <li>
@@ -5340,7 +6128,7 @@ const Header: React.FC = () => {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Daily Menu', path: '/menu/daily' },
-    { name: 'Weekly Subscription', path: '/menu/weekly' },
+    { name: 'Meals Subscription', path: '/menu/meals' },
     { name: 'Catering', path: '/catering' },
     { name: 'Contact', path: '/contact' },
   ];
@@ -5348,16 +6136,16 @@ const Header: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="sticky top-0 z-40 bg-white shadow-md">
+    <header className="sticky top-0 z-40 bg-white shadow-md relative">
       <div className="container-custom">
-        <div className="flex items-center justify-between py-4">
+        <div className="flex flex-wrap lg:flex-nowrap items-center justify-between gap-4 py-4">
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
             <Logo />
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
+          <nav className="hidden lg:flex flex-1 items-center justify-center gap-8 min-w-0">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
@@ -5374,11 +6162,11 @@ const Header: React.FC = () => {
           </nav>
 
           {/* Right Side Actions */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-3 ml-auto">
             {/* Cart Icon - Only show if authenticated */}
             {isAuthenticated && (
               <button
-                onClick={() => navigate('/checkout')}
+                onClick={() => navigate('/cart')} // ✅ CHANGED: Navigate to /cart instead of /checkout
                 className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
                 <ShoppingCart size={24} className="text-text" />
@@ -5468,10 +6256,12 @@ const Header: React.FC = () => {
             </button>
           </div>
         </div>
+      </div>
 
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <nav className="lg:hidden py-4 border-t border-gray-200">
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <nav className="lg:hidden absolute inset-x-0 top-full bg-white shadow-lg border-t border-gray-200">
+          <div className="container-custom py-4">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
@@ -5511,9 +6301,9 @@ const Header: React.FC = () => {
                 </Button>
               </div>
             )}
-          </nav>
-        )}
-      </div>
+          </div>
+        </nav>
+      )}
     </header>
   );
 };
@@ -5569,19 +6359,21 @@ interface LogoProps {
 
 const Logo: React.FC<LogoProps> = ({ variant = 'default', size = 'md' }) => {
   const sizeClasses = {
-    sm: 'text-xl',
-    md: 'text-2xl',
-    lg: 'text-3xl',
+    sm: 'text-lg sm:text-xl',
+    md: 'text-xl sm:text-2xl',
+    lg: 'text-2xl sm:text-3xl',
   };
 
   const colorClass = variant === 'white' ? 'text-white' : 'text-primary';
 
   return (
     <div
-      className={`font-heading font-bold ${sizeClasses[size]} ${colorClass}`}
+      className={`font-heading font-bold leading-tight ${sizeClasses[size]} ${colorClass}`}
     >
-      <span className="tracking-tight">Bakar's</span>
-      <span className="text-secondary ml-2">Food & Catering</span>
+      <span className="tracking-tight whitespace-nowrap">Bakar's</span>
+      <span className="text-secondary block sm:inline sm:ml-2 whitespace-nowrap">
+        Food & Catering
+      </span>
     </div>
   );
 };
@@ -5602,7 +6394,7 @@ interface NavigationProps {
   // Add props here
 }
 
-export const Navigation: React.FC<NavigationProps> = (props) => {
+export const Navigation: React.FC<NavigationProps> = () => {
   return <div>{/* Navigation Component */}</div>;
 };
 ```
@@ -5620,7 +6412,7 @@ interface UserMenuProps {
   // Add props here
 }
 
-export const UserMenu: React.FC<UserMenuProps> = (props) => {
+export const UserMenu: React.FC<UserMenuProps> = () => {
   return <div>{/* UserMenu Component */}</div>;
 };
 ```
@@ -5674,26 +6466,9 @@ const CartSummary: React.FC<CartSummaryProps> = ({ sticky = true }) => {
     }
   }, [isAuthenticated]);
 
-  // Not authenticated state
+  // Only show cart if authenticated
   if (!isAuthenticated) {
-    return (
-      <Card className={sticky ? 'sticky top-24' : ''} padding="lg">
-        <div className="text-center py-8">
-          <ShoppingCart className="mx-auto h-16 w-16 text-gray-300 mb-4" />
-          <h3 className="font-semibold text-gray-500 mb-2">
-            Login to view cart
-          </h3>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => navigate('/login')}
-            fullWidth
-          >
-            Login Now
-          </Button>
-        </div>
-      </Card>
-    );
+    return null;
   }
 
   // Loading state
@@ -5944,7 +6719,7 @@ interface CategoryFilterProps {
   // Add props here
 }
 
-export const CategoryFilter: React.FC<CategoryFilterProps> = (props) => {
+export const CategoryFilter: React.FC<CategoryFilterProps> = () => {
   return <div>{/* CategoryFilter Component */}</div>;
 };
 ```
@@ -5957,7 +6732,7 @@ _Path: `src\components\menu\FilterBar.tsx`_
 
 ```tsx
 import React from 'react';
-import { MenuFilters } from '@types/menu.types';
+import { MenuFilters } from '@models/menu.types';
 import { Filter, X, Leaf } from 'lucide-react';
 
 interface CategoryObject {
@@ -6117,7 +6892,7 @@ _Path: `src\components\menu\MenuItemCard.tsx`_
 ```tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MenuItem } from '@types/menu.types';
+import { MenuItem } from '@models/menu.types';
 import { useCart } from '@hooks/useCart';
 import { useAuthStore } from '@store/authStore';
 import { formatCurrency } from '@utils/formatters';
@@ -6128,11 +6903,12 @@ import {
   ShoppingCart,
   Leaf,
   AlertCircle,
-  LogIn,
   Utensils,
+  X,
 } from 'lucide-react';
 import Card from '@components/common/Card';
 import Button from '@components/common/Button';
+import Modal from '@components/common/Modal';
 import { useToast } from '@components/common/Toast';
 
 interface MenuItemCardProps {
@@ -6147,7 +6923,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
   const [specialInstructions, setSpecialInstructions] = useState('');
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
@@ -6163,25 +6939,74 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
     }
 
     if (!isAuthenticated) {
+      // Save the pending cart item
+      const pendingItem = {
+        item: item,
+        quantity: quantity,
+        specialInstructions: specialInstructions,
+        timestamp: new Date().toISOString(),
+      };
+
+      localStorage.setItem(
+        'bakars_pending_cart_item',
+        JSON.stringify(pendingItem)
+      );
+
       showToast('Please login to add items to cart', 'warning');
-      navigate('/login');
+      navigate('/login', {
+        state: { from: '/menu/daily', pendingCartItem: true },
+      });
       return;
     }
 
     if (quantity > 0) {
       try {
         await addToCart(item, quantity, specialInstructions);
+        // Reset form and close modal
         setQuantity(1);
         setSpecialInstructions('');
-        setShowDetails(false);
+        setShowDetailsModal(false);
       } catch (error) {
         console.error('Failed to add to cart:', error);
       }
     }
   };
 
+  const handleQuickAdd = () => {
+    if (!isAuthenticated) {
+      // Save the pending cart item with default quantity
+      const pendingItem = {
+        item: item,
+        quantity: 1,
+        specialInstructions: '',
+        timestamp: new Date().toISOString(),
+      };
+
+      localStorage.setItem(
+        'bakars_pending_cart_item',
+        JSON.stringify(pendingItem)
+      );
+
+      showToast('Please login to add items to cart', 'warning');
+      navigate('/login', {
+        state: { from: '/menu/daily', pendingCartItem: true },
+      });
+      return;
+    }
+
+    // If authenticated, open the modal
+    setShowDetailsModal(true);
+  };
+
   const incrementQuantity = () => setQuantity((prev) => prev + 1);
   const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
+
+  const handleCloseModal = () => {
+    setShowDetailsModal(false);
+    // Reset to default values when closing
+    setQuantity(1);
+    setSpecialInstructions('');
+  };
 
   // Get the proper image URL
   const imageUrl = getImageUrl(item.image_url);
@@ -6197,204 +7022,271 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   };
 
   return (
-    <Card
-      className="overflow-hidden hover:shadow-xl transition-shadow duration-300"
-      padding="none"
-    >
-      {/* Image */}
-      <div className="relative h-48 overflow-hidden bg-gray-100">
-        {/* Loading skeleton */}
-        {!imageLoaded && !imageError && (
-          <div className="absolute inset-0 bg-gray-200 animate-pulse flex flex-col items-center justify-center">
-            <Utensils className="text-gray-400 mb-2" size={32} />
-            <span className="text-gray-400 text-sm">Loading...</span>
-          </div>
-        )}
-
-        {/* Actual image */}
-        <img
-          src={imageUrl}
-          alt={item.name}
-          className={`w-full h-full object-cover transition-all duration-300 ${
-            imageLoaded ? 'opacity-100 hover:scale-110' : 'opacity-0'
-          }`}
-          onLoad={onImageLoad}
-          onError={onImageError}
-          loading="lazy"
-        />
-
-        {/* Availability badge */}
-        {!item.is_available && (
-          <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
-            <span className="bg-red-500 text-white px-4 py-2 rounded-full font-semibold">
-              Sold Out
-            </span>
-          </div>
-        )}
-
-        {/* Dietary badges */}
-        <div className="absolute top-3 right-3 flex flex-col space-y-2">
-          {item.is_vegetarian && (
-            <div className="bg-green-500 text-white p-2 rounded-full shadow-lg">
-              <Leaf size={16} />
+    <>
+      <Card
+        className="overflow-hidden hover:shadow-xl transition-shadow duration-300"
+        padding="none"
+      >
+        {/* Image */}
+        <div className="relative h-48 overflow-hidden bg-gray-100">
+          {/* Loading skeleton */}
+          {!imageLoaded && !imageError && (
+            <div className="absolute inset-0 bg-gray-200 animate-pulse flex flex-col items-center justify-center">
+              <Utensils className="text-gray-400 mb-2" size={32} />
+              <span className="text-gray-400 text-sm">Loading...</span>
             </div>
           )}
-          {item.is_vegan && (
-            <div className="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-lg">
-              VEGAN
-            </div>
-          )}
-          {item.is_halal && (
-            <div className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-lg">
-              HALAL
-            </div>
-          )}
-        </div>
 
-        {/* Spice level indicator */}
-        {item.spice_level && (
-          <div className="absolute bottom-3 left-3">
-            <div className="bg-white px-2 py-1 rounded-full shadow-md text-xs font-semibold">
-              {item.spice_level === 'mild' && '🌶️ Mild'}
-              {item.spice_level === 'medium' && '🌶️🌶️ Medium'}
-              {item.spice_level === 'hot' && '🌶️🌶️🌶️ Hot'}
-            </div>
-          </div>
-        )}
-      </div>
+          {/* Actual image */}
+          <img
+            src={imageUrl}
+            alt={item.name}
+            className={`w-full h-full object-cover transition-all duration-300 ${
+              imageLoaded ? 'opacity-100 hover:scale-110' : 'opacity-0'
+            }`}
+            onLoad={onImageLoad}
+            onError={onImageError}
+            loading="lazy"
+          />
 
-      {/* Content */}
-      <div className="p-4">
-        {/* Category tag */}
-        <span className="inline-block px-3 py-1 bg-primary-50 text-primary text-xs font-semibold rounded-full mb-2">
-          {item.category}
-        </span>
-
-        {/* Name and description */}
-        <h3 className="font-heading text-xl font-bold text-text mb-2">
-          {item.name}
-        </h3>
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-          {item.description}
-        </p>
-
-        {/* Allergens warning */}
-        {item.allergens && item.allergens.length > 0 && (
-          <div className="flex items-start space-x-2 mb-3 text-xs text-orange-700 bg-orange-50 p-2 rounded">
-            <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
-            <span>Contains: {item.allergens.join(', ')}</span>
-          </div>
-        )}
-
-        {/* Price and action */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-baseline space-x-2">
-            <span className="font-heading text-2xl font-bold text-primary">
-              {formatCurrency(item.price)}
-            </span>
-            {item.serving_size && (
-              <span className="text-sm text-gray-500">
-                / {item.serving_size}
+          {/* Availability badge */}
+          {!item.is_available && (
+            <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
+              <span className="bg-red-500 text-white px-4 py-2 rounded-full font-semibold">
+                Sold Out
               </span>
+            </div>
+          )}
+
+          {/* Dietary badges */}
+          <div className="absolute top-3 right-3 flex flex-col space-y-2">
+            {item.is_vegetarian && (
+              <div className="bg-green-500 text-white p-2 rounded-full shadow-lg">
+                <Leaf size={16} />
+              </div>
+            )}
+            {item.is_vegan && (
+              <div className="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-lg">
+                VEGAN
+              </div>
+            )}
+            {item.is_halal && (
+              <div className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-lg">
+                HALAL
+              </div>
             )}
           </div>
 
-          {showQuickAdd && item.is_available && (
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => {
-                if (!isAuthenticated) {
-                  showToast('Please login to add items to cart', 'warning');
-                  navigate('/login');
-                } else {
-                  setShowDetails(true);
-                }
-              }}
-              disabled={isUpdating || !item.id}
-            >
-              {!isAuthenticated ? (
-                <>
-                  <LogIn size={16} className="mr-1" />
-                  Login
-                </>
-              ) : (
-                <>
-                  <ShoppingCart size={16} className="mr-1" />
-                  Add
-                </>
-              )}
-            </Button>
+          {/* Spice level indicator */}
+          {item.spice_level && (
+            <div className="absolute bottom-3 left-3">
+              <div className="bg-white px-2 py-1 rounded-full shadow-md text-xs font-semibold">
+                {item.spice_level === 'mild' && '🌶️ Mild'}
+                {item.spice_level === 'medium' && '🌶️🌶️ Medium'}
+                {item.spice_level === 'hot' && '🌶️🌶️🌶️ Hot'}
+              </div>
+            </div>
           )}
         </div>
 
-        {/* Expanded details */}
-        {showDetails && isAuthenticated && (
-          <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
-            {/* Quantity selector */}
-            <div>
-              <label className="block text-sm font-medium text-text mb-2">
-                Quantity
-              </label>
-              <div className="flex items-center space-x-3">
-                <button
-                  onClick={decrementQuantity}
-                  className="w-10 h-10 flex items-center justify-center border-2 border-gray-300 rounded-lg hover:border-primary transition-colors"
-                >
-                  <Minus size={16} />
-                </button>
-                <span className="w-12 text-center font-semibold text-lg">
-                  {quantity}
+        {/* Content */}
+        <div className="p-4">
+          {/* Category tag */}
+          <span className="inline-block px-3 py-1 bg-primary-50 text-primary text-xs font-semibold rounded-full mb-2">
+            {item.category}
+          </span>
+
+          {/* Name and description */}
+          <h3 className="font-heading text-xl font-bold text-text mb-2">
+            {item.name}
+          </h3>
+          <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+            {item.description}
+          </p>
+
+          {/* Allergens warning */}
+          {item.allergens && item.allergens.length > 0 && (
+            <div className="flex items-start space-x-2 mb-3 text-xs text-orange-700 bg-orange-50 p-2 rounded">
+              <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
+              <span>Contains: {item.allergens.join(', ')}</span>
+            </div>
+          )}
+
+          {/* Price and action */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-baseline space-x-2">
+              <span className="font-heading text-2xl font-bold text-primary">
+                {formatCurrency(item.price)}
+              </span>
+              {item.serving_size && (
+                <span className="text-sm text-gray-500">
+                  / {item.serving_size}
                 </span>
-                <button
-                  onClick={incrementQuantity}
-                  className="w-10 h-10 flex items-center justify-center border-2 border-gray-300 rounded-lg hover:border-primary transition-colors"
-                >
-                  <Plus size={16} />
-                </button>
-              </div>
+              )}
             </div>
 
-            {/* Special instructions */}
-            <div>
-              <label className="block text-sm font-medium text-text mb-2">
-                Special Instructions (Optional)
-              </label>
-              <textarea
-                value={specialInstructions}
-                onChange={(e) => setSpecialInstructions(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                rows={2}
-                placeholder="e.g., Extra spicy, no onions..."
-              />
-            </div>
-
-            {/* Action buttons */}
-            <div className="flex space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowDetails(false)}
-                className="flex-1"
-              >
-                Cancel
-              </Button>
+            {showQuickAdd && item.is_available && (
               <Button
                 variant="primary"
                 size="sm"
-                onClick={handleAddToCart}
-                className="flex-1"
+                onClick={handleQuickAdd}
                 disabled={isUpdating || !item.id}
               >
-                {isUpdating
-                  ? 'Adding...'
-                  : `Add to Cart • ${formatCurrency(item.price * quantity)}`}
+                <ShoppingCart size={16} className="mr-1" />
+                Add
               </Button>
+            )}
+          </div>
+        </div>
+      </Card>
+
+      {/* Add to Cart Modal */}
+      <Modal
+        isOpen={showDetailsModal}
+        onClose={handleCloseModal}
+        title={item.name}
+        size="md"
+      >
+        <div className="space-y-6">
+          {/* Item Image in Modal */}
+          {item.image_url && (
+            <div className="relative h-48 w-full rounded-lg overflow-hidden">
+              <img
+                src={imageUrl}
+                alt={item.name}
+                className="w-full h-full object-cover"
+              />
+              {/* Dietary badges in modal */}
+              <div className="absolute top-3 right-3 flex space-x-2">
+                {item.is_vegetarian && (
+                  <div className="bg-green-500 text-white p-1.5 rounded-full">
+                    <Leaf size={14} />
+                  </div>
+                )}
+                {item.is_vegan && (
+                  <span className="bg-green-600 text-white px-2 py-0.5 rounded-full text-xs font-bold">
+                    VEGAN
+                  </span>
+                )}
+                {item.is_halal && (
+                  <span className="bg-blue-600 text-white px-2 py-0.5 rounded-full text-xs font-bold">
+                    HALAL
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Item Details */}
+          <div>
+            <div className="flex items-center space-x-2 mb-2">
+              <span className="inline-block px-3 py-1 bg-primary-50 text-primary text-xs font-semibold rounded-full">
+                {item.category}
+              </span>
+              {item.spice_level && (
+                <span className="text-xs text-gray-600">
+                  {item.spice_level === 'mild' && '🌶️ Mild'}
+                  {item.spice_level === 'medium' && '🌶️🌶️ Medium'}
+                  {item.spice_level === 'hot' && '🌶️🌶️🌶️ Hot'}
+                </span>
+              )}
+            </div>
+            <p className="text-gray-600 text-sm">{item.description}</p>
+
+            {/* Allergens in modal */}
+            {item.allergens && item.allergens.length > 0 && (
+              <div className="flex items-start space-x-2 mt-3 text-xs text-orange-700 bg-orange-50 p-2 rounded">
+                <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
+                <span>Contains: {item.allergens.join(', ')}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Quantity Selector */}
+          <div>
+            <label className="block text-sm font-medium text-text mb-3">
+              Quantity
+            </label>
+            <div className="flex items-center justify-center space-x-4">
+              <button
+                onClick={decrementQuantity}
+                className="w-12 h-12 flex items-center justify-center border-2 border-gray-300 rounded-lg hover:border-primary transition-colors"
+              >
+                <Minus size={20} />
+              </button>
+              <span className="w-16 text-center font-semibold text-2xl">
+                {quantity}
+              </span>
+              <button
+                onClick={incrementQuantity}
+                className="w-12 h-12 flex items-center justify-center border-2 border-gray-300 rounded-lg hover:border-primary transition-colors"
+              >
+                <Plus size={20} />
+              </button>
             </div>
           </div>
-        )}
-      </div>
-    </Card>
+
+          {/* Special Instructions */}
+          <div>
+            <label className="block text-sm font-medium text-text mb-2">
+              Special Instructions (Optional)
+            </label>
+            <textarea
+              value={specialInstructions}
+              onChange={(e) => setSpecialInstructions(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+              rows={3}
+              placeholder="e.g., Extra spicy, no onions..."
+            />
+          </div>
+
+          {/* Price Summary */}
+          <div className="bg-gray-50 rounded-lg p-4">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600">Price per item:</span>
+              <span className="font-semibold">
+                {formatCurrency(item.price)}
+              </span>
+            </div>
+            <div className="flex justify-between items-center mt-2 pt-2 border-t border-gray-200">
+              <span className="font-semibold text-lg">Total:</span>
+              <span className="font-heading text-2xl font-bold text-primary">
+                {formatCurrency(item.price * quantity)}
+              </span>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex space-x-3">
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={handleCloseModal}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={handleAddToCart}
+              className="flex-1"
+              disabled={isUpdating || !item.id}
+              isLoading={isUpdating}
+            >
+              {isUpdating ? (
+                'Adding...'
+              ) : (
+                <>
+                  <ShoppingCart size={20} className="mr-2" />
+                  Add to Cart • {formatCurrency(item.price * quantity)}
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 };
 
@@ -6414,7 +7306,7 @@ interface MenuItemGridProps {
   // Add props here
 }
 
-export const MenuItemGrid: React.FC<MenuItemGridProps> = (props) => {
+export const MenuItemGrid: React.FC<MenuItemGridProps> = () => {
   return <div>{/* MenuItemGrid Component */}</div>;
 };
 ```
@@ -6432,7 +7324,7 @@ interface SidelinesPanelProps {
   // Add props here
 }
 
-export const SidelinesPanel: React.FC<SidelinesPanelProps> = (props) => {
+export const SidelinesPanel: React.FC<SidelinesPanelProps> = () => {
   return <div>{/* SidelinesPanel Component */}</div>;
 };
 ```
@@ -6450,7 +7342,7 @@ import { useToast } from '@components/common/Toast';
 import Card from '@components/common/Card';
 import Button from '@components/common/Button';
 import { MapPin, Edit, Trash2, Check } from 'lucide-react';
-import { Address } from '@types/address.types';
+import { Address } from '@models/address.types';
 
 interface AddressCardProps {
   address: Address;
@@ -6672,7 +7564,7 @@ const AddressManager: React.FC = () => {
             required
           />
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
               type="text"
               label="Suburb"
@@ -6761,10 +7653,14 @@ import Button from '@components/common/Button';
 import LoadingSpinner from '@components/common/LoadingSpinner';
 import { Package, Clock, CheckCircle, XCircle, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Modal from '@components/common/Modal';
+import type { Order } from '@models/order.types';
 
 const OrderHistory: React.FC = () => {
   const { orderHistory, fetchOrderHistory, isLoadingHistory } = useOrderStore();
   const navigate = useNavigate();
+  const [isOrderModalOpen, setIsOrderModalOpen] = React.useState(false);
+  const [selectedOrder, setSelectedOrder] = React.useState<Order | null>(null);
 
   useEffect(() => {
     fetchOrderHistory();
@@ -6827,85 +7723,190 @@ const OrderHistory: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <h2 className="font-heading text-2xl font-bold text-text">
-        Order History
-      </h2>
+    <>
+      <div className="space-y-6">
+        <h2 className="font-heading text-2xl font-bold text-text">
+          Order History
+        </h2>
 
-      <div className="space-y-4">
-        {orderHistory.map((order) => (
-          <Card
-            key={order._id}
-            padding="lg"
-            className="hover:shadow-lg transition-shadow"
-          >
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-              <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-2">
-                  <h3 className="font-semibold text-text">
-                    Order #{order._id.slice(-8).toUpperCase()}
-                  </h3>
-                  <span
-                    className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
-                      order.status
-                    )}`}
-                  >
-                    {getStatusIcon(order.status)}
-                    <span className="capitalize">
-                      {order.status.replace('_', ' ')}
+        <div className="space-y-4">
+          {orderHistory.map((order) => (
+            <Card
+              key={order._id}
+              padding="lg"
+              className="hover:shadow-lg transition-shadow"
+            >
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <h3 className="font-semibold text-text">
+                      Order #{order._id.slice(-8).toUpperCase()}
+                    </h3>
+                    <span
+                      className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
+                        order.status
+                      )}`}
+                    >
+                      {getStatusIcon(order.status)}
+                      <span className="capitalize">
+                        {order.status.replace('_', ' ')}
+                      </span>
                     </span>
-                  </span>
+                  </div>
+
+                  <p className="text-sm text-gray-600 mb-3">
+                    {formatDate(order.created_at)} •{' '}
+                    {order.items.length + order.sidelines.length} items
+                  </p>
+
+                  <div className="space-y-1">
+                    {order.items.slice(0, 2).map((item, index) => (
+                      <p key={index} className="text-sm text-gray-700">
+                        {item.quantity}x {item.menu_item.name}
+                      </p>
+                    ))}
+                    {order.items.length > 2 && (
+                      <p className="text-sm text-gray-500">
+                        +{order.items.length - 2} more items
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                <p className="text-sm text-gray-600 mb-3">
-                  {formatDate(order.created_at)} •{' '}
-                  {order.items.length + order.sidelines.length} items
-                </p>
+                <div className="flex flex-col items-start md:items-end space-y-3">
+                  <div className="text-right">
+                    <p className="font-heading text-2xl font-bold text-primary">
+                      {formatCurrency(order.total)}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {order.delivery_option === 'delivery'
+                        ? 'Delivery'
+                        : 'Pickup'}
+                    </p>
+                  </div>
 
-                <div className="space-y-1">
-                  {order.items.slice(0, 2).map((item, index) => (
-                    <p key={index} className="text-sm text-gray-700">
-                      {item.quantity}x {item.menu_item.name}
-                    </p>
-                  ))}
-                  {order.items.length > 2 && (
-                    <p className="text-sm text-gray-500">
-                      +{order.items.length - 2} more items
-                    </p>
-                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedOrder(order as unknown as Order);
+                      setIsOrderModalOpen(true);
+                    }}
+                  >
+                    <Eye size={16} className="mr-2" />
+                    View Details
+                  </Button>
                 </div>
               </div>
-
-              <div className="flex flex-col items-start md:items-end space-y-3">
-                <div className="text-right">
-                  <p className="font-heading text-2xl font-bold text-primary">
-                    {formatCurrency(order.total)}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {order.delivery_option === 'delivery'
-                      ? 'Delivery'
-                      : 'Pickup'}
-                  </p>
-                </div>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => navigate(`/orders/${order._id}`)}
-                >
-                  <Eye size={16} className="mr-2" />
-                  View Details
-                </Button>
-              </div>
-            </div>
-          </Card>
-        ))}
+            </Card>
+          ))}
+        </div>
       </div>
-    </div>
+
+      {/* Order Details Modal */}
+      <Modal
+        isOpen={isOrderModalOpen}
+        onClose={() => setIsOrderModalOpen(false)}
+        title={
+          selectedOrder
+            ? `Order #${selectedOrder._id?.slice(-8)}`
+            : 'Order Details'
+        }
+      >
+        {!selectedOrder ? (
+          <div className="py-6 text-center text-gray-600">
+            No order selected.
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Placed on</p>
+                <p className="font-medium">
+                  {formatDate(selectedOrder.created_at)}
+                </p>
+              </div>
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                  selectedOrder.status === 'delivered'
+                    ? 'bg-green-100 text-green-800'
+                    : selectedOrder.status === 'cancelled'
+                      ? 'bg-red-100 text-red-800'
+                      : 'bg-blue-100 text-blue-800'
+                }`}
+              >
+                {selectedOrder.status?.toUpperCase().replace('_', ' ')}
+              </span>
+            </div>
+
+            <div className="divide-y border rounded">
+              {[
+                ...(selectedOrder.items || []),
+                ...(selectedOrder.sidelines || []),
+              ].map((it: any, idx: number) => (
+                <div
+                  key={idx}
+                  className="flex items-center justify-between p-3 text-sm"
+                >
+                  <div className="text-gray-700">
+                    {it.item_name || it.name}
+                    {it.category ? (
+                      <span className="text-gray-400"> • {it.category}</span>
+                    ) : null}
+                  </div>
+                  <div className="text-gray-600">x{it.quantity}</div>
+                  <div className="font-medium">
+                    {formatCurrency(
+                      it.subtotal ?? (it.price || 0) * (it.quantity || 1)
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex items-center justify-between pt-2 text-sm">
+              <span className="text-gray-600">Subtotal</span>
+              <span className="font-medium">
+                {formatCurrency(selectedOrder.subtotal || 0)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-600">Delivery</span>
+              <span className="font-medium">
+                {formatCurrency(selectedOrder.delivery_fee || 0)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-base">
+              <span className="font-semibold">Total</span>
+              <span className="font-semibold">
+                {formatCurrency(
+                  (selectedOrder as any).total ??
+                    (selectedOrder as any).total_amount ??
+                    0
+                )}
+              </span>
+            </div>
+
+            <div className="pt-2 text-xs text-gray-500">
+              Delivery method:{' '}
+              {String(
+                (selectedOrder as any).delivery_option ||
+                  (selectedOrder as any).delivery_method ||
+                  'N/A'
+              )}
+            </div>
+          </div>
+        )}
+      </Modal>
+    </>
   );
 };
 
 export default OrderHistory;
+
+// Inline order details modal rendering at the bottom
+// Render modal via a portal-like placement within this component tree
+// to avoid external wiring.
 ```
 
 ---
@@ -7019,7 +8020,7 @@ interface DeliveryScheduleProps {
   // Add props here
 }
 
-export const DeliverySchedule: React.FC<DeliveryScheduleProps> = (props) => {
+export const DeliverySchedule: React.FC<DeliveryScheduleProps> = () => {
   return <div>{/* DeliverySchedule Component */}</div>;
 };
 ```
@@ -7037,7 +8038,7 @@ interface MealSelectionProps {
   // Add props here
 }
 
-export const MealSelection: React.FC<MealSelectionProps> = (props) => {
+export const MealSelection: React.FC<MealSelectionProps> = () => {
   return <div>{/* MealSelection Component */}</div>;
 };
 ```
@@ -7055,7 +8056,7 @@ interface SubscriptionPlansProps {
   // Add props here
 }
 
-export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = (props) => {
+export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = () => {
   return <div>{/* SubscriptionPlans Component */}</div>;
 };
 ```
@@ -7073,9 +8074,7 @@ interface SubscriptionSummaryProps {
   // Add props here
 }
 
-export const SubscriptionSummary: React.FC<SubscriptionSummaryProps> = (
-  props
-) => {
+export const SubscriptionSummary: React.FC<SubscriptionSummaryProps> = () => {
   return <div>{/* SubscriptionSummary Component */}</div>;
 };
 ```
@@ -7127,7 +8126,7 @@ import { useEffect } from 'react';
 import { useCartStore } from '@store/cartStore';
 import { useAuthStore } from '@store/authStore';
 import { useToast } from '@components/common/Toast';
-import { MenuItem, Sideline } from '@types/menu.types';
+import { MenuItem, Sideline } from '@models/menu.types';
 
 export const useCart = () => {
   const cartStore = useCartStore();
@@ -7330,14 +8329,14 @@ import { useEffect } from 'react';
 import { useMenuStore } from '@store/menuStore';
 
 export const useMenu = (
-  orderType?: 'daily_menu' | 'weekly_subscription' | 'special_catering'
+  orderType?: 'daily_menu' | 'meal_subscription' | 'special_catering'
 ) => {
   const menuStore = useMenuStore();
 
   useEffect(() => {
     if (orderType === 'daily_menu') {
       menuStore.fetchDailyMenu();
-    } else if (orderType === 'weekly_subscription') {
+    } else if (orderType === 'meal_subscription') {
       menuStore.fetchWeeklyMenu();
     } else if (orderType === 'special_catering') {
       menuStore.fetchCateringMenu();
@@ -7436,9 +8435,9 @@ import {
   CheckCircle,
   XCircle,
   Truck,
-  Users,
   AlertCircle,
 } from 'lucide-react';
+import AdminSidebar from '@components/admin/AdminSidebar';
 
 // ===========================
 // SIMPLE COMPONENTS (No External Dependencies)
@@ -7608,13 +8607,40 @@ const AdminDashboard: React.FC = () => {
   // Default stats if API fails
   const stats = orderStats || {
     total_orders: 0,
+    total_orders_growth_percent: 0,
     pending_orders: 0,
+    pending_orders_weekly_change_percent: 0,
+    confirmed_orders: 0,
+    preparing_orders: 0,
+    out_for_delivery_orders: 0,
     completed_orders: 0,
     cancelled_orders: 0,
     today_revenue: 0,
+    today_vs_yesterday_percent: 0,
     weekly_revenue: 0,
+    weekly_growth_percent: 0,
     monthly_revenue: 0,
+    monthly_growth_percent: 0,
     total_revenue: 0,
+    total_revenue_growth_percent: 0,
+    weekly_revenue_breakdown: [],
+    active_subscriptions: 0,
+    upcoming_catering_events: 0,
+  };
+
+  const formatPercent = (value?: number) => {
+    if (
+      value === undefined ||
+      value === null ||
+      Number.isNaN(value) ||
+      !Number.isFinite(value)
+    ) {
+      return '—';
+    }
+    const rounded = value.toFixed(1);
+    const numeric = Number(rounded);
+    const sign = numeric > 0 ? '+' : '';
+    return `${sign}${rounded}%`;
   };
 
   const statsCards = [
@@ -7625,7 +8651,7 @@ const AdminDashboard: React.FC = () => {
       color: 'from-blue-500 to-blue-600',
       textColor: 'text-blue-600',
       bgColor: 'bg-blue-50',
-      change: '+12%',
+      change: formatPercent(stats.total_orders_growth_percent),
     },
     {
       title: 'Pending Orders',
@@ -7634,7 +8660,7 @@ const AdminDashboard: React.FC = () => {
       color: 'from-orange-500 to-orange-600',
       textColor: 'text-orange-600',
       bgColor: 'bg-orange-50',
-      change: '-3%',
+      change: formatPercent(stats.pending_orders_weekly_change_percent),
     },
     {
       title: "Today's Revenue",
@@ -7643,7 +8669,7 @@ const AdminDashboard: React.FC = () => {
       color: 'from-green-500 to-green-600',
       textColor: 'text-green-600',
       bgColor: 'bg-green-50',
-      change: '+25%',
+      change: formatPercent(stats.today_vs_yesterday_percent),
     },
     {
       title: 'Total Revenue',
@@ -7652,7 +8678,7 @@ const AdminDashboard: React.FC = () => {
       color: 'from-purple-500 to-purple-600',
       textColor: 'text-purple-600',
       bgColor: 'bg-purple-50',
-      change: '+18%',
+      change: formatPercent(stats.total_revenue_growth_percent),
     },
   ];
 
@@ -7666,14 +8692,14 @@ const AdminDashboard: React.FC = () => {
     },
     {
       label: 'Confirmed',
-      count: 15,
+      count: stats.confirmed_orders || 0,
       icon: <Package size={24} />,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
     },
     {
       label: 'Out for Delivery',
-      count: 8,
+      count: stats.out_for_delivery_orders || 0,
       icon: <Truck size={24} />,
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
@@ -7694,98 +8720,121 @@ const AdminDashboard: React.FC = () => {
     },
   ];
 
+  const successRate =
+    stats.total_orders && stats.total_orders > 0
+      ? ((stats.completed_orders || 0) / stats.total_orders) * 100
+      : 0;
+
+  const weeklyRevenueBreakdown =
+    stats.weekly_revenue_breakdown && stats.weekly_revenue_breakdown.length
+      ? stats.weekly_revenue_breakdown
+      : [
+          { label: 'Mon', date: '', total: 0 },
+          { label: 'Tue', date: '', total: 0 },
+          { label: 'Wed', date: '', total: 0 },
+          { label: 'Thu', date: '', total: 0 },
+          { label: 'Fri', date: '', total: 0 },
+          { label: 'Sat', date: '', total: 0 },
+          { label: 'Sun', date: '', total: 0 },
+        ];
+
+  const maxDailyRevenue = Math.max(
+    ...weeklyRevenueBreakdown.map((day) => day.total || 0),
+    1
+  );
+
   return (
-    <div className="min-h-screen bg-[#F9F9F9] py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="font-['Playfair_Display'] text-4xl font-bold text-[#2E2E2E] mb-2">
-              Admin Dashboard
-            </h1>
-            <p className="text-gray-600 flex items-center space-x-2">
-              <Calendar size={16} />
-              <span>
-                {new Date().toLocaleDateString('en-AU', {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </span>
-            </p>
-          </div>
-          <Button onClick={handleRefresh} disabled={refreshing}>
-            <RefreshCcw
-              size={18}
-              className={`mr-2 ${refreshing ? 'animate-spin' : ''}`}
-            />
-            {refreshing ? 'Refreshing...' : 'Refresh Data'}
-          </Button>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {statsCards.map((stat, index) => (
-            <Card
-              key={index}
-              className="hover:shadow-xl transition-all duration-300"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div
-                  className={`w-16 h-16 rounded-full ${stat.bgColor} flex items-center justify-center ${stat.textColor}`}
-                >
-                  {stat.icon}
-                </div>
-                <span className="text-sm font-semibold text-green-600">
-                  {stat.change}
+    <div className="min-h-screen bg-[#F9F9F9]">
+      <AdminSidebar />
+      <div className="py-8 px-4 sm:px-6 lg:px-8 pl-20 md:pl-28">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="font-['Playfair_Display'] text-4xl font-bold text-[#2E2E2E] mb-2">
+                Admin Dashboard
+              </h1>
+              <p className="text-gray-600 flex items-center space-x-2">
+                <Calendar size={16} />
+                <span>
+                  {new Date().toLocaleDateString('en-AU', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
                 </span>
-              </div>
-              <h3 className="text-gray-600 text-sm font-medium mb-1">
-                {stat.title}
-              </h3>
-              <p className="font-['Playfair_Display'] text-3xl font-bold text-[#2E2E2E]">
-                {stat.value}
               </p>
-            </Card>
-          ))}
-        </div>
+            </div>
+            <Button onClick={handleRefresh} disabled={refreshing}>
+              <RefreshCcw
+                size={18}
+                className={`mr-2 ${refreshing ? 'animate-spin' : ''}`}
+              />
+              {refreshing ? 'Refreshing...' : 'Refresh Data'}
+            </Button>
+          </div>
 
-        {/* Order Status Overview */}
-        <Card className="mb-8">
-          <h2 className="font-['Playfair_Display'] text-2xl font-bold text-[#2E2E2E] mb-6">
-            Order Status Overview
-          </h2>
-
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {orderStatusCards.map((status, index) => (
-              <div
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {statsCards.map((stat, index) => (
+              <Card
                 key={index}
-                className={`${status.bgColor} rounded-lg p-4 text-center transition-transform hover:scale-105`}
+                className="hover:shadow-xl transition-all duration-300"
               >
-                <div className={`${status.color} flex justify-center mb-3`}>
-                  {status.icon}
+                <div className="flex items-center justify-between mb-4">
+                  <div
+                    className={`w-16 h-16 rounded-full ${stat.bgColor} flex items-center justify-center ${stat.textColor}`}
+                  >
+                    {stat.icon}
+                  </div>
+                  <span className="text-sm font-semibold text-green-600">
+                    {stat.change}
+                  </span>
                 </div>
-                <p className="font-['Playfair_Display'] text-3xl font-bold text-[#2E2E2E] mb-1">
-                  {status.count}
+                <h3 className="text-gray-600 text-sm font-medium mb-1">
+                  {stat.title}
+                </h3>
+                <p className="font-['Playfair_Display'] text-3xl font-bold text-[#2E2E2E]">
+                  {stat.value}
                 </p>
-                <p className="text-sm text-gray-600">{status.label}</p>
-              </div>
+              </Card>
             ))}
           </div>
-        </Card>
 
-        {/* Quick Actions & Performance */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Revenue Chart Placeholder */}
-          <div className="lg:col-span-2">
+          {/* Order Status Overview */}
+          <Card className="mb-8">
+            <h2 className="font-['Playfair_Display'] text-2xl font-bold text-[#2E2E2E] mb-6">
+              Order Status Overview
+            </h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+              {orderStatusCards.map((status, index) => (
+                <div
+                  key={index}
+                  className={`${status.bgColor} rounded-lg p-4 text-center transition-transform hover:scale-105`}
+                >
+                  <div className={`${status.color} flex justify-center mb-3`}>
+                    {status.icon}
+                  </div>
+                  <p className="font-['Playfair_Display'] text-3xl font-bold text-[#2E2E2E] mb-1">
+                    {status.count}
+                  </p>
+                  <p className="text-sm text-gray-600">{status.label}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Revenue and Operational Snapshot */}
+          <div className="space-y-8">
             <Card>
               <h3 className="font-['Playfair_Display'] text-xl font-bold text-[#2E2E2E] mb-6">
                 Weekly Revenue
               </h3>
 
               {/* Summary Stats */}
-              <div className="grid grid-cols-3 gap-4 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                 <div className="bg-blue-50 rounded-lg p-4">
                   <p className="text-sm text-gray-600 mb-1">This Week</p>
                   <p className="font-['Playfair_Display'] text-2xl font-bold text-blue-600">
@@ -7797,112 +8846,117 @@ const AdminDashboard: React.FC = () => {
                   <p className="font-['Playfair_Display'] text-2xl font-bold text-green-600">
                     {formatCurrency(stats.monthly_revenue || 0)}
                   </p>
+                  <p className="text-sm font-semibold text-green-600">
+                    {formatPercent(stats.monthly_growth_percent)}
+                  </p>
                 </div>
                 <div className="bg-purple-50 rounded-lg p-4">
                   <p className="text-sm text-gray-600 mb-1">Growth</p>
                   <div className="flex items-center space-x-1">
                     <TrendingUp className="text-purple-600" size={20} />
                     <p className="font-['Playfair_Display'] text-2xl font-bold text-purple-600">
-                      +12%
+                      {formatPercent(stats.weekly_growth_percent)}
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Simple bar chart mockup */}
+              {/* Revenue by Day */}
               <div className="space-y-4">
-                {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(
-                  (day, i) => {
-                    const revenue = [450, 680, 520, 890, 1100, 950, 780][i];
-                    const width = (revenue / 1100) * 100;
-                    return (
-                      <div key={day} className="flex items-center space-x-4">
-                        <div className="w-12 text-sm font-medium text-gray-700">
-                          {day}
-                        </div>
-                        <div className="flex-1">
-                          <div className="relative h-10 bg-gray-100 rounded-lg overflow-hidden">
-                            <div
-                              className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#FF6B35] to-[#E55A2B] rounded-lg flex items-center justify-end px-3 transition-all duration-500"
-                              style={{ width: `${width}%` }}
-                            >
+                {weeklyRevenueBreakdown.map((day) => {
+                  const revenue = day.total || 0;
+                  const width =
+                    revenue > 0
+                      ? Math.max((revenue / maxDailyRevenue) * 100, 8)
+                      : 0;
+
+                  return (
+                    <div
+                      key={day.label}
+                      className="flex items-center space-x-4"
+                    >
+                      <div className="w-12 text-sm font-medium text-gray-700">
+                        {day.label}
+                      </div>
+                      <div className="flex-1">
+                        <div className="relative h-10 bg-gray-100 rounded-lg overflow-hidden">
+                          <div
+                            className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#FF6B35] to-[#E55A2B] rounded-lg flex items-center justify-end px-3 transition-all duration-500"
+                            style={{ width: `${width}%` }}
+                          >
+                            {revenue > 0 && (
                               <span className="text-white font-semibold text-sm">
                                 {formatCurrency(revenue)}
                               </span>
-                            </div>
+                            )}
                           </div>
+                          {revenue === 0 && (
+                            <div className="absolute inset-0 flex items-center justify-end px-3">
+                              <span className="text-gray-400 text-sm">
+                                {formatCurrency(0)}
+                              </span>
+                            </div>
+                          )}
                         </div>
                       </div>
-                    );
-                  }
-                )}
+                    </div>
+                  );
+                })}
               </div>
             </Card>
-          </div>
 
-          {/* Quick Actions */}
-          <div>
             <Card>
               <h3 className="font-['Playfair_Display'] text-xl font-bold text-[#2E2E2E] mb-6">
-                Quick Actions
+                Operational Snapshot
               </h3>
 
-              <div className="space-y-3">
-                <Button
-                  onClick={() => navigate('/admin/orders')}
-                  className="w-full"
-                >
-                  <ShoppingBag size={18} className="mr-2 inline" />
-                  View All Orders
-                </Button>
-
-                <button
-                  onClick={() => navigate('/admin/menu')}
-                  className="w-full px-6 py-3 border-2 border-[#FF6B35] text-[#FF6B35] rounded-lg font-semibold hover:bg-[#FF6B35] hover:text-white transition-colors"
-                >
-                  <Package size={18} className="mr-2 inline" />
-                  Manage Menu
-                </button>
-
-                <button
-                  onClick={() => navigate('/admin/sidelines')}
-                  className="w-full px-6 py-3 border-2 border-[#FF6B35] text-[#FF6B35] rounded-lg font-semibold hover:bg-[#FF6B35] hover:text-white transition-colors"
-                >
-                  <TrendingUp size={18} className="mr-2 inline" />
-                  Manage Sidelines
-                </button>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-primary-50 rounded-lg p-4">
+                  <p className="text-sm text-gray-600 mb-1">
+                    Active Subscriptions
+                  </p>
+                  <p className="font-heading text-3xl font-bold text-primary">
+                    {stats.active_subscriptions || 0}
+                  </p>
+                </div>
+                <div className="bg-orange-50 rounded-lg p-4">
+                  <p className="text-sm text-gray-600 mb-1">
+                    Upcoming Catering Events
+                  </p>
+                  <p className="font-heading text-3xl font-bold text-orange-600">
+                    {stats.upcoming_catering_events || 0}
+                  </p>
+                </div>
+                <div className="bg-emerald-50 rounded-lg p-4">
+                  <p className="text-sm text-gray-600 mb-1">Success Rate</p>
+                  <p className="font-heading text-3xl font-bold text-emerald-600">
+                    {successRate.toFixed(1)}%
+                  </p>
+                </div>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-gray-200">
-                <h4 className="font-semibold text-[#2E2E2E] mb-4">
-                  Performance Summary
-                </h4>
-                <div className="space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Completed Orders:</span>
-                    <span className="font-semibold text-green-600">
-                      {stats.completed_orders || 0}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Cancelled Orders:</span>
-                    <span className="font-semibold text-red-600">
-                      {stats.cancelled_orders || 0}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Success Rate:</span>
-                    <span className="font-semibold text-blue-600">
-                      {stats.total_orders
-                        ? (
-                            ((stats.completed_orders || 0) /
-                              stats.total_orders) *
-                            100
-                          ).toFixed(1)
-                        : 0}
-                      %
-                    </span>
-                  </div>
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="flex flex-col bg-gray-50 p-4 rounded-lg border border-gray-100">
+                  <span className="text-sm text-gray-500">
+                    Completed Orders
+                  </span>
+                  <span className="text-2xl font-semibold text-green-600">
+                    {stats.completed_orders || 0}
+                  </span>
+                </div>
+                <div className="flex flex-col bg-gray-50 p-4 rounded-lg border border-gray-100">
+                  <span className="text-sm text-gray-500">
+                    Cancelled Orders
+                  </span>
+                  <span className="text-2xl font-semibold text-red-500">
+                    {stats.cancelled_orders || 0}
+                  </span>
+                </div>
+                <div className="flex flex-col bg-gray-50 p-4 rounded-lg border border-gray-100">
+                  <span className="text-sm text-gray-500">Pending Queue</span>
+                  <span className="text-2xl font-semibold text-blue-600">
+                    {stats.pending_orders || 0}
+                  </span>
                 </div>
               </div>
             </Card>
@@ -7914,6 +8968,1426 @@ const AdminDashboard: React.FC = () => {
 };
 
 export default AdminDashboard;
+```
+
+---
+
+## 📄 src\pages\admin\CategoryManagement.tsx
+
+_Path: `src\pages\admin\CategoryManagement.tsx`_
+
+```tsx
+import React, { useEffect, useMemo, useState } from 'react';
+import { MenuCategory } from '@models/menu.types';
+import { useAdminStore } from '@store/adminStore';
+import { useToast } from '@components/common/Toast';
+import AdminSidebar from '@components/admin/AdminSidebar';
+import Card from '@components/common/Card';
+import Button from '@components/common/Button';
+import Modal from '@components/common/Modal';
+import LoadingSpinner from '@components/common/LoadingSpinner';
+import {
+  CategoryForm,
+  CategoryFormValues,
+} from '@components/admin/categories/CategoryForm';
+import { Layers, FolderPlus, Pencil, Trash2, RefreshCcw } from 'lucide-react';
+
+const createInitialFormValues = (
+  categories: MenuCategory[]
+): CategoryFormValues => ({
+  name: '',
+  display_name: '',
+  description: '',
+  is_active: true,
+  sort_order: categories.length + 1,
+  imageFile: null,
+});
+
+const mapCategoryToFormValues = (
+  category: MenuCategory
+): CategoryFormValues => ({
+  name: category.name,
+  display_name: category.display_name,
+  description: category.description || '',
+  is_active: category.is_active,
+  sort_order: category.sort_order,
+  imageFile: null,
+});
+
+const CategoryManagement: React.FC = () => {
+  const {
+    managedCategories,
+    fetchManagedCategories,
+    createCategory,
+    updateCategory,
+    deleteCategory,
+    isLoading,
+    isUpdating,
+  } = useAdminStore();
+  const { showToast } = useToast();
+
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<MenuCategory | null>(
+    null
+  );
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    fetchManagedCategories().catch((error) => {
+      console.error('Failed to load categories', error);
+    });
+  }, [fetchManagedCategories]);
+
+  const sortedCategories = useMemo(
+    () =>
+      [...managedCategories].sort((a, b) => {
+        const orderA = a.sort_order ?? 0;
+        const orderB = b.sort_order ?? 0;
+        if (orderA === orderB) {
+          return a.display_name.localeCompare(b.display_name);
+        }
+        return orderA - orderB;
+      }),
+    [managedCategories]
+  );
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await fetchManagedCategories();
+      showToast('Categories refreshed', 'success');
+    } catch (error) {
+      console.error('Failed to refresh categories', error);
+      showToast('Failed to refresh categories', 'error');
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  const handleCreateCategory = async (values: CategoryFormValues) => {
+    try {
+      await createCategory({
+        name: values.name,
+        display_name: values.display_name,
+        description: values.description,
+        is_active: values.is_active,
+        sort_order:
+          values.sort_order !== undefined
+            ? Number(values.sort_order)
+            : undefined,
+        imageFile: values.imageFile,
+      });
+      setShowAddModal(false);
+      showToast('Category created successfully', 'success');
+    } catch (error) {
+      showToast('Failed to create category', 'error');
+    }
+  };
+
+  const handleUpdateCategory = async (values: CategoryFormValues) => {
+    if (!editingCategory) return;
+
+    try {
+      await updateCategory(editingCategory._id, {
+        display_name: values.display_name,
+        description: values.description,
+        is_active: values.is_active,
+        sort_order:
+          values.sort_order !== undefined
+            ? Number(values.sort_order)
+            : undefined,
+        imageFile: values.imageFile ?? undefined,
+      });
+      setEditingCategory(null);
+      showToast('Category updated successfully', 'success');
+    } catch (error) {
+      showToast('Failed to update category', 'error');
+    }
+  };
+
+  const handleDeleteCategory = async (category: MenuCategory) => {
+    const confirmed = window.confirm(
+      `Delete category "${category.display_name}"? This cannot be undone.`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await deleteCategory(category._id);
+      showToast('Category deleted', 'success');
+    } catch (error) {
+      showToast('Failed to delete category', 'error');
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#F9F9F9]">
+      <AdminSidebar />
+      <div className="py-8 px-4 sm:px-6 lg:px-8 pl-20 md:pl-28">
+        <div className="max-w-6xl mx-auto">
+          <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
+            <div>
+              <h1 className="font-['Playfair_Display'] text-4xl font-bold text-[#2E2E2E] mb-2 flex items-center space-x-3">
+                <Layers className="text-primary" size={32} />
+                <span>Category Management</span>
+              </h1>
+              <p className="text-gray-600 max-w-2xl">
+                Create and maintain the categories that customers see on the
+                menu. Categories can be re-used across daily, weekly, and
+                catering experiences.
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                onClick={handleRefresh}
+                disabled={refreshing}
+                className="flex items-center"
+              >
+                <RefreshCcw
+                  size={18}
+                  className={refreshing ? 'animate-spin mr-2' : 'mr-2'}
+                />
+                {refreshing ? 'Refreshing...' : 'Refresh'}
+              </Button>
+              <Button
+                variant="primary"
+                className="flex items-center"
+                onClick={() => setShowAddModal(true)}
+              >
+                <FolderPlus size={18} className="mr-2" />
+                Add Category
+              </Button>
+            </div>
+          </header>
+
+          <Card>
+            {isLoading && managedCategories.length === 0 ? (
+              <div className="py-16">
+                <LoadingSpinner message="Loading categories..." />
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Category
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Internal Name
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Sort Order
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Updated
+                      </th>
+                      <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {sortedCategories.length === 0 ? (
+                      <tr>
+                        <td
+                          className="px-4 py-6 text-center text-sm text-gray-500"
+                          colSpan={6}
+                        >
+                          No categories found. Create your first category to
+                          organise menu items.
+                        </td>
+                      </tr>
+                    ) : (
+                      sortedCategories.map((category) => (
+                        <tr key={category._id} className="hover:bg-gray-50">
+                          <td className="px-4 py-4 whitespace-nowrap">
+                            <div className="flex items-center space-x-3">
+                              {category.image_url ? (
+                                <img
+                                  src={category.image_url}
+                                  alt={category.display_name}
+                                  className="w-12 h-12 rounded-lg object-cover border"
+                                />
+                              ) : (
+                                <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 text-sm font-semibold">
+                                  {category.display_name
+                                    .charAt(0)
+                                    .toUpperCase()}
+                                </div>
+                              )}
+                              <div>
+                                <p className="font-semibold text-gray-900">
+                                  {category.display_name}
+                                </p>
+                                {category.description && (
+                                  <p className="text-sm text-gray-500 max-w-xs truncate">
+                                    {category.description}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600 font-mono">
+                            {category.name}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600">
+                            {category.sort_order ?? '—'}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap">
+                            <span
+                              className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                                category.is_active
+                                  ? 'bg-green-100 text-green-700'
+                                  : 'bg-gray-200 text-gray-600'
+                              }`}
+                            >
+                              {category.is_active ? 'Active' : 'Inactive'}
+                            </span>
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600">
+                            {category.updated_at
+                              ? new Date(
+                                  category.updated_at
+                                ).toLocaleDateString()
+                              : '—'}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div className="flex items-center justify-end space-x-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="flex items-center text-sm"
+                                onClick={() => setEditingCategory(category)}
+                              >
+                                <Pencil size={16} className="mr-1" />
+                                Edit
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="flex items-center text-sm text-red-600 hover:text-red-700"
+                                onClick={() => handleDeleteCategory(category)}
+                              >
+                                <Trash2 size={16} className="mr-1" />
+                                Delete
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </Card>
+        </div>
+      </div>
+
+      {/* Add Category Modal */}
+      <Modal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        title="Add New Category"
+        size="md"
+      >
+        <CategoryForm
+          mode="create"
+          initialValues={createInitialFormValues(managedCategories)}
+          isSubmitting={isUpdating}
+          onSubmit={handleCreateCategory}
+          onCancel={() => setShowAddModal(false)}
+        />
+      </Modal>
+
+      {/* Edit Category Modal */}
+      <Modal
+        isOpen={!!editingCategory}
+        onClose={() => setEditingCategory(null)}
+        title="Edit Category"
+        size="md"
+      >
+        {editingCategory && (
+          <CategoryForm
+            mode="edit"
+            initialValues={mapCategoryToFormValues(editingCategory)}
+            existingCategory={editingCategory}
+            isSubmitting={isUpdating}
+            onSubmit={handleUpdateCategory}
+            onCancel={() => setEditingCategory(null)}
+          />
+        )}
+      </Modal>
+    </div>
+  );
+};
+
+export default CategoryManagement;
+```
+
+---
+
+## 📄 src\pages\admin\MealPlanManagement.tsx
+
+_Path: `src\pages\admin\MealPlanManagement.tsx`_
+
+```tsx
+import React, { useEffect, useMemo, useState } from 'react';
+import { useAdminStore } from '@store/adminStore';
+import Button from '@components/common/Button';
+import Card from '@components/common/Card';
+import Input from '@components/common/Input';
+import Modal from '@components/common/Modal';
+import LoadingSpinner from '@components/common/LoadingSpinner';
+import { useToast } from '@components/common/Toast';
+import { MealSubscriptionPlan, DeliveryZone } from '@models/subscription.types';
+
+type PlanFormState = Partial<MealSubscriptionPlan> & {
+  suburbs?: string;
+};
+
+type ZoneFormState = {
+  _id?: string;
+  postcode: string;
+  zone_label?: string;
+  suburbs: string;
+  base_delivery_fee: string;
+  express_delivery_fee?: string;
+  notes?: string;
+  is_active: boolean;
+};
+
+const PLAN_TABS: Array<{ value: string; label: string }> = [
+  { value: 'regular', label: 'Regular Order' },
+  { value: 'weekly', label: 'Weekly Plan' },
+  { value: 'fortnight', label: 'Fortnight Plan' },
+  { value: 'monthly', label: 'Monthly Plan' },
+];
+
+const WEEK_DAYS: Array<{ value: string; label: string }> = [
+  { value: 'monday', label: 'Monday' },
+  { value: 'tuesday', label: 'Tuesday' },
+  { value: 'wednesday', label: 'Wednesday' },
+  { value: 'thursday', label: 'Thursday' },
+  { value: 'friday', label: 'Friday' },
+  { value: 'saturday', label: 'Saturday' },
+  { value: 'sunday', label: 'Sunday' },
+];
+
+const DAY_SEQUENCE = WEEK_DAYS.map((day) => day.value);
+const defaultPlanForm: PlanFormState = {
+  code: '',
+  name: '',
+  tab: 'weekly',
+  description: '',
+  included_meals: 10,
+  deliveries_per_cycle: 2,
+  boxes_per_delivery: 5,
+  max_boxes_per_meal: 2,
+  price_per_plan: 99,
+  price_per_box: 9.9,
+  allow_multiple: true,
+  min_boxes_delivery: 4,
+  min_boxes_pickup: 1,
+  display_badge: '',
+  display_order: 0,
+  highlight: false,
+  is_active: true,
+  available_delivery_days: [],
+  menu_item_ids_by_day: {},
+};
+
+const defaultZoneForm: ZoneFormState = {
+  postcode: '',
+  zone_label: '',
+  suburbs: '',
+  base_delivery_fee: '10',
+  express_delivery_fee: '',
+  notes: '',
+  is_active: true,
+};
+
+const formatCurrency = (value: number | undefined) =>
+  value !== undefined
+    ? new Intl.NumberFormat('en-AU', {
+        style: 'currency',
+        currency: 'AUD',
+      }).format(value)
+    : '-';
+
+const MealPlanManagement: React.FC = () => {
+  const { showToast } = useToast();
+  const {
+    mealPlans,
+    deliveryZones,
+    managedMenuItems,
+    fetchMealPlans,
+    fetchDeliveryZones,
+    fetchManagedMenuItems,
+    createMealPlan,
+    updateMealPlan,
+    deleteMealPlan,
+    createDeliveryZone,
+    updateDeliveryZone,
+    deleteDeliveryZone,
+    isLoading,
+    isUpdating,
+    error,
+    clearError,
+  } = useAdminStore();
+
+  const [planModalOpen, setPlanModalOpen] = useState(false);
+  const [zoneModalOpen, setZoneModalOpen] = useState(false);
+  const [editingPlan, setEditingPlan] = useState<MealSubscriptionPlan | null>(
+    null
+  );
+  const [planForm, setPlanForm] = useState<PlanFormState>(defaultPlanForm);
+  const [zoneForm, setZoneForm] = useState<ZoneFormState>(defaultZoneForm);
+  const [selectedDays, setSelectedDays] = useState<string[]>([]);
+  const [dayMenuSelections, setDayMenuSelections] = useState<
+    Record<string, string[]>
+  >({});
+
+  useEffect(() => {
+    fetchMealPlans().catch(console.error);
+    fetchDeliveryZones().catch(console.error);
+    fetchManagedMenuItems().catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    if (error) {
+      showToast(error, 'error');
+      clearError();
+    }
+  }, [error]);
+
+  const sortedMenuItems = useMemo(
+    () =>
+      [...(managedMenuItems ?? [])].sort((a, b) =>
+        a.name.localeCompare(b.name)
+      ),
+    [managedMenuItems]
+  );
+  const multiSelectSize = Math.min(
+    10,
+    Math.max(4, sortedMenuItems.length || 0)
+  );
+
+  const sortedPlans = useMemo(
+    () =>
+      [...mealPlans].sort(
+        (a, b) =>
+          (a.display_order ?? 0) - (b.display_order ?? 0) ||
+          a.name.localeCompare(b.name)
+      ),
+    [mealPlans]
+  );
+
+  const handleOpenPlanModal = (plan?: MealSubscriptionPlan) => {
+    if (plan) {
+      setEditingPlan(plan);
+      const planDaysRaw =
+        Array.isArray(plan.available_delivery_days) &&
+        plan.available_delivery_days.length > 0
+          ? plan.available_delivery_days
+          : Object.keys(plan.menu_item_ids_by_day ?? {});
+      const normalizedDays = planDaysRaw
+        .map((day) => day?.toString().toLowerCase())
+        .filter((day): day is string => !!day && DAY_SEQUENCE.includes(day));
+      normalizedDays.sort(
+        (a, b) => DAY_SEQUENCE.indexOf(a) - DAY_SEQUENCE.indexOf(b)
+      );
+
+      const idMapping = plan.menu_item_ids_by_day ?? {};
+      const fallbackMapping = plan.menu_items_by_day ?? {};
+      const normalizedMenus: Record<string, string[]> = {};
+      normalizedDays.forEach((day) => {
+        const idsFromMapping = Array.isArray(idMapping[day])
+          ? idMapping[day]
+          : [];
+        let resolvedIds = idsFromMapping.map((id) => id.toString());
+        if (resolvedIds.length === 0 && Array.isArray(fallbackMapping[day])) {
+          resolvedIds = (fallbackMapping[day] ?? []).map(
+            (item) => item._id || item.id
+          );
+        }
+        normalizedMenus[day] = Array.from(new Set(resolvedIds));
+      });
+
+      setSelectedDays(normalizedDays);
+      setDayMenuSelections(normalizedMenus);
+      setPlanForm({
+        ...plan,
+        suburbs: Array.isArray(plan.metadata?.suburbs)
+          ? (plan.metadata?.suburbs as string[]).join(', ')
+          : '',
+        available_delivery_days: normalizedDays,
+        menu_item_ids_by_day: normalizedMenus,
+      });
+    } else {
+      setEditingPlan(null);
+      setPlanForm({ ...defaultPlanForm });
+      setSelectedDays([]);
+      setDayMenuSelections({});
+    }
+    setPlanModalOpen(true);
+  };
+
+  const handlePlanFormChange = (
+    field: keyof PlanFormState,
+    value: string | number | boolean
+  ) => {
+    setPlanForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const toggleDaySelection = (day: string) => {
+    const normalizedDay = day.toLowerCase();
+    const orderIndex = (value: string) => DAY_SEQUENCE.indexOf(value);
+
+    setSelectedDays((prev) => {
+      const isSelected = prev.includes(normalizedDay);
+      if (isSelected) {
+        const updated = prev.filter((value) => value !== normalizedDay);
+        setDayMenuSelections((current) => {
+          const updatedMenus = { ...current };
+          delete updatedMenus[normalizedDay];
+          return updatedMenus;
+        });
+        return updated;
+      }
+      const updated = [...prev, normalizedDay].sort(
+        (a, b) => orderIndex(a) - orderIndex(b)
+      );
+      return updated;
+    });
+  };
+
+  const handleDayMenuSelectChange = (day: string, values: string[]) => {
+    const normalizedDay = day.toLowerCase();
+    const uniqueValues = Array.from(
+      new Set(values.map((value) => value.toString()))
+    );
+    setDayMenuSelections((prev) => ({
+      ...prev,
+      [normalizedDay]: uniqueValues,
+    }));
+  };
+
+  const getDayLabel = (day: string) =>
+    WEEK_DAYS.find((option) => option.value === day)?.label ?? day;
+
+  const handleSubmitPlan = async () => {
+    const { suburbs: _suburbs, ...planBase } = planForm;
+
+    const payload: Partial<MealSubscriptionPlan> = {
+      ...planBase,
+      included_meals: Number(planForm.included_meals ?? 0),
+      deliveries_per_cycle: Number(planForm.deliveries_per_cycle ?? 0),
+      boxes_per_delivery: Number(planForm.boxes_per_delivery ?? 0),
+      max_boxes_per_meal:
+        planForm.max_boxes_per_meal !== undefined &&
+        planForm.max_boxes_per_meal !== null
+          ? Number(planForm.max_boxes_per_meal)
+          : null,
+      price_per_plan: Number(planForm.price_per_plan ?? 0),
+      price_per_box:
+        planForm.price_per_box !== undefined && planForm.price_per_box !== null
+          ? Number(planForm.price_per_box)
+          : null,
+      min_boxes_delivery:
+        planForm.min_boxes_delivery !== undefined &&
+        planForm.min_boxes_delivery !== null
+          ? Number(planForm.min_boxes_delivery)
+          : null,
+      min_boxes_pickup:
+        planForm.min_boxes_pickup !== undefined &&
+        planForm.min_boxes_pickup !== null
+          ? Number(planForm.min_boxes_pickup)
+          : null,
+    };
+
+    if (payload.code) {
+      payload.code = payload.code.trim();
+    }
+
+    if (!payload.code || !payload.name) {
+      showToast('Plan name and code are required.', 'error');
+      return;
+    }
+
+    const normalizedDays = [...selectedDays].sort(
+      (a, b) => DAY_SEQUENCE.indexOf(a) - DAY_SEQUENCE.indexOf(b)
+    );
+
+    if (normalizedDays.length === 0) {
+      showToast('Select at least one delivery day for this plan.', 'error');
+      return;
+    }
+
+    const expectedDeliveries = Number(planForm.deliveries_per_cycle ?? 0);
+    if (
+      expectedDeliveries > 0 &&
+      planForm.tab !== 'regular' &&
+      normalizedDays.length !== expectedDeliveries
+    ) {
+      showToast(
+        `This plan expects ${expectedDeliveries} delivery day${
+          expectedDeliveries === 1 ? '' : 's'
+        }. Adjust the selection before saving.`,
+        'error'
+      );
+      return;
+    }
+
+    const menuMapping: Record<string, string[]> = {};
+    for (const day of normalizedDays) {
+      const selections = dayMenuSelections[day] ?? [];
+      if (selections.length === 0) {
+        showToast(
+          `Assign at least one menu item for ${getDayLabel(day)}.`,
+          'error'
+        );
+        return;
+      }
+      menuMapping[day] = selections;
+    }
+
+    payload.available_delivery_days = normalizedDays;
+    payload.menu_item_ids_by_day = menuMapping;
+
+    try {
+      if (editingPlan?._id) {
+        await updateMealPlan(editingPlan._id, payload);
+        showToast('Plan updated successfully', 'success');
+      } else {
+        await createMealPlan(payload);
+        showToast('Plan created successfully', 'success');
+      }
+      setPlanModalOpen(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeletePlan = async (planId: string) => {
+    if (!window.confirm('Are you sure you want to delete this meal plan?')) {
+      return;
+    }
+    try {
+      await deleteMealPlan(planId);
+      showToast('Plan deleted', 'success');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleOpenZoneModal = (zone?: DeliveryZone) => {
+    if (zone) {
+      setZoneForm({
+        _id: zone._id,
+        postcode: zone.postcode,
+        zone_label: zone.zone_label ?? '',
+        suburbs: zone.suburbs.join(', '),
+        base_delivery_fee: String(zone.base_delivery_fee ?? 0),
+        express_delivery_fee: zone.express_delivery_fee
+          ? String(zone.express_delivery_fee)
+          : '',
+        notes: zone.notes ?? '',
+        is_active: zone.is_active,
+      });
+    } else {
+      setZoneForm(defaultZoneForm);
+    }
+    setZoneModalOpen(true);
+  };
+
+  const handleSubmitZone = async () => {
+    if (!zoneForm.postcode) {
+      showToast('Postcode is required.', 'error');
+      return;
+    }
+
+    const suburbsArray = zoneForm.suburbs
+      ? zoneForm.suburbs
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : [];
+
+    const payload: Partial<DeliveryZone> = {
+      postcode: zoneForm.postcode,
+      zone_label: zoneForm.zone_label,
+      suburbs: suburbsArray,
+      base_delivery_fee: Number(zoneForm.base_delivery_fee || 0),
+      express_delivery_fee: zoneForm.express_delivery_fee
+        ? Number(zoneForm.express_delivery_fee)
+        : undefined,
+      notes: zoneForm.notes,
+      is_active: zoneForm.is_active,
+    };
+
+    try {
+      if (zoneForm._id) {
+        await updateDeliveryZone(zoneForm._id, payload);
+        showToast('Delivery zone updated successfully', 'success');
+      } else {
+        await createDeliveryZone(payload);
+        showToast('Delivery zone created successfully', 'success');
+      }
+      setZoneModalOpen(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteZone = async (zoneId: string) => {
+    if (
+      !window.confirm(
+        'Are you sure you want to remove this delivery zone from availability?'
+      )
+    ) {
+      return;
+    }
+    try {
+      await deleteDeliveryZone(zoneId, false);
+      showToast('Delivery zone deactivated', 'success');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return (
+    <div className="p-6 space-y-10">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-heading font-bold text-text">
+            Meal Plan & Delivery Configuration
+          </h1>
+          <p className="text-gray-600 mt-2">
+            Control customer-facing meal deals, delivery pricing, and regional
+            coverage.
+          </p>
+        </div>
+        {(isLoading || isUpdating) && (
+          <LoadingSpinner size="md" message="Saving changes..." />
+        )}
+      </div>
+
+      {/* Meal Plans Section */}
+      <Card className="p-6 shadow-lg border border-gray-100">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-heading font-semibold text-text">
+              Meal Subscription Plans
+            </h2>
+            <p className="text-sm text-gray-500">
+              Create and manage weekly, fortnightly, monthly, and regular deals
+              displayed to customers.
+            </p>
+          </div>
+          <Button variant="primary" onClick={() => handleOpenPlanModal()}>
+            Add Meal Plan
+          </Button>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Plan
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Tab
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Included Meals
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Price
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Highlight
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Active
+                </th>
+                <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {sortedPlans.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={7}
+                    className="px-4 py-6 text-center text-gray-500 italic"
+                  >
+                    No meal plans configured yet.
+                  </td>
+                </tr>
+              )}
+              {sortedPlans.map((plan) => (
+                <tr key={plan._id}>
+                  <td className="px-4 py-3">
+                    <div className="font-semibold text-text">{plan.name}</div>
+                    <div className="text-xs text-gray-500">{plan.code}</div>
+                    {(plan.available_delivery_days?.length ?? 0) > 0 && (
+                      <div className="text-xs text-gray-500 mt-1">
+                        Delivery days:{' '}
+                        {plan.available_delivery_days
+                          ?.map((day) => {
+                            const label = getDayLabel(day);
+                            const count =
+                              plan.menu_item_ids_by_day?.[day]?.length ??
+                              plan.menu_items_by_day?.[day]?.length ??
+                              0;
+                            return count > 0 ? `${label} (${count})` : label;
+                          })
+                          .join(', ')}
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 capitalize text-sm text-gray-700">
+                    {plan.tab}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-700">
+                    {plan.included_meals ?? 0}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-700">
+                    {formatCurrency(plan.price_per_plan)}
+                  </td>
+                  <td className="px-4 py-3 text-sm">
+                    {plan.highlight ? (
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
+                        Highlighted
+                      </span>
+                    ) : (
+                      <span className="text-gray-400 text-xs">—</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-sm">
+                    {plan.is_active ? (
+                      <span className="text-emerald-600 font-medium">
+                        Active
+                      </span>
+                    ) : (
+                      <span className="text-gray-400">Hidden</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-right space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleOpenPlanModal(plan)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDeletePlan(plan._id)}
+                    >
+                      Delete
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      {/* Delivery Zones Section */}
+      <Card className="p-6 shadow-lg border border-gray-100">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-heading font-semibold text-text">
+              Delivery Zones & Postal Codes
+            </h2>
+            <p className="text-sm text-gray-500">
+              Configure base delivery fees per postcode and control
+              availability.
+            </p>
+          </div>
+          <Button variant="primary" onClick={() => handleOpenZoneModal()}>
+            Add Delivery Zone
+          </Button>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Postcode
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Zone
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Suburbs
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Base Fee
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Express Fee
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Active
+                </th>
+                <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {deliveryZones.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={7}
+                    className="px-4 py-6 text-center text-gray-500 italic"
+                  >
+                    No delivery zones configured yet.
+                  </td>
+                </tr>
+              )}
+              {deliveryZones.map((zone) => (
+                <tr key={zone._id}>
+                  <td className="px-4 py-3 text-sm font-medium text-text">
+                    {zone.postcode}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-700">
+                    {zone.zone_label || '—'}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-600">
+                    {zone.suburbs.join(', ')}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-700">
+                    {formatCurrency(zone.base_delivery_fee)}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-700">
+                    {zone.express_delivery_fee
+                      ? formatCurrency(zone.express_delivery_fee)
+                      : '—'}
+                  </td>
+                  <td className="px-4 py-3 text-sm">
+                    {zone.is_active ? (
+                      <span className="text-emerald-600 font-medium">
+                        Active
+                      </span>
+                    ) : (
+                      <span className="text-gray-400">Inactive</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-right space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleOpenZoneModal(zone)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDeleteZone(zone._id)}
+                    >
+                      Deactivate
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      {/* Plan Modal */}
+      <Modal
+        isOpen={planModalOpen}
+        onClose={() => setPlanModalOpen(false)}
+        title={editingPlan ? 'Edit Meal Plan' : 'Create Meal Plan'}
+        size="xl"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Input
+            label="Plan Name"
+            value={planForm.name ?? ''}
+            onChange={(e) => handlePlanFormChange('name', e.target.value)}
+            required
+          />
+          <Input
+            label="Plan Code"
+            value={planForm.code ?? ''}
+            onChange={(e) => handlePlanFormChange('code', e.target.value)}
+            helperText="Slug used by the system (e.g., weekly_10)"
+            required
+          />
+          <label className="flex flex-col text-sm font-medium text-gray-700">
+            Display Tab
+            <select
+              className="mt-1 rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              value={planForm.tab ?? 'weekly'}
+              onChange={(e) => handlePlanFormChange('tab', e.target.value)}
+            >
+              {PLAN_TABS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <Input
+            label="Display Badge"
+            value={planForm.display_badge ?? ''}
+            onChange={(e) =>
+              handlePlanFormChange('display_badge', e.target.value)
+            }
+            placeholder="e.g., Best Value"
+          />
+          <Input
+            label="Included Meals"
+            type="number"
+            min={0}
+            value={planForm.included_meals ?? 0}
+            onChange={(e) =>
+              handlePlanFormChange('included_meals', Number(e.target.value))
+            }
+          />
+          <Input
+            label="Deliveries per Cycle"
+            type="number"
+            min={0}
+            value={planForm.deliveries_per_cycle ?? 0}
+            onChange={(e) =>
+              handlePlanFormChange(
+                'deliveries_per_cycle',
+                Number(e.target.value)
+              )
+            }
+          />
+          <Input
+            label="Boxes per Delivery"
+            type="number"
+            min={0}
+            value={planForm.boxes_per_delivery ?? 0}
+            onChange={(e) =>
+              handlePlanFormChange('boxes_per_delivery', Number(e.target.value))
+            }
+          />
+          <Input
+            label="Max Boxes per Meal"
+            type="number"
+            min={0}
+            value={planForm.max_boxes_per_meal ?? 0}
+            onChange={(e) =>
+              handlePlanFormChange('max_boxes_per_meal', Number(e.target.value))
+            }
+          />
+          <Input
+            label="Plan Price"
+            type="number"
+            min={0}
+            step="0.01"
+            value={planForm.price_per_plan ?? 0}
+            onChange={(e) =>
+              handlePlanFormChange('price_per_plan', Number(e.target.value))
+            }
+          />
+          <Input
+            label="Price per Meal"
+            type="number"
+            min={0}
+            step="0.01"
+            value={planForm.price_per_box ?? 0}
+            onChange={(e) =>
+              handlePlanFormChange('price_per_box', Number(e.target.value))
+            }
+          />
+          <Input
+            label="Min Boxes (Delivery)"
+            type="number"
+            min={0}
+            value={planForm.min_boxes_delivery ?? 0}
+            onChange={(e) =>
+              handlePlanFormChange('min_boxes_delivery', Number(e.target.value))
+            }
+          />
+          <Input
+            label="Min Boxes (Pickup)"
+            type="number"
+            min={0}
+            value={planForm.min_boxes_pickup ?? 0}
+            onChange={(e) =>
+              handlePlanFormChange('min_boxes_pickup', Number(e.target.value))
+            }
+          />
+          <Input
+            label="Display Order"
+            type="number"
+            value={planForm.display_order ?? 0}
+            onChange={(e) =>
+              handlePlanFormChange('display_order', Number(e.target.value))
+            }
+          />
+          <div className="md:col-span-2 border-t border-gray-200 pt-4 mt-2">
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2">
+              <div>
+                <h3 className="font-semibold text-text text-sm">
+                  Delivery days & curated menus
+                </h3>
+                <p className="text-xs text-gray-500">
+                  Select which weekdays this plan runs and assign the dishes
+                  customers can choose from on each day.
+                </p>
+              </div>
+              {planForm.deliveries_per_cycle ? (
+                <div className="text-xs text-gray-500">
+                  Expected deliveries per cycle:{' '}
+                  <span className="font-semibold text-text">
+                    {planForm.deliveries_per_cycle}
+                  </span>
+                </div>
+              ) : null}
+            </div>
+
+            <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-2">
+              {WEEK_DAYS.map((day) => {
+                const isChecked = selectedDays.includes(day.value);
+                return (
+                  <label
+                    key={day.value}
+                    className={`flex items-center space-x-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
+                      isChecked
+                        ? 'border-primary bg-primary/5 text-primary'
+                        : 'border-gray-200 text-gray-600 hover:border-primary/60'
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      className="rounded border-gray-300 text-primary focus:ring-primary"
+                      checked={isChecked}
+                      onChange={() => toggleDaySelection(day.value)}
+                    />
+                    <span>{day.label}</span>
+                  </label>
+                );
+              })}
+            </div>
+
+            {selectedDays.length === 0 && (
+              <p className="text-xs text-amber-600 mt-3">
+                Select at least one delivery day to configure the menu.
+              </p>
+            )}
+
+            {selectedDays.length > 0 && (
+              <div className="mt-4 space-y-4">
+                {selectedDays.map((day) => (
+                  <div
+                    key={day}
+                    className="rounded-lg border border-gray-200 p-3 bg-white/60"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="font-medium text-sm text-text">
+                        {getDayLabel(day)}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {dayMenuSelections[day]?.length ?? 0} item
+                        {(dayMenuSelections[day]?.length ?? 0) === 1
+                          ? ''
+                          : 's'}{' '}
+                        selected
+                      </div>
+                    </div>
+                    {sortedMenuItems.length > 0 ? (
+                      <select
+                        multiple
+                        size={multiSelectSize}
+                        className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        value={dayMenuSelections[day] ?? []}
+                        onChange={(e) =>
+                          handleDayMenuSelectChange(
+                            day,
+                            Array.from(e.target.selectedOptions).map(
+                              (option) => option.value
+                            )
+                          )
+                        }
+                      >
+                        {sortedMenuItems.map((item) => (
+                          <option key={item._id} value={item._id}>
+                            {item.name} • {item.category}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <div className="mt-2 text-xs text-amber-600">
+                        No menu items available yet. Add dishes from the Menu
+                        Management section first.
+                      </div>
+                    )}
+                    <p className="text-xs text-gray-400 mt-2">
+                      Hold Ctrl (or Command on Mac) to select multiple dishes.
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <label className="flex items-center space-x-2 mt-2">
+            <input
+              type="checkbox"
+              checked={planForm.allow_multiple ?? true}
+              onChange={(e) =>
+                handlePlanFormChange('allow_multiple', e.target.checked)
+              }
+            />
+            <span className="text-sm text-gray-700">
+              Allow customers to choose multiple plans
+            </span>
+          </label>
+          <label className="flex items-center space-x-2 mt-2">
+            <input
+              type="checkbox"
+              checked={planForm.highlight ?? false}
+              onChange={(e) =>
+                handlePlanFormChange('highlight', e.target.checked)
+              }
+            />
+            <span className="text-sm text-gray-700">Highlight this plan</span>
+          </label>
+          <label className="flex items-center space-x-2 mt-2">
+            <input
+              type="checkbox"
+              checked={planForm.is_active ?? true}
+              onChange={(e) =>
+                handlePlanFormChange('is_active', e.target.checked)
+              }
+            />
+            <span className="text-sm text-gray-700">Plan is active</span>
+          </label>
+        </div>
+
+        <div className="mt-6 flex justify-end space-x-3">
+          <Button variant="ghost" onClick={() => setPlanModalOpen(false)}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleSubmitPlan}>
+            {editingPlan ? 'Save Changes' : 'Create Plan'}
+          </Button>
+        </div>
+      </Modal>
+
+      {/* Delivery Zone Modal */}
+      <Modal
+        isOpen={zoneModalOpen}
+        onClose={() => setZoneModalOpen(false)}
+        title={zoneForm._id ? 'Edit Delivery Zone' : 'Add Delivery Zone'}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Input
+            label="Postcode"
+            value={zoneForm.postcode}
+            onChange={(e) =>
+              setZoneForm((prev) => ({ ...prev, postcode: e.target.value }))
+            }
+            required
+          />
+          <Input
+            label="Zone Label"
+            value={zoneForm.zone_label ?? ''}
+            onChange={(e) =>
+              setZoneForm((prev) => ({ ...prev, zone_label: e.target.value }))
+            }
+            placeholder="e.g., Zone 1 (0-14km)"
+          />
+          <label className="flex flex-col text-sm font-medium text-gray-700 md:col-span-2">
+            Suburbs (comma separated)
+            <textarea
+              className="mt-1 rounded-lg border border-gray-300 px-3 py-2 min-h-[80px] focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              value={zoneForm.suburbs}
+              onChange={(e) =>
+                setZoneForm((prev) => ({ ...prev, suburbs: e.target.value }))
+              }
+            />
+          </label>
+          <Input
+            label="Base Delivery Fee"
+            type="number"
+            step="0.01"
+            value={zoneForm.base_delivery_fee}
+            onChange={(e) =>
+              setZoneForm((prev) => ({
+                ...prev,
+                base_delivery_fee: e.target.value,
+              }))
+            }
+          />
+          <Input
+            label="Express Delivery Fee"
+            type="number"
+            step="0.01"
+            value={zoneForm.express_delivery_fee ?? ''}
+            onChange={(e) =>
+              setZoneForm((prev) => ({
+                ...prev,
+                express_delivery_fee: e.target.value,
+              }))
+            }
+          />
+          <label className="flex flex-col text-sm font-medium text-gray-700 md:col-span-2">
+            Notes
+            <textarea
+              className="mt-1 rounded-lg border border-gray-300 px-3 py-2 min-h-[80px] focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              value={zoneForm.notes ?? ''}
+              onChange={(e) =>
+                setZoneForm((prev) => ({ ...prev, notes: e.target.value }))
+              }
+            />
+          </label>
+          <label className="flex items-center space-x-2 mt-2 md:col-span-2">
+            <input
+              type="checkbox"
+              checked={zoneForm.is_active}
+              onChange={(e) =>
+                setZoneForm((prev) => ({
+                  ...prev,
+                  is_active: e.target.checked,
+                }))
+              }
+            />
+            <span className="text-sm text-gray-700">Zone is active</span>
+          </label>
+        </div>
+
+        <div className="mt-6 flex justify-end space-x-3">
+          <Button variant="ghost" onClick={() => setZoneModalOpen(false)}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleSubmitZone}>
+            {zoneForm._id ? 'Save Changes' : 'Create Zone'}
+          </Button>
+        </div>
+      </Modal>
+    </div>
+  );
+};
+
+export default MealPlanManagement;
 ```
 
 ---
@@ -7943,7 +10417,7 @@ import {
   EyeOff,
   Info,
 } from 'lucide-react';
-import { MenuItem } from '@types/menu.types';
+import { MenuItem } from '@models/menu.types';
 
 const MenuManagement: React.FC = () => {
   const { showToast } = useToast();
@@ -8315,7 +10789,7 @@ import Button from '@components/common/Button';
 import Card from '@components/common/Card';
 import Modal from '@components/common/Modal';
 import { Filter, RefreshCcw, Calendar, Download } from 'lucide-react';
-import { Order } from '@types/order.types';
+import { Order } from '@models/order.types';
 
 const OrderManagement: React.FC = () => {
   const { showToast } = useToast();
@@ -8478,7 +10952,7 @@ const OrderManagement: React.FC = () => {
               >
                 <option value="">All Types</option>
                 <option value="daily_menu">Daily Menu</option>
-                <option value="weekly_subscription">Weekly Subscription</option>
+                <option value="meal_subscription">Meals Subscription</option>
                 <option value="special_catering">Special Catering</option>
               </select>
             </div>
@@ -8561,7 +11035,7 @@ import LoadingSpinner from '@components/common/LoadingSpinner';
 import Button from '@components/common/Button';
 import Modal from '@components/common/Modal';
 import { Plus, Search } from 'lucide-react';
-import { Sideline } from '@types/menu.types';
+import { Sideline } from '@models/menu.types';
 
 const SidelinesManagement: React.FC = () => {
   const { showToast } = useToast();
@@ -8711,6 +11185,534 @@ const SidelinesManagement: React.FC = () => {
 };
 
 export default SidelinesManagement;
+```
+
+---
+
+## 📄 src\pages\customer\CartPage.tsx
+
+_Path: `src\pages\customer\CartPage.tsx`_
+
+```tsx
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useCart } from '@hooks/useCart';
+import { useAuthStore } from '@store/authStore';
+import { formatCurrency } from '@utils/formatters';
+import { getImageUrl, handleImageError } from '@utils/images';
+import {
+  ShoppingCart,
+  Trash2,
+  Plus,
+  Minus,
+  X,
+  ArrowLeft,
+  Tag,
+  Truck,
+  CheckCircle,
+  AlertCircle,
+} from 'lucide-react';
+import Button from '@components/common/Button';
+import Card from '@components/common/Card';
+import LoadingSpinner from '@components/common/LoadingSpinner';
+import { useToast } from '@components/common/Toast';
+
+const CartPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuthStore();
+  const { showToast } = useToast();
+  const {
+    items,
+    sidelines,
+    summary,
+    isLoading,
+    isUpdating,
+    updateCartQuantity,
+    removeFromCart,
+    clearCart,
+    refreshCart,
+  } = useCart();
+
+  const [voucherCode, setVoucherCode] = useState('');
+  const [selectAll, setSelectAll] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: '/cart' } });
+      return;
+    }
+    refreshCart();
+  }, [isAuthenticated]);
+
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedItems(new Set());
+      setSelectAll(false);
+    } else {
+      const allItemIds = new Set([
+        ...items.map((item: any) => item.item_id),
+        ...sidelines.map((item: any) => item.item_id + '_sideline'),
+      ]);
+      setSelectedItems(allItemIds);
+      setSelectAll(true);
+    }
+  };
+
+  const handleSelectItem = (itemId: string) => {
+    const newSelected = new Set(selectedItems);
+    if (newSelected.has(itemId)) {
+      newSelected.delete(itemId);
+    } else {
+      newSelected.add(itemId);
+    }
+    setSelectedItems(newSelected);
+
+    // Update selectAll state
+    const totalItems = items.length + sidelines.length;
+    setSelectAll(newSelected.size === totalItems && totalItems > 0);
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedItems.size === 0) {
+      showToast('Please select items to delete', 'warning');
+      return;
+    }
+
+    if (!window.confirm(`Delete ${selectedItems.size} selected item(s)?`)) {
+      return;
+    }
+
+    for (const itemId of selectedItems) {
+      const isSideline = itemId.endsWith('_sideline');
+      const actualId = isSideline ? itemId.replace('_sideline', '') : itemId;
+      await removeFromCart(actualId, isSideline);
+    }
+
+    setSelectedItems(new Set());
+    setSelectAll(false);
+    showToast('Selected items removed', 'success');
+  };
+
+  const handleQuantityChange = async (
+    itemId: string,
+    newQuantity: number,
+    isSideline: boolean = false
+  ) => {
+    if (newQuantity === 0) {
+      if (window.confirm('Remove this item from cart?')) {
+        await removeFromCart(itemId, isSideline);
+      }
+    } else {
+      await updateCartQuantity(itemId, newQuantity, isSideline);
+    }
+  };
+
+  const handleApplyVoucher = () => {
+    if (!voucherCode.trim()) {
+      showToast('Please enter a voucher code', 'warning');
+      return;
+    }
+    // TODO: Implement voucher validation
+    showToast('Voucher code applied!', 'success');
+  };
+
+  const handleProceedToCheckout = () => {
+    if (items.length === 0 && sidelines.length === 0) {
+      showToast('Your cart is empty', 'warning');
+      return;
+    }
+    navigate('/checkout');
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <LoadingSpinner size="lg" message="Loading cart..." />
+      </div>
+    );
+  }
+
+  const isCartEmpty = items.length === 0 && sidelines.length === 0;
+
+  if (isCartEmpty) {
+    return (
+      <div className="min-h-screen bg-background py-12">
+        <div className="container-custom">
+          <Card padding="lg" className="max-w-2xl mx-auto text-center">
+            <ShoppingCart className="mx-auto h-24 w-24 text-gray-300 mb-6" />
+            <h2 className="font-heading text-3xl font-bold text-text mb-4">
+              Your Cart is Empty
+            </h2>
+            <p className="text-gray-600 mb-8">
+              Looks like you haven't added anything to your cart yet
+            </p>
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => navigate('/menu/daily')}
+            >
+              Start Shopping
+            </Button>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="container-custom py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center space-x-2 text-primary hover:text-primary-600 mb-4 transition-colors"
+          >
+            <ArrowLeft size={20} />
+            <span>Continue Shopping</span>
+          </button>
+          <h1 className="font-heading text-4xl font-bold text-text">
+            Shopping Cart
+          </h1>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Cart Items */}
+          <div className="lg:col-span-2">
+            <Card padding="lg">
+              {/* Select All & Delete Selected */}
+              <div className="flex items-center justify-between border-b border-gray-200 pb-4 mb-4">
+                <div className="flex items-center space-x-4">
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectAll}
+                      onChange={handleSelectAll}
+                      className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
+                    />
+                    <span className="text-sm text-gray-600">
+                      SELECT ALL ({items.length + sidelines.length} ITEM(S))
+                    </span>
+                  </label>
+                </div>
+
+                {selectedItems.size > 0 && (
+                  <button
+                    onClick={handleDeleteSelected}
+                    className="flex items-center space-x-2 text-red-500 hover:text-red-700 transition-colors"
+                  >
+                    <Trash2 size={18} />
+                    <span>DELETE</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Main Items */}
+              <div className="space-y-4">
+                {items.map((item: any) => (
+                  <div
+                    key={item.item_id}
+                    className="border-b border-gray-100 pb-4 last:border-0"
+                  >
+                    <div className="flex items-start space-x-4">
+                      <input
+                        type="checkbox"
+                        checked={selectedItems.has(item.item_id)}
+                        onChange={() => handleSelectItem(item.item_id)}
+                        className="mt-8 w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
+                      />
+
+                      {/* Item Image */}
+                      <div className="w-24 h-24 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden">
+                        <img
+                          src={getImageUrl(item.image_url)}
+                          alt={item.item_name}
+                          className="w-full h-full object-cover"
+                          onError={handleImageError}
+                        />
+                      </div>
+
+                      {/* Item Details */}
+                      <div className="flex-1">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <h3 className="font-semibold text-text mb-1">
+                              {item.item_name}
+                            </h3>
+                            <p className="text-sm text-gray-500 mb-2">
+                              {item.category}
+                            </p>
+
+                            {/* Special instructions if any */}
+                            {item.special_instructions && (
+                              <p className="text-xs text-gray-600 italic mb-2">
+                                Note: {item.special_instructions}
+                              </p>
+                            )}
+
+                            {/* Price */}
+                            <div className="flex items-center space-x-3">
+                              <span className="font-heading text-xl font-bold text-primary">
+                                {formatCurrency(item.price)}
+                              </span>
+                              {item.original_price &&
+                                item.original_price > item.price && (
+                                  <span className="text-sm text-gray-400 line-through">
+                                    {formatCurrency(item.original_price)}
+                                  </span>
+                                )}
+                            </div>
+                          </div>
+
+                          {/* Actions */}
+                          <div className="flex flex-col items-end space-y-2">
+                            <button
+                              onClick={() => removeFromCart(item.item_id)}
+                              className="text-gray-400 hover:text-red-500 transition-colors"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+
+                            {/* Quantity Controls */}
+                            <div className="flex items-center space-x-2 bg-gray-50 rounded-lg px-2 py-1">
+                              <button
+                                onClick={() =>
+                                  handleQuantityChange(
+                                    item.item_id,
+                                    item.quantity - 1
+                                  )
+                                }
+                                className="w-8 h-8 flex items-center justify-center hover:bg-white rounded transition-colors"
+                                disabled={isUpdating}
+                              >
+                                <Minus size={16} />
+                              </button>
+                              <span className="w-10 text-center font-semibold">
+                                {item.quantity}
+                              </span>
+                              <button
+                                onClick={() =>
+                                  handleQuantityChange(
+                                    item.item_id,
+                                    item.quantity + 1
+                                  )
+                                }
+                                className="w-8 h-8 flex items-center justify-center hover:bg-white rounded transition-colors"
+                                disabled={isUpdating}
+                              >
+                                <Plus size={16} />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                {/* Sidelines */}
+                {sidelines.length > 0 && (
+                  <>
+                    <div className="py-2 my-2">
+                      <h3 className="font-semibold text-gray-700">Add-ons</h3>
+                    </div>
+                    {sidelines.map((item: any) => (
+                      <div
+                        key={item.item_id}
+                        className="border-b border-gray-100 pb-4 last:border-0"
+                      >
+                        <div className="flex items-start space-x-4">
+                          <input
+                            type="checkbox"
+                            checked={selectedItems.has(
+                              item.item_id + '_sideline'
+                            )}
+                            onChange={() =>
+                              handleSelectItem(item.item_id + '_sideline')
+                            }
+                            className="mt-6 w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
+                          />
+
+                          {/* Item Image */}
+                          <div className="w-20 h-20 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden">
+                            <img
+                              src={getImageUrl(item.image_url)}
+                              alt={item.item_name}
+                              className="w-full h-full object-cover"
+                              onError={handleImageError}
+                            />
+                          </div>
+
+                          {/* Item Details */}
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <h3 className="font-semibold text-text text-sm mb-1">
+                                  {item.item_name}
+                                </h3>
+                                <span className="font-heading text-lg font-bold text-primary">
+                                  {formatCurrency(item.price)}
+                                </span>
+                              </div>
+
+                              {/* Actions */}
+                              <div className="flex flex-col items-end space-y-2">
+                                <button
+                                  onClick={() =>
+                                    removeFromCart(item.item_id, true)
+                                  }
+                                  className="text-gray-400 hover:text-red-500 transition-colors"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+
+                                {/* Quantity Controls */}
+                                <div className="flex items-center space-x-2 bg-gray-50 rounded-lg px-2 py-1">
+                                  <button
+                                    onClick={() =>
+                                      handleQuantityChange(
+                                        item.item_id,
+                                        item.quantity - 1,
+                                        true
+                                      )
+                                    }
+                                    className="w-7 h-7 flex items-center justify-center hover:bg-white rounded transition-colors"
+                                    disabled={isUpdating}
+                                  >
+                                    <Minus size={14} />
+                                  </button>
+                                  <span className="w-8 text-center text-sm font-semibold">
+                                    {item.quantity}
+                                  </span>
+                                  <button
+                                    onClick={() =>
+                                      handleQuantityChange(
+                                        item.item_id,
+                                        item.quantity + 1,
+                                        true
+                                      )
+                                    }
+                                    className="w-7 h-7 flex items-center justify-center hover:bg-white rounded transition-colors"
+                                    disabled={isUpdating}
+                                  >
+                                    <Plus size={14} />
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </div>
+            </Card>
+          </div>
+
+          {/* Right Column - Order Summary */}
+          <div className="lg:col-span-1">
+            <Card padding="lg" className="sticky top-24">
+              <h2 className="font-heading text-2xl font-bold text-text mb-6">
+                Order Summary
+              </h2>
+
+              {/* Summary Details */}
+              <div className="space-y-3 mb-6">
+                <div className="flex justify-between text-gray-700">
+                  <span>Subtotal ({summary.item_count} items)</span>
+                  <span className="font-semibold">
+                    {formatCurrency(summary.subtotal)}
+                  </span>
+                </div>
+
+                <div className="flex justify-between text-gray-700">
+                  <span>Shipping Fee</span>
+                  <span className="font-semibold">
+                    {summary.delivery_fee > 0
+                      ? formatCurrency(summary.delivery_fee)
+                      : formatCurrency(0)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Voucher Code */}
+              <div className="mb-6">
+                <div className="flex space-x-2">
+                  <input
+                    type="text"
+                    value={voucherCode}
+                    onChange={(e) => setVoucherCode(e.target.value)}
+                    placeholder="Enter Voucher Code"
+                    className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                  />
+                  <Button
+                    variant="primary"
+                    onClick={handleApplyVoucher}
+                    disabled={!voucherCode.trim()}
+                  >
+                    APPLY
+                  </Button>
+                </div>
+              </div>
+
+              {/* Total */}
+              <div className="pt-6 border-t border-gray-200">
+                <div className="flex justify-between items-center mb-6">
+                  <span className="text-lg font-semibold text-text">Total</span>
+                  <span className="font-heading text-3xl font-bold text-primary">
+                    {formatCurrency(summary.total)}
+                  </span>
+                </div>
+
+                {/* Proceed to Checkout */}
+                <Button
+                  variant="primary"
+                  fullWidth
+                  size="lg"
+                  onClick={handleProceedToCheckout}
+                  disabled={isCartEmpty}
+                >
+                  PROCEED TO CHECKOUT({summary.item_count})
+                </Button>
+              </div>
+
+              {/* Info Messages */}
+              <div className="mt-6 space-y-3">
+                <div className="flex items-start space-x-2 text-sm text-gray-600">
+                  <Truck
+                    className="text-green-500 flex-shrink-0 mt-0.5"
+                    size={16}
+                  />
+                  <p>Free delivery on orders above $50 within 6km</p>
+                </div>
+
+                <div className="flex items-start space-x-2 text-sm text-gray-600">
+                  <CheckCircle
+                    className="text-green-500 flex-shrink-0 mt-0.5"
+                    size={16}
+                  />
+                  <p>100% secure payment</p>
+                </div>
+
+                <div className="flex items-start space-x-2 text-sm text-gray-600">
+                  <AlertCircle
+                    className="text-blue-500 flex-shrink-0 mt-0.5"
+                    size={16}
+                  />
+                  <p>Need help? Contact us at support@bakars.com</p>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CartPage;
 ```
 
 ---
@@ -9238,9 +12240,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '@hooks/useCart';
 import { useAuthStore } from '@store/authStore';
+import { useAddressStore } from '@store/addressStore';
 import { useToast } from '@components/common/Toast';
 import { ordersAPI } from '@api';
+import { deliveryAPI } from '@api/endpoints/delivery';
+import { MealSubscriptionSelection } from '@models/cart.types';
 import { formatCurrency } from '@utils/formatters';
+import { Address, DeliveryAvailability } from '@models/address.types';
+import { DAILY_DELIVERY_FEE } from '@utils/constants';
 import {
   MapPin,
   Calendar,
@@ -9250,21 +12257,31 @@ import {
   CheckCircle,
   CreditCard,
   Package,
-  Clock,
-  User,
   FileText,
   ShoppingCart,
-  Phone,
-  Mail,
 } from 'lucide-react';
 import Button from '@components/common/Button';
 import Card from '@components/common/Card';
 import Input from '@components/common/Input';
 import LoadingSpinner from '@components/common/LoadingSpinner';
+import Modal from '@components/common/Modal';
+
+const DEFAULT_COUNTRY = 'Australia';
+
+const getInitialAddressForm = () => ({
+  label: 'Home',
+  street: '',
+  suburb: '',
+  postcode: '',
+  state: 'NSW',
+  country: DEFAULT_COUNTRY,
+  is_default: false,
+  delivery_instructions: '',
+});
 
 interface CheckoutState {
   cateringDetails?: any;
-  subscriptionDetails?: any;
+  subscriptionDetails?: MealSubscriptionSelection;
 }
 
 const CheckoutPage: React.FC = () => {
@@ -9285,13 +12302,29 @@ const CheckoutPage: React.FC = () => {
     isLoading: cartLoading,
   } = useCart();
   const { showToast } = useToast();
+  const {
+    addresses,
+    fetchAddresses,
+    addAddress,
+    calculateDeliveryFee,
+    isLoading: addressStoreLoading,
+    isValidating: isCalculatingDeliveryFee,
+    error: addressStoreError,
+    clearError: clearAddressError,
+  } = useAddressStore();
 
   const state = (location.state as CheckoutState) || {};
   const { cateringDetails, subscriptionDetails } = state;
 
+  useEffect(() => {
+    if (subscriptionDetails) {
+      setDeliveryMethod(subscriptionDetails.fulfilment);
+    }
+  }, [subscriptionDetails]);
+
   // State
   const [isProcessing, setIsProcessing] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState<any>(null);
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [deliveryMethod, setDeliveryMethod] = useState<'delivery' | 'pickup'>(
     'delivery'
   );
@@ -9299,42 +12332,147 @@ const CheckoutPage: React.FC = () => {
   const [deliveryTime, setDeliveryTime] = useState('');
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'cash'>('card');
-  const [customerInfo, setCustomerInfo] = useState({
-    name: '',
-    email: '',
-    phone: '',
-  });
+  const [deliveryFee, setDeliveryFee] = useState(
+    summary.delivery_fee ?? DAILY_DELIVERY_FEE
+  );
+  const [addressError, setAddressError] = useState<string | null>(null);
 
-  // New address form state
-  const [showNewAddressForm, setShowNewAddressForm] = useState(false);
-  const [newAddress, setNewAddress] = useState({
-    label: 'Home',
-    street: '',
-    suburb: '',
-    postcode: '',
-    state: 'NSW',
-    delivery_instructions: '',
-  });
+  // Address modal state
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+  const [isSavingAddress, setIsSavingAddress] = useState(false);
+  const [newAddress, setNewAddress] = useState(getInitialAddressForm);
 
-  // Initialize customer info from user data
+  // Fetch saved addresses on mount
   useEffect(() => {
-    if (user) {
-      setCustomerInfo({
-        name:
-          user.first_name && user.last_name
-            ? `${user.first_name} ${user.last_name}`
-            : user.full_name || user.email?.split('@')[0] || '',
-        email: user.email || '',
-        phone: user.phone || '',
+    if (isAuthenticated) {
+      fetchAddresses().catch((error: any) => {
+        console.error('Failed to fetch addresses:', error);
       });
-
-      // Set default address if available
-      if (user.addresses && user.addresses.length > 0) {
-        const defaultAddr = user.addresses.find((addr: any) => addr.is_default);
-        setSelectedAddress(defaultAddr || user.addresses[0]);
-      }
     }
-  }, [user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]);
+
+  const selectedAddressId = selectedAddress?._id ?? '';
+
+  useEffect(() => {
+    if (!addresses || addresses.length === 0) {
+      setSelectedAddress(null);
+      return;
+    }
+
+    if (
+      !selectedAddressId ||
+      !addresses.some((addr) => addr._id === selectedAddressId)
+    ) {
+      const nextAddress =
+        addresses.find((addr) => addr.is_default) || addresses[0];
+      setSelectedAddress(nextAddress);
+    }
+  }, [addresses, selectedAddressId]);
+
+  useEffect(() => {
+    if (
+      deliveryMethod === 'delivery' &&
+      !addressStoreLoading &&
+      addresses.length === 0
+    ) {
+      setIsAddressModalOpen(true);
+    }
+  }, [deliveryMethod, addressStoreLoading, addresses.length]);
+
+  useEffect(() => {
+    const evaluateDeliveryFee = async () => {
+      if (deliveryMethod !== 'delivery') {
+        setAddressError(null);
+        setDeliveryFee(0);
+        return;
+      }
+
+      if (!selectedAddressId || !selectedAddress) {
+        setAddressError(null);
+        setDeliveryFee(0);
+        return;
+      }
+
+      clearAddressError();
+      setAddressError(null);
+
+      const isDailyOrder = !subscriptionDetails && !cateringDetails;
+
+      if (isDailyOrder) {
+        try {
+          const formattedAddress = [
+            selectedAddress.street,
+            selectedAddress.suburb,
+            selectedAddress.state,
+            selectedAddress.postcode,
+            selectedAddress.country || DEFAULT_COUNTRY,
+          ]
+            .filter(Boolean)
+            .join(', ');
+
+          const availabilityResponse = await deliveryAPI.checkAvailability(
+            formattedAddress,
+            'daily'
+          );
+          const availability = availabilityResponse.data.data as
+            | DeliveryAvailability
+            | undefined;
+
+          if (availability?.available) {
+            const fee =
+              availability.delivery_fee !== undefined
+                ? availability.delivery_fee
+                : DAILY_DELIVERY_FEE;
+            setDeliveryFee(fee);
+          } else {
+            const message =
+              availability?.message ||
+              availabilityResponse.data.message ||
+              'Delivery service is not available for this address.';
+            setAddressError(message);
+            setDeliveryFee(0);
+          }
+        } catch (error: any) {
+          console.error('Delivery availability check failed:', error);
+          const message =
+            error?.response?.data?.message ||
+            error?.response?.data?.detail ||
+            error?.message ||
+            'Delivery service is not available for this address.';
+          setAddressError(message);
+          setDeliveryFee(0);
+        }
+        return;
+      }
+
+      try {
+        const result = await calculateDeliveryFee(selectedAddressId);
+        if (result && typeof result.fee === 'number') {
+          setDeliveryFee(result.fee);
+        }
+      } catch (error: any) {
+        console.error('Delivery fee calculation failed:', error);
+        const message =
+          error?.response?.data?.message ||
+          error?.response?.data?.detail ||
+          error?.message ||
+          'Delivery service is not available for this address.';
+        setAddressError(message);
+        setDeliveryFee(0);
+      }
+    };
+
+    evaluateDeliveryFee();
+  }, [
+    selectedAddressId,
+    selectedAddress,
+    deliveryMethod,
+    calculateDeliveryFee,
+    clearAddressError,
+    subscriptionDetails,
+    cateringDetails,
+  ]);
 
   useEffect(() => {
     // Check authentication
@@ -9386,6 +12524,49 @@ const CheckoutPage: React.FC = () => {
     !cateringDetails &&
     !subscriptionDetails;
 
+  const handleSaveAddress = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const trimmedPayload = {
+      label: newAddress.label.trim() || 'Home',
+      street: newAddress.street.trim(),
+      suburb: newAddress.suburb.trim(),
+      postcode: newAddress.postcode.trim(),
+      state: newAddress.state.trim() || 'NSW',
+      country: newAddress.country || DEFAULT_COUNTRY,
+      is_default: newAddress.is_default || addresses.length === 0,
+      delivery_instructions:
+        newAddress.delivery_instructions?.trim() || undefined,
+    };
+
+    if (
+      !trimmedPayload.street ||
+      !trimmedPayload.suburb ||
+      !trimmedPayload.postcode
+    ) {
+      showToast('Please complete the required address fields.', 'error');
+      return;
+    }
+
+    setIsSavingAddress(true);
+    try {
+      const createdAddress = await addAddress(trimmedPayload);
+      setIsAddressModalOpen(false);
+      setNewAddress(getInitialAddressForm());
+      setSelectedAddress(createdAddress);
+      showToast('Address saved successfully', 'success');
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message ||
+        error?.response?.data?.detail ||
+        error?.message ||
+        'Failed to save address';
+      showToast(message, 'error');
+    } finally {
+      setIsSavingAddress(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -9396,22 +12577,29 @@ const CheckoutPage: React.FC = () => {
       return;
     }
 
+    if (subscriptionDetails) {
+      if (subscriptionDetails.fulfilment === 'delivery' && !selectedAddress) {
+        showToast('Please select a delivery address', 'error');
+        return;
+      }
+    } else {
+      if (deliveryMethod === 'delivery' && !selectedAddress) {
+        showToast('Please select or add a delivery address', 'error');
+        return;
+      }
+
+      if (!deliveryDate || !deliveryTime) {
+        showToast('Please select delivery/pickup date and time', 'error');
+        return;
+      }
+    }
+
     if (
-      deliveryMethod === 'delivery' &&
-      !selectedAddress &&
-      !showNewAddressForm
+      addressError &&
+      ((subscriptionDetails && subscriptionDetails.fulfilment === 'delivery') ||
+        (!subscriptionDetails && deliveryMethod === 'delivery'))
     ) {
-      showToast('Please select or add a delivery address', 'error');
-      return;
-    }
-
-    if (!deliveryDate || !deliveryTime) {
-      showToast('Please select delivery/pickup date and time', 'error');
-      return;
-    }
-
-    if (!customerInfo.name || !customerInfo.email || !customerInfo.phone) {
-      showToast('Please fill in all contact information', 'error');
+      showToast(addressError, 'error');
       return;
     }
 
@@ -9419,6 +12607,9 @@ const CheckoutPage: React.FC = () => {
 
     try {
       let orderPayload: any = {};
+      const deliveryAddressId = selectedAddressId;
+      const backendDeliveryMethod =
+        deliveryMethod === 'delivery' ? 'standard' : 'pickup';
 
       if (cateringDetails) {
         // Catering order
@@ -9430,18 +12621,35 @@ const CheckoutPage: React.FC = () => {
           venue_address: cateringDetails.eventDetails.venue_address,
           selected_items: cateringDetails.selectedItems,
           special_requests: specialInstructions,
-          contact_info: customerInfo,
         };
       } else if (subscriptionDetails) {
-        // Weekly subscription order
-        orderPayload = {
-          menu_selections: subscriptionDetails.meals.reduce(
-            (acc: any, meal: any) => {
-              acc[meal.id || meal._id] = 1;
+        const plan = subscriptionDetails.plan;
+        const planId = (plan as any)._id || (plan as any).id;
+
+        const planSelections = [
+          {
+            plan_id: planId,
+            quantity: subscriptionDetails.planQuantity,
+          },
+        ];
+
+        const deliverySlots = subscriptionDetails.schedule.map((slot) => ({
+          delivery_date: slot.date,
+          menu_items: slot.items.reduce(
+            (acc: Record<string, number>, entry) => {
+              const id = (entry.item as any)._id || entry.item.id;
+              if (id) {
+                acc[id] = entry.quantity;
+              }
               return acc;
             },
-            {}
+            {} as Record<string, number>
           ),
+        }));
+
+        orderPayload = {
+          plan_selections: planSelections,
+          delivery_slots: deliverySlots,
           sidelines:
             sidelines?.map((s: any) => {
               const sidelineData = s.sideline || s;
@@ -9450,13 +12658,11 @@ const CheckoutPage: React.FC = () => {
                 quantity: s.quantity || 1,
               };
             }) || [],
-          delivery_dates: [deliveryDate],
-          delivery_address:
-            deliveryMethod === 'delivery'
-              ? showNewAddressForm
-                ? newAddress
-                : selectedAddress
-              : null,
+          delivery_address_id:
+            subscriptionDetails.fulfilment === 'delivery'
+              ? deliveryAddressId
+              : undefined,
+          fulfilment_method: subscriptionDetails.fulfilment,
           is_express: false,
           delivery_instructions: specialInstructions,
           notes: '',
@@ -9480,18 +12686,13 @@ const CheckoutPage: React.FC = () => {
                 quantity: s.quantity || 1,
               };
             }) || [],
-          delivery_method: deliveryMethod,
-          delivery_address:
-            deliveryMethod === 'delivery'
-              ? showNewAddressForm
-                ? newAddress
-                : selectedAddress
-              : null,
-          delivery_date: deliveryDate,
-          delivery_time: deliveryTime,
+          delivery_method: backendDeliveryMethod,
+          delivery_address_id:
+            backendDeliveryMethod === 'standard'
+              ? deliveryAddressId
+              : undefined,
           delivery_instructions: specialInstructions,
           notes: '',
-          contact_info: customerInfo,
         };
       }
 
@@ -9502,7 +12703,8 @@ const CheckoutPage: React.FC = () => {
       if (cateringDetails) {
         orderResponse = await ordersAPI.createCateringOrder(orderPayload);
       } else if (subscriptionDetails) {
-        orderResponse = await ordersAPI.createWeeklyOrder(orderPayload);
+        orderResponse =
+          await ordersAPI.createMealSubscriptionOrder(orderPayload);
       } else {
         orderResponse = await ordersAPI.createDailyOrder(orderPayload);
       }
@@ -9522,6 +12724,7 @@ const CheckoutPage: React.FC = () => {
       console.error('Checkout error:', error);
       showToast(
         error.response?.data?.message ||
+          error.response?.data?.detail ||
           'Failed to place order. Please try again.',
         'error'
       );
@@ -9529,6 +12732,12 @@ const CheckoutPage: React.FC = () => {
       setIsProcessing(false);
     }
   };
+
+  const subtotalAmount = summary.subtotal;
+  const taxAmount =
+    summary.tax !== undefined ? summary.tax : subtotalAmount * 0.1;
+  const effectiveDeliveryFee = deliveryMethod === 'delivery' ? deliveryFee : 0;
+  const totalAmount = subtotalAmount + taxAmount + effectiveDeliveryFee;
 
   // Show loading while cart data is loading
   if (cartLoading) {
@@ -9583,51 +12792,6 @@ const CheckoutPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column - Checkout Form */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Contact Information */}
-              <Card padding="lg">
-                <h2 className="font-heading text-2xl font-bold text-text mb-4 flex items-center space-x-2">
-                  <User size={24} className="text-primary" />
-                  <span>Contact Information</span>
-                </h2>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    type="text"
-                    label="Full Name"
-                    value={customerInfo.name}
-                    onChange={(e) =>
-                      setCustomerInfo({ ...customerInfo, name: e.target.value })
-                    }
-                    required
-                  />
-                  <Input
-                    type="email"
-                    label="Email"
-                    value={customerInfo.email}
-                    onChange={(e) =>
-                      setCustomerInfo({
-                        ...customerInfo,
-                        email: e.target.value,
-                      })
-                    }
-                    required
-                  />
-                  <Input
-                    type="tel"
-                    label="Phone"
-                    value={customerInfo.phone}
-                    onChange={(e) =>
-                      setCustomerInfo({
-                        ...customerInfo,
-                        phone: e.target.value,
-                      })
-                    }
-                    placeholder="04XX XXX XXX"
-                    required
-                  />
-                </div>
-              </Card>
-
               {/* Delivery Method */}
               <Card padding="lg">
                 <h2 className="font-heading text-2xl font-bold text-text mb-4 flex items-center space-x-2">
@@ -9635,7 +12799,7 @@ const CheckoutPage: React.FC = () => {
                   <span>Delivery Method</span>
                 </h2>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <button
                     type="button"
                     onClick={() => setDeliveryMethod('delivery')}
@@ -9655,15 +12819,22 @@ const CheckoutPage: React.FC = () => {
                     />
                     <p className="font-semibold text-text">Delivery</p>
                     <p className="text-sm text-gray-600">
-                      {summary.delivery_fee === 0
-                        ? 'FREE'
-                        : formatCurrency(summary.delivery_fee)}
+                      {deliveryMethod === 'delivery'
+                        ? isCalculatingDeliveryFee
+                          ? 'Calculating...'
+                          : effectiveDeliveryFee === 0
+                            ? 'FREE'
+                            : formatCurrency(effectiveDeliveryFee)
+                        : formatCurrency(effectiveDeliveryFee)}
                     </p>
                   </button>
 
                   <button
                     type="button"
-                    onClick={() => setDeliveryMethod('pickup')}
+                    onClick={() => {
+                      setDeliveryMethod('pickup');
+                      setIsAddressModalOpen(false);
+                    }}
                     className={`p-4 border-2 rounded-lg transition-all ${
                       deliveryMethod === 'pickup'
                         ? 'border-primary bg-primary-50'
@@ -9687,21 +12858,41 @@ const CheckoutPage: React.FC = () => {
               {/* Delivery Address - only show if delivery selected */}
               {deliveryMethod === 'delivery' && (
                 <Card padding="lg">
-                  <h2 className="font-heading text-2xl font-bold text-text mb-4 flex items-center space-x-2">
-                    <MapPin size={24} className="text-primary" />
-                    <span>Delivery Address</span>
-                  </h2>
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center space-x-2">
+                      <MapPin size={24} className="text-primary" />
+                      <h2 className="font-heading text-2xl font-bold text-text">
+                        Delivery Address
+                      </h2>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const initialForm = getInitialAddressForm();
+                        initialForm.is_default = addresses.length === 0;
+                        setNewAddress(initialForm);
+                        setIsAddressModalOpen(true);
+                      }}
+                    >
+                      Add Address
+                    </Button>
+                  </div>
 
-                  {user?.addresses &&
-                  user.addresses.length > 0 &&
-                  !showNewAddressForm ? (
+                  {addressStoreLoading ? (
+                    <div className="py-6">
+                      <LoadingSpinner message="Loading saved addresses..." />
+                    </div>
+                  ) : addresses.length > 0 ? (
                     <div className="space-y-3">
-                      {user.addresses.map((addr: any) => (
+                      {addresses.map((addr) => (
                         <label
-                          key={addr._id || addr.id || Math.random()}
+                          key={addr._id}
                           className={`flex items-start space-x-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                            selectedAddress?.id === addr.id ||
-                            selectedAddress?._id === addr._id
+                            (selectedAddressId &&
+                              selectedAddressId === addr._id) ||
+                            (!selectedAddressId && addr.is_default)
                               ? 'border-primary bg-primary-50'
                               : 'border-gray-200 hover:border-primary'
                           }`}
@@ -9709,10 +12900,7 @@ const CheckoutPage: React.FC = () => {
                           <input
                             type="radio"
                             name="address"
-                            checked={
-                              selectedAddress?.id === addr.id ||
-                              selectedAddress?._id === addr._id
-                            }
+                            checked={selectedAddressId === addr._id}
                             onChange={() => setSelectedAddress(addr)}
                             className="mt-1"
                           />
@@ -9732,67 +12920,44 @@ const CheckoutPage: React.FC = () => {
                           </div>
                         </label>
                       ))}
-                      <Button
-                        type="button"
-                        variant="outline"
-                        fullWidth
-                        onClick={() => setShowNewAddressForm(true)}
-                      >
-                        Add New Address
-                      </Button>
                     </div>
                   ) : (
-                    <div className="space-y-4">
-                      <Input
-                        type="text"
-                        label="Street Address"
-                        value={newAddress.street}
-                        onChange={(e) =>
-                          setNewAddress({
-                            ...newAddress,
-                            street: e.target.value,
-                          })
-                        }
-                        required={deliveryMethod === 'delivery'}
-                      />
-                      <div className="grid grid-cols-2 gap-4">
-                        <Input
-                          type="text"
-                          label="Suburb"
-                          value={newAddress.suburb}
-                          onChange={(e) =>
-                            setNewAddress({
-                              ...newAddress,
-                              suburb: e.target.value,
-                            })
-                          }
-                          required={deliveryMethod === 'delivery'}
-                        />
-                        <Input
-                          type="text"
-                          label="Postcode"
-                          value={newAddress.postcode}
-                          onChange={(e) =>
-                            setNewAddress({
-                              ...newAddress,
-                              postcode: e.target.value,
-                            })
-                          }
-                          maxLength={4}
-                          required={deliveryMethod === 'delivery'}
-                        />
-                      </div>
-                      {user?.addresses && user.addresses.length > 0 && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          onClick={() => setShowNewAddressForm(false)}
-                        >
-                          Use Existing Address
-                        </Button>
-                      )}
+                    <div className="text-center py-8">
+                      <p className="text-gray-600 mb-3">
+                        You have not saved any delivery addresses yet.
+                      </p>
+                      <Button
+                        type="button"
+                        variant="primary"
+                        onClick={() => {
+                          const initialForm = getInitialAddressForm();
+                          initialForm.is_default = true;
+                          setNewAddress(initialForm);
+                          setIsAddressModalOpen(true);
+                        }}
+                      >
+                        Add Your First Address
+                      </Button>
                     </div>
                   )}
+
+                  {(addressError || addressStoreError) && (
+                    <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+                      {addressError ||
+                        addressStoreError ||
+                        'Delivery service is not available for this address.'}
+                    </div>
+                  )}
+
+                  {deliveryMethod === 'delivery' &&
+                    addresses.length > 0 &&
+                    !addressError && (
+                      <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700">
+                        {isCalculatingDeliveryFee
+                          ? 'Calculating delivery fee for the selected address...'
+                          : `Calculated delivery fee: ${formatCurrency(effectiveDeliveryFee)}`}
+                      </div>
+                    )}
                 </Card>
               )}
 
@@ -9972,23 +13137,23 @@ const CheckoutPage: React.FC = () => {
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Subtotal:</span>
                     <span className="font-semibold">
-                      {formatCurrency(summary.subtotal)}
+                      {formatCurrency(subtotalAmount)}
                     </span>
                   </div>
 
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Delivery Fee:</span>
                     <span className="font-semibold">
-                      {deliveryMethod === 'pickup' || summary.delivery_fee === 0
+                      {deliveryMethod === 'pickup' || effectiveDeliveryFee === 0
                         ? 'FREE'
-                        : formatCurrency(summary.delivery_fee)}
+                        : formatCurrency(effectiveDeliveryFee)}
                     </span>
                   </div>
 
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Tax (GST 10%):</span>
                     <span className="font-semibold">
-                      {formatCurrency(summary.tax)}
+                      {formatCurrency(taxAmount)}
                     </span>
                   </div>
 
@@ -9998,7 +13163,7 @@ const CheckoutPage: React.FC = () => {
                         Total:
                       </span>
                       <span className="font-heading text-3xl font-bold text-primary">
-                        {formatCurrency(summary.total)}
+                        {formatCurrency(totalAmount)}
                       </span>
                     </div>
                   </div>
@@ -10029,6 +13194,154 @@ const CheckoutPage: React.FC = () => {
             </div>
           </div>
         </form>
+        <Modal
+          isOpen={isAddressModalOpen}
+          onClose={() => {
+            if (!isSavingAddress) {
+              setIsAddressModalOpen(false);
+            }
+          }}
+          title="Add New Address"
+          size="md"
+        >
+          <form onSubmit={handleSaveAddress} className="space-y-4">
+            <Input
+              type="text"
+              label="Label"
+              value={newAddress.label}
+              onChange={(e) =>
+                setNewAddress((prev) => ({ ...prev, label: e.target.value }))
+              }
+              placeholder="Home, Work, etc."
+              required
+            />
+
+            <Input
+              type="text"
+              label="Street Address"
+              value={newAddress.street}
+              onChange={(e) =>
+                setNewAddress((prev) => ({ ...prev, street: e.target.value }))
+              }
+              placeholder="45 Railway Terrace"
+              required
+            />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                type="text"
+                label="Suburb"
+                value={newAddress.suburb}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({ ...prev, suburb: e.target.value }))
+                }
+                placeholder="Guildford"
+                required
+              />
+              <Input
+                type="text"
+                label="Postcode"
+                value={newAddress.postcode}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({
+                    ...prev,
+                    postcode: e.target.value,
+                  }))
+                }
+                placeholder="2161"
+                maxLength={4}
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                type="text"
+                label="State"
+                value={newAddress.state}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({ ...prev, state: e.target.value }))
+                }
+                placeholder="NSW"
+                required
+              />
+              <Input
+                type="text"
+                label="Country"
+                value={newAddress.country}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({
+                    ...prev,
+                    country: e.target.value,
+                  }))
+                }
+                placeholder="Australia"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Delivery Instructions (Optional)
+              </label>
+              <textarea
+                value={newAddress.delivery_instructions}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({
+                    ...prev,
+                    delivery_instructions: e.target.value,
+                  }))
+                }
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                rows={3}
+                placeholder="Gate is on Palmer St; buzz 45 then wait."
+              />
+            </div>
+
+            <label className="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={newAddress.is_default}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({
+                    ...prev,
+                    is_default: e.target.checked,
+                  }))
+                }
+                className="rounded border-gray-300 text-primary focus:ring-primary"
+                disabled={addresses.length === 0 && newAddress.is_default}
+              />
+              <span className="text-sm text-gray-700">
+                Set as default delivery address
+              </span>
+            </label>
+
+            <div className="flex space-x-3 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  if (!isSavingAddress) {
+                    setIsAddressModalOpen(false);
+                  }
+                }}
+                disabled={isSavingAddress}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                className="flex-1"
+                disabled={isSavingAddress}
+                isLoading={isSavingAddress}
+              >
+                Save Address
+              </Button>
+            </div>
+          </form>
+        </Modal>
       </div>
     </div>
   );
@@ -10044,31 +13357,16 @@ export default CheckoutPage;
 _Path: `src\pages\customer\DailyMenuPage.tsx`_
 
 ```tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useMenuStore } from '@store/menuStore';
-import { useAuthStore } from '@store/authStore';
 import MenuItemCard from '@components/menu/MenuItemCard';
-import CartSummary from '@components/menu/CartSummary';
 import FilterBar from '@components/menu/FilterBar';
 import LoadingSpinner from '@components/common/LoadingSpinner';
 import Card from '@components/common/Card';
-import Button from '@components/common/Button';
-import {
-  Package,
-  RefreshCcw,
-  AlertCircle,
-  Truck,
-  Award,
-  Clock,
-  Shield,
-  MapPin,
-  ChefHat,
-  Sparkles,
-} from 'lucide-react';
-import { useToast } from '@components/common/Toast';
+import { Package, RefreshCcw, AlertCircle } from 'lucide-react';
+import Pagination from '@components/common/Pagination';
 
 const DailyMenuPage: React.FC = () => {
-  const { isAuthenticated } = useAuthStore();
   const {
     dailyMenuItems,
     categories,
@@ -10081,9 +13379,9 @@ const DailyMenuPage: React.FC = () => {
     clearFilters,
     getFilteredItems,
   } = useMenuStore();
-  const { showToast } = useToast();
 
-  const [retryCount, setRetryCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 12;
 
   // Fetch data on mount
   useEffect(() => {
@@ -10101,12 +13399,35 @@ const DailyMenuPage: React.FC = () => {
 
   // Retry loading
   const handleRetry = () => {
-    setRetryCount((prev) => prev + 1);
     loadMenuData();
   };
 
   // Get filtered items
   const filteredItems = getFilteredItems('daily_menu');
+  const totalItems = filteredItems.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / ITEMS_PER_PAGE));
+
+  // Reset pagination when filters or data change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [
+    dailyMenuItems.length,
+    activeFilters.category,
+    activeFilters.is_vegetarian,
+    activeFilters.is_vegan,
+    activeFilters.order_type,
+  ]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
+  const paginatedItems = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredItems.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredItems, currentPage]);
 
   // Loading state
   if (isLoading && dailyMenuItems.length === 0) {
@@ -10146,10 +13467,10 @@ const DailyMenuPage: React.FC = () => {
       <div className="container-custom">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <h1 className="font-heading text-5xl font-bold text-text mb-4">
+          <h1 className="font-heading text-4xl sm:text-5xl font-bold text-text mb-4">
             Daily Menu
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
             Fresh meals prepared daily. Order for pickup or delivery within 6km
             of Guildford.
           </p>
@@ -10161,175 +13482,73 @@ const DailyMenuPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-8 space-y-6">
-            {/* Filters */}
-            <FilterBar
-              categories={categories}
-              activeFilters={activeFilters}
-              onFilterChange={setFilters}
-              onClearFilters={clearFilters}
+        {/* Main Content - Now full width */}
+        <div className="space-y-6">
+          {/* Filters */}
+          <FilterBar
+            categories={categories}
+            activeFilters={activeFilters}
+            onFilterChange={setFilters}
+            onClearFilters={clearFilters}
+          />
+
+          {/* Menu Items Grid - Adjusted for full width */}
+          {filteredItems.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {paginatedItems.map((item) => (
+                <MenuItemCard
+                  key={item._id || item.id}
+                  item={item}
+                  showQuickAdd={true} // Always show Add button
+                />
+              ))}
+            </div>
+          ) : (
+            <Card padding="lg">
+              <div className="text-center py-12">
+                <Package className="mx-auto h-20 w-20 text-gray-300 mb-4" />
+                <h3 className="font-semibold text-gray-500 mb-2 text-xl">
+                  {dailyMenuItems.length === 0
+                    ? 'No menu items available'
+                    : 'No items match your filters'}
+                </h3>
+                <p className="text-gray-400 mb-6">
+                  {dailyMenuItems.length === 0
+                    ? 'Please check back later or contact us.'
+                    : 'Try adjusting your filters to see more items.'}
+                </p>
+                {activeFilters.category ||
+                activeFilters.is_vegetarian ||
+                activeFilters.is_vegan ? (
+                  <button
+                    onClick={clearFilters}
+                    className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors"
+                  >
+                    Clear Filters
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleRetry}
+                    className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors inline-flex items-center space-x-2"
+                  >
+                    <RefreshCcw size={18} />
+                    <span>Refresh Menu</span>
+                  </button>
+                )}
+              </div>
+            </Card>
+          )}
+
+          {filteredItems.length > 0 && (
+            <Pagination
+              currentPage={currentPage}
+              totalItems={totalItems}
+              pageSize={ITEMS_PER_PAGE}
+              onPageChange={setCurrentPage}
+              showSummary
+              className="pt-4"
             />
-
-            {/* Menu Items Grid */}
-            {filteredItems.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filteredItems.map((item) => (
-                  <MenuItemCard
-                    key={item._id || item.id}
-                    item={item}
-                    showQuickAdd={isAuthenticated}
-                  />
-                ))}
-              </div>
-            ) : (
-              <Card padding="lg">
-                <div className="text-center py-12">
-                  <Package className="mx-auto h-20 w-20 text-gray-300 mb-4" />
-                  <h3 className="font-semibold text-gray-500 mb-2 text-xl">
-                    {dailyMenuItems.length === 0
-                      ? 'No menu items available'
-                      : 'No items match your filters'}
-                  </h3>
-                  <p className="text-gray-400 mb-6">
-                    {dailyMenuItems.length === 0
-                      ? 'Please check back later or contact us.'
-                      : 'Try adjusting your filters to see more items.'}
-                  </p>
-                  {activeFilters.category ||
-                  activeFilters.is_vegetarian ||
-                  activeFilters.is_vegan ? (
-                    <button
-                      onClick={clearFilters}
-                      className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors"
-                    >
-                      Clear Filters
-                    </button>
-                  ) : (
-                    <button
-                      onClick={handleRetry}
-                      className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors inline-flex items-center space-x-2"
-                    >
-                      <RefreshCcw size={18} />
-                      <span>Refresh Menu</span>
-                    </button>
-                  )}
-                </div>
-              </Card>
-            )}
-          </div>
-
-          {/* Sidebar - Cart Summary */}
-          <div className="lg:col-span-4">
-            <CartSummary sticky />
-          </div>
-        </div>
-
-        {/* Info Cards with Professional Icons */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-          {/* Fresh Daily Card */}
-          <Card
-            padding="lg"
-            className="text-center hover:shadow-xl transition-shadow"
-          >
-            <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <ChefHat className="text-primary" size={32} />
-            </div>
-            <h3 className="font-heading text-xl font-bold text-text mb-2">
-              Fresh Daily
-            </h3>
-            <p className="text-gray-600 text-sm">
-              All meals prepared daily with quality ingredients
-            </p>
-          </Card>
-
-          {/* Fast Delivery Card */}
-          <Card
-            padding="lg"
-            className="text-center hover:shadow-xl transition-shadow"
-          >
-            <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Truck className="text-primary" size={32} />
-            </div>
-            <h3 className="font-heading text-xl font-bold text-text mb-2">
-              Fast Delivery
-            </h3>
-            <p className="text-gray-600 text-sm">
-              Quick delivery or pickup available within 6km radius
-            </p>
-          </Card>
-
-          {/* Quality Guaranteed Card */}
-          <Card
-            padding="lg"
-            className="text-center hover:shadow-xl transition-shadow"
-          >
-            <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Award className="text-primary" size={32} />
-            </div>
-            <h3 className="font-heading text-xl font-bold text-text mb-2">
-              Quality Guaranteed
-            </h3>
-            <p className="text-gray-600 text-sm">
-              Satisfaction guaranteed on your every order
-            </p>
-          </Card>
-        </div>
-
-        {/* Additional Feature Cards */}
-        <div className="mt-12 bg-gradient-to-br from-primary-50 to-orange-50 rounded-xl p-8">
-          <h2 className="font-heading text-2xl font-bold text-text mb-6 text-center">
-            Why Choose Our Daily Menu?
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Order Anytime */}
-            <div className="flex items-start space-x-3">
-              <Clock className="text-primary flex-shrink-0 mt-1" size={24} />
-              <div>
-                <h4 className="font-semibold text-text mb-1">Order Anytime</h4>
-                <p className="text-sm text-gray-600">
-                  11:00 AM - 9:00 PM, 7 days a week
-                </p>
-              </div>
-            </div>
-
-            {/* Free Delivery */}
-            <div className="flex items-start space-x-3">
-              <MapPin className="text-primary flex-shrink-0 mt-1" size={24} />
-              <div>
-                <h4 className="font-semibold text-text mb-1">Free Delivery</h4>
-                <p className="text-sm text-gray-600">
-                  On orders above $50 within 6km
-                </p>
-              </div>
-            </div>
-
-            {/* Safe & Hygienic */}
-            <div className="flex items-start space-x-3">
-              <Shield className="text-primary flex-shrink-0 mt-1" size={24} />
-              <div>
-                <h4 className="font-semibold text-text mb-1">
-                  Safe & Hygienic
-                </h4>
-                <p className="text-sm text-gray-600">
-                  Strict quality control standards
-                </p>
-              </div>
-            </div>
-
-            {/* Best Quality */}
-            <div className="flex items-start space-x-3">
-              <Sparkles className="text-primary flex-shrink-0 mt-1" size={24} />
-              <div>
-                <h4 className="font-semibold text-text mb-1">Best Quality</h4>
-                <p className="text-sm text-gray-600">
-                  Premium ingredients only
-                </p>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
@@ -10337,6 +13556,1370 @@ const DailyMenuPage: React.FC = () => {
 };
 
 export default DailyMenuPage;
+```
+
+---
+
+## 📄 src\pages\customer\MealsSubscriptionPage.tsx
+
+_Path: `src\pages\customer\MealsSubscriptionPage.tsx`_
+
+```tsx
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { useNavigate } from 'react-router-dom';
+import { menuAPI } from '@api/endpoints/menu';
+import { MealSubscriptionPlan } from '@models/subscription.types';
+import { MenuItem } from '@models/menu.types';
+import Card from '@components/common/Card';
+import Button from '@components/common/Button';
+import Modal from '@components/common/Modal';
+import LoadingSpinner from '@components/common/LoadingSpinner';
+import { useToast } from '@components/common/Toast';
+import { formatCurrency } from '@utils/formatters';
+import {
+  CalendarRange,
+  CheckCircle2,
+  ChevronLeft,
+  Edit2,
+  Info,
+  Package,
+  Truck,
+  Utensils,
+} from 'lucide-react';
+import clsx from 'clsx';
+
+type FulfilmentMethod = 'delivery' | 'pickup';
+
+interface DeliveryOption {
+  date: string;
+  label: string;
+  weekIndex: number;
+}
+
+interface ScheduledItem {
+  item: MenuItem;
+  quantity: number;
+}
+
+interface SubscriptionReviewPayload {
+  plan: MealSubscriptionPlan;
+  planQuantity: number;
+  fulfilment: FulfilmentMethod;
+  schedule: Array<{ date: string; items: ScheduledItem[] }>;
+  includedBoxes: number;
+  totalBoxes: number;
+  extraBoxes: number;
+  maxPerMeal?: number | null;
+}
+
+const INDEX_TO_WEEKDAY_NAME = [
+  'sunday',
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+  'saturday',
+] as const;
+
+const WEEKDAY_NAME_TO_INDEX: Record<string, number> =
+  INDEX_TO_WEEKDAY_NAME.reduce<Record<string, number>>((acc, name, index) => {
+    acc[name] = index;
+    return acc;
+  }, {});
+
+const DEFAULT_DELIVERY_DAYS = ['monday', 'thursday'];
+
+const normalizeDeliveryDays = (days?: string[]): string[] => {
+  if (!Array.isArray(days)) {
+    return [];
+  }
+  const normalized: string[] = [];
+  const seen = new Set<string>();
+  for (const day of days) {
+    const normalizedDay = day?.toString().toLowerCase();
+    if (
+      normalizedDay &&
+      WEEKDAY_NAME_TO_INDEX[normalizedDay] !== undefined &&
+      !seen.has(normalizedDay)
+    ) {
+      seen.add(normalizedDay);
+      normalized.push(normalizedDay);
+    }
+  }
+  return normalized;
+};
+
+const resolvePlanDeliveryDays = (plan?: MealSubscriptionPlan): string[] => {
+  if (!plan) {
+    return [];
+  }
+  const available = normalizeDeliveryDays(plan.available_delivery_days ?? []);
+  if (available.length > 0) {
+    return available;
+  }
+  const mappedDays = normalizeDeliveryDays(
+    Object.keys(plan.menu_item_ids_by_day ?? {})
+  );
+  if (mappedDays.length > 0) {
+    return mappedDays;
+  }
+  return normalizeDeliveryDays(Object.keys(plan.menu_items_by_day ?? {}));
+};
+
+const getDayKeyFromDate = (isoDate: string): string => {
+  const candidate = new Date(`${isoDate}T00:00:00`);
+  if (Number.isNaN(candidate.getTime())) {
+    return 'monday';
+  }
+  const index = candidate.getDay();
+  return INDEX_TO_WEEKDAY_NAME[index] ?? 'monday';
+};
+
+const generateUpcomingDeliveryDates = (
+  weeks: number = 6,
+  allowedDays?: string[]
+): DeliveryOption[] => {
+  const results: DeliveryOption[] = [];
+  const daysToUse = (() => {
+    const normalized = normalizeDeliveryDays(allowedDays);
+    if (normalized.length > 0) {
+      return normalized;
+    }
+    return [...DEFAULT_DELIVERY_DAYS];
+  })();
+  const allowedIndices = daysToUse.map(
+    (day) => WEEKDAY_NAME_TO_INDEX[day] ?? WEEKDAY_NAME_TO_INDEX['monday']
+  );
+  const allowedIndexSet = new Set(allowedIndices);
+
+  const cursor = new Date();
+  cursor.setHours(0, 0, 0, 0);
+
+  let currentWeekIndex = -1;
+  const seenWeeks = new Set<string>();
+  const maxIterations = weeks * 14 + 14;
+  let iterations = 0;
+
+  while (
+    results.length < daysToUse.length * weeks &&
+    iterations < maxIterations
+  ) {
+    const day = cursor.getDay();
+    if (allowedIndexSet.has(day)) {
+      const weekAnchor = new Date(cursor);
+      weekAnchor.setHours(0, 0, 0, 0);
+      weekAnchor.setDate(cursor.getDate() - day);
+      const weekKey = weekAnchor.toISOString().split('T')[0];
+      if (!seenWeeks.has(weekKey)) {
+        seenWeeks.add(weekKey);
+        currentWeekIndex += 1;
+      }
+      const formatted = cursor.toLocaleDateString('en-AU', {
+        weekday: 'short',
+        day: 'numeric',
+        month: 'short',
+      });
+
+      results.push({
+        date: cursor.toISOString().split('T')[0],
+        label: formatted,
+        weekIndex: currentWeekIndex,
+      });
+    }
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return results;
+};
+
+const MealsSubscriptionPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { showToast } = useToast();
+
+  const [isLoadingPlans, setIsLoadingPlans] = useState<boolean>(true);
+  const [plans, setPlans] = useState<MealSubscriptionPlan[]>([]);
+  const [activeTab, setActiveTab] = useState<string>('regular');
+  const [currentStep, setCurrentStep] = useState<
+    'plans' | 'schedule' | 'review'
+  >('plans');
+
+  const [modalPlan, setModalPlan] = useState<MealSubscriptionPlan | null>(null);
+  const [modalQuantity, setModalQuantity] = useState<number>(1);
+  const [modalFulfilment, setModalFulfilment] =
+    useState<FulfilmentMethod>('delivery');
+  const [selectedPlanDetails, setSelectedPlanDetails] = useState<{
+    plan: MealSubscriptionPlan;
+    quantity: number;
+    fulfilment: FulfilmentMethod;
+  } | null>(null);
+
+  const planDeliveryDays = useMemo(
+    () =>
+      selectedPlanDetails?.plan
+        ? resolvePlanDeliveryDays(selectedPlanDetails.plan)
+        : undefined,
+    [selectedPlanDetails?.plan]
+  );
+
+  const upcomingDates = useMemo(
+    () => generateUpcomingDeliveryDates(6, planDeliveryDays),
+    [planDeliveryDays]
+  );
+  const loadedMenusRef = useRef<Set<string>>(new Set());
+
+  const [selectedDates, setSelectedDates] = useState<string[]>([]);
+  const [activeDate, setActiveDate] = useState<string | null>(null);
+  const [menusByDate, setMenusByDate] = useState<Record<string, MenuItem[]>>(
+    {}
+  );
+  const [menuLoadingState, setMenuLoadingState] = useState<
+    Record<string, boolean>
+  >({});
+  const [selectedMeals, setSelectedMeals] = useState<
+    Record<string, Record<string, number>>
+  >({});
+
+  const planTabs = useMemo(() => {
+    const tabOrder = ['regular', 'weekly', 'fortnight', 'monthly'];
+    const uniqueTabs = Array.from(new Set(plans.map((plan) => plan.tab)));
+    return uniqueTabs.sort((a, b) => tabOrder.indexOf(a) - tabOrder.indexOf(b));
+  }, [plans]);
+
+  const plansByActiveTab = useMemo(
+    () => plans.filter((plan) => plan.tab === activeTab),
+    [plans, activeTab]
+  );
+
+  useEffect(() => {
+    const loadPlans = async () => {
+      setIsLoadingPlans(true);
+      try {
+        const response = await menuAPI.getMealSubscriptionPlans();
+        const payload = response.data.data || response.data;
+        const activePlans = Array.isArray(payload)
+          ? payload.filter((plan) => plan.is_active)
+          : [];
+        setPlans(
+          activePlans.sort(
+            (a, b) =>
+              (a.display_order ?? 0) - (b.display_order ?? 0) ||
+              a.name.localeCompare(b.name)
+          )
+        );
+
+        if (activePlans.length > 0) {
+          const defaultTab =
+            activePlans.find((plan) => plan.tab === 'weekly')?.tab ||
+            activePlans[0].tab;
+          setActiveTab(defaultTab);
+        }
+      } catch (error) {
+        console.error(error);
+        showToast('Failed to load meal subscription plans', 'error');
+      } finally {
+        setIsLoadingPlans(false);
+      }
+    };
+
+    loadPlans();
+  }, []);
+
+  const fetchMenuForDate = useCallback(
+    async (date: string, planOverride?: MealSubscriptionPlan | null) => {
+      if (!date) {
+        return;
+      }
+
+      const plan = planOverride ?? selectedPlanDetails?.plan ?? null;
+      const dayKey = getDayKeyFromDate(date);
+
+      if (plan) {
+        const planMenus = plan.menu_items_by_day?.[dayKey];
+        if (Array.isArray(planMenus) && planMenus.length > 0) {
+          loadedMenusRef.current.add(date);
+          setMenusByDate((prev) => ({ ...prev, [date]: planMenus }));
+          setMenuLoadingState((prev) => ({ ...prev, [date]: false }));
+          return;
+        }
+
+        const planMenuIds = plan.menu_item_ids_by_day?.[dayKey];
+        if (Array.isArray(planMenuIds) && planMenuIds.length > 0) {
+          loadedMenusRef.current.add(date);
+          setMenuLoadingState((prev) => ({ ...prev, [date]: true }));
+          try {
+            const items = await Promise.all(
+              planMenuIds.map(async (id) => {
+                try {
+                  const response = await menuAPI.getMenuItemById(id);
+                  return response.data?.data || response.data;
+                } catch (error) {
+                  console.error(error);
+                  return null;
+                }
+              })
+            );
+            setMenusByDate((prev) => ({
+              ...prev,
+              [date]: items.filter((item): item is MenuItem => !!item),
+            }));
+          } catch (error) {
+            console.error(error);
+            showToast(`Unable to load menu for ${date}`, 'error');
+          } finally {
+            setMenuLoadingState((prev) => ({ ...prev, [date]: false }));
+          }
+          return;
+        }
+      }
+
+      if (loadedMenusRef.current.has(date)) {
+        return;
+      }
+
+      loadedMenusRef.current.add(date);
+      setMenuLoadingState((prev) => ({ ...prev, [date]: true }));
+
+      try {
+        const response = await menuAPI.getWeeklyMenu(date);
+        const items =
+          response.data?.data?.items ??
+          response.data?.data ??
+          response.data ??
+          [];
+        setMenusByDate((prev) => ({ ...prev, [date]: items }));
+      } catch (error) {
+        console.error(error);
+        showToast(`Unable to load menu for ${date}`, 'error');
+      } finally {
+        setMenuLoadingState((prev) => ({ ...prev, [date]: false }));
+      }
+    },
+    [showToast, selectedPlanDetails]
+  );
+
+  const includedBoxes = useMemo(() => {
+    if (!selectedPlanDetails) return 0;
+    return (
+      (selectedPlanDetails.plan.included_meals || 0) *
+      selectedPlanDetails.quantity
+    );
+  }, [selectedPlanDetails]);
+
+  const selectedBoxes = useMemo(() => {
+    return Object.values(selectedMeals).reduce((total, menuMap) => {
+      return (
+        total +
+        Object.values(menuMap).reduce((sum, quantity) => sum + quantity, 0)
+      );
+    }, 0);
+  }, [selectedMeals]);
+
+  const extraBoxes = useMemo(() => {
+    if (!selectedPlanDetails) return 0;
+    const extras = selectedBoxes - includedBoxes;
+    return extras > 0 ? extras : 0;
+  }, [selectedBoxes, includedBoxes, selectedPlanDetails]);
+
+  const requiredDeliveries = useMemo(() => {
+    if (!selectedPlanDetails) return 0;
+    const planDeliveries = selectedPlanDetails.plan.deliveries_per_cycle || 0;
+    return selectedPlanDetails.plan.tab === 'regular' ? 0 : planDeliveries;
+  }, [selectedPlanDetails]);
+
+  const minBoxesRequired = useMemo(() => {
+    if (!selectedPlanDetails) return 0;
+    const plan = selectedPlanDetails.plan;
+    if (plan.tab !== 'regular') return includedBoxes;
+    return selectedPlanDetails.fulfilment === 'delivery'
+      ? (plan.min_boxes_delivery ?? 4)
+      : (plan.min_boxes_pickup ?? 1);
+  }, [selectedPlanDetails, includedBoxes]);
+
+  const handleOpenPlanModal = (plan: MealSubscriptionPlan) => {
+    setModalPlan(plan);
+    setModalQuantity(1);
+    setModalFulfilment('delivery');
+  };
+
+  const resetScheduleState = useCallback(
+    async (
+      plan: MealSubscriptionPlan,
+      quantity: number,
+      fulfilment: FulfilmentMethod
+    ) => {
+      const planDays = resolvePlanDeliveryDays(plan);
+      const planUpcomingDates = generateUpcomingDeliveryDates(6, planDays);
+
+      loadedMenusRef.current.clear();
+      setMenusByDate({});
+      setMenuLoadingState({});
+      setSelectedMeals({});
+      setSelectedDates([]);
+      setActiveDate(null);
+
+      setSelectedPlanDetails({ plan, quantity, fulfilment });
+      setCurrentStep('schedule');
+
+      let initialDates: string[] = [];
+      if (plan.tab === 'regular') {
+        initialDates = planUpcomingDates.length
+          ? [planUpcomingDates[0].date]
+          : [];
+      } else if (plan.deliveries_per_cycle && plan.deliveries_per_cycle > 0) {
+        initialDates = planUpcomingDates
+          .slice(0, plan.deliveries_per_cycle)
+          .map((option) => option.date);
+      } else if (planUpcomingDates.length > 0) {
+        initialDates = [planUpcomingDates[0].date];
+      }
+
+      if (initialDates.length > 0) {
+        setSelectedDates(initialDates);
+        setActiveDate(initialDates[0]);
+        await Promise.all(
+          initialDates.map((date) => fetchMenuForDate(date, plan))
+        );
+      }
+    },
+    [fetchMenuForDate]
+  );
+
+  const handleConfirmPlan = async () => {
+    if (!modalPlan) return;
+    await resetScheduleState(modalPlan, modalQuantity, modalFulfilment);
+    setModalPlan(null);
+  };
+
+  const handleChangePlan = () => {
+    setSelectedPlanDetails(null);
+    setSelectedDates([]);
+    setSelectedMeals({});
+    setActiveDate(null);
+    setMenusByDate({});
+    setMenuLoadingState({});
+    loadedMenusRef.current.clear();
+    setCurrentStep('plans');
+  };
+
+  const handleToggleDate = (date: string) => {
+    if (!selectedPlanDetails) return;
+
+    const isSelected = selectedDates.includes(date);
+    if (isSelected) {
+      const remaining = selectedDates.filter((d) => d !== date);
+      setSelectedDates(remaining);
+      setSelectedMeals((prev) => {
+        const updated = { ...prev };
+        delete updated[date];
+        return updated;
+      });
+      if (activeDate === date) {
+        setActiveDate(remaining[0] ?? null);
+      }
+      return;
+    }
+
+    if (requiredDeliveries > 0 && selectedDates.length >= requiredDeliveries) {
+      showToast(
+        `This plan includes ${requiredDeliveries} delivery day${
+          requiredDeliveries > 1 ? 's' : ''
+        }. Deselect another date to choose a new one.`,
+        'info'
+      );
+      return;
+    }
+
+    const updatedDates = [...selectedDates, date].sort();
+    setSelectedDates(updatedDates);
+    setActiveDate(date);
+    fetchMenuForDate(date, selectedPlanDetails.plan);
+  };
+
+  const handleAdjustMealQuantity = (
+    date: string,
+    item: MenuItem,
+    delta: number
+  ) => {
+    if (!selectedPlanDetails) {
+      showToast('Select a meal subscription plan first', 'warning');
+      return;
+    }
+
+    if (!selectedDates.includes(date)) {
+      showToast('Please choose a delivery day before adding meals', 'info');
+      return;
+    }
+
+    setSelectedMeals((prev) => {
+      const existingForDate = prev[date] || {};
+      const itemId = item._id || item.id;
+      const currentQuantity = existingForDate[itemId] || 0;
+      const nextQuantity = Math.max(0, currentQuantity + delta);
+
+      const maxPerMeal =
+        selectedPlanDetails.plan.max_boxes_per_meal &&
+        selectedPlanDetails.plan.max_boxes_per_meal > 0
+          ? selectedPlanDetails.plan.max_boxes_per_meal *
+            selectedPlanDetails.quantity
+          : null;
+
+      if (maxPerMeal && nextQuantity > maxPerMeal) {
+        showToast(
+          `This plan allows up to ${maxPerMeal} boxes per dish.`,
+          'warning'
+        );
+        return prev;
+      }
+
+      const updatedForDate = { ...existingForDate };
+      if (nextQuantity === 0) {
+        delete updatedForDate[itemId];
+      } else {
+        updatedForDate[itemId] = nextQuantity;
+      }
+
+      const updated = { ...prev };
+      if (Object.keys(updatedForDate).length === 0) {
+        delete updated[date];
+      } else {
+        updated[date] = updatedForDate;
+      }
+      return updated;
+    });
+  };
+
+  const scheduleReady = useMemo(() => {
+    if (!selectedPlanDetails) return false;
+    if (selectedPlanDetails.plan.tab !== 'regular' && requiredDeliveries > 0) {
+      if (selectedDates.length !== requiredDeliveries) return false;
+    } else if (selectedPlanDetails.plan.tab === 'regular') {
+      if (selectedDates.length === 0) return false;
+    }
+
+    if (selectedBoxes < minBoxesRequired) return false;
+
+    const allDatesHaveMeals = selectedDates.every((date) => {
+      const items = selectedMeals[date];
+      if (!items) return false;
+      const dateTotal = Object.values(items).reduce((sum, qty) => sum + qty, 0);
+      return dateTotal > 0;
+    });
+
+    return allDatesHaveMeals;
+  }, [
+    selectedPlanDetails,
+    selectedDates,
+    selectedMeals,
+    requiredDeliveries,
+    minBoxesRequired,
+    selectedBoxes,
+  ]);
+
+  const handleProceedToReview = () => {
+    if (!scheduleReady) {
+      showToast(
+        'Please complete your meal selections before continuing.',
+        'info'
+      );
+      return;
+    }
+    setCurrentStep('review');
+  };
+
+  const handleProceedToCheckout = () => {
+    if (!selectedPlanDetails) return;
+
+    const schedule = selectedDates.map((date) => {
+      const selections = selectedMeals[date] || {};
+      const items: ScheduledItem[] = Object.entries(selections)
+        .map(([itemId, quantity]) => {
+          const menu = menusByDate[date]?.find(
+            (menuItem) => (menuItem._id || menuItem.id) === itemId
+          );
+          if (!menu) return null;
+          return { item: menu, quantity };
+        })
+        .filter(Boolean) as ScheduledItem[];
+      return { date, items };
+    });
+
+    const payload: SubscriptionReviewPayload = {
+      plan: selectedPlanDetails.plan,
+      planQuantity: selectedPlanDetails.quantity,
+      fulfilment: selectedPlanDetails.fulfilment,
+      schedule,
+      includedBoxes,
+      totalBoxes: selectedBoxes,
+      extraBoxes,
+      maxPerMeal: selectedPlanDetails.plan.max_boxes_per_meal,
+    };
+
+    navigate('/checkout', {
+      state: {
+        subscriptionDetails: payload,
+      },
+    });
+  };
+
+  const renderPlanCard = (plan: MealSubscriptionPlan) => {
+    const includedMeals = plan.included_meals || 0;
+    const deliveries = plan.deliveries_per_cycle || 0;
+    const planDays = resolvePlanDeliveryDays(plan);
+    const formatDayLabel = (day: string) =>
+      day.charAt(0).toUpperCase() + day.slice(1);
+    const daySummaries = planDays.map((day) => {
+      const configuredCount =
+        plan.menu_item_ids_by_day?.[day]?.length ??
+        plan.menu_items_by_day?.[day]?.length ??
+        0;
+      return configuredCount > 0
+        ? `${formatDayLabel(day)} (${configuredCount})`
+        : formatDayLabel(day);
+    });
+
+    return (
+      <Card
+        key={plan._id}
+        hoverable
+        onClick={() => handleOpenPlanModal(plan)}
+        className={clsx(
+          'border border-transparent transition-all duration-200 hover:border-primary/40 group'
+        )}
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-xl font-heading font-semibold text-text mb-1">
+              {plan.name}
+            </h3>
+            <p className="text-sm text-gray-500">{plan.description}</p>
+          </div>
+          {plan.display_badge && (
+            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary">
+              {plan.display_badge}
+            </span>
+          )}
+        </div>
+
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-600">
+          <div className="flex items-center space-x-3">
+            <Utensils className="text-primary" size={18} />
+            <div>
+              <p className="font-semibold text-text">{includedMeals}</p>
+              <p>Meals included</p>
+            </div>
+          </div>
+          <div className="flex items-center space-x-3">
+            <CalendarRange className="text-primary" size={18} />
+            <div>
+              <p className="font-semibold text-text">
+                {deliveries || 'Flexible'}
+              </p>
+              <p>Delivery {deliveries === 1 ? 'day' : 'days'}</p>
+            </div>
+          </div>
+          <div className="flex items-center space-x-3">
+            <Package className="text-primary" size={18} />
+            <div>
+              <p className="font-semibold text-text">
+                {formatCurrency(plan.price_per_plan || 0)}
+              </p>
+              <p>Total plan price</p>
+            </div>
+          </div>
+          {planDays.length > 0 && (
+            <div className="flex items-center space-x-3 sm:col-span-2">
+              <Truck className="text-primary" size={18} />
+              <div>
+                <p className="font-semibold text-text">
+                  {daySummaries.join(' • ')}
+                </p>
+                <p>Configured delivery days</p>
+              </div>
+            </div>
+          )}
+          {plan.price_per_box ? (
+            <div className="flex items-center space-x-3">
+              <CheckCircle2 className="text-primary" size={18} />
+              <div>
+                <p className="font-semibold text-text">
+                  {formatCurrency(plan.price_per_box)}
+                </p>
+                <p>Per meal after discount</p>
+              </div>
+            </div>
+          ) : null}
+        </div>
+
+        <div className="mt-6 flex items-center justify-between">
+          <div className="text-sm text-gray-500">
+            Click to customise this plan
+          </div>
+          <Button variant="outline" size="sm">
+            Configure
+          </Button>
+        </div>
+      </Card>
+    );
+  };
+
+  const renderPlanSelectionStep = () => (
+    <div className="space-y-8">
+      <div className="text-center space-y-3">
+        <h1 className="text-4xl font-heading font-bold text-text">
+          Meals Subscription Plans
+        </h1>
+        <p className="text-gray-600 max-w-2xl mx-auto">
+          Choose the plan that suits your lifestyle. Configure weekly,
+          fortnight, monthly, or regular orders and customise the meals
+          delivered to your door.
+        </p>
+      </div>
+
+      <div className="flex justify-center space-x-3">
+        {planTabs.map((tab) => (
+          <button
+            key={tab}
+            className={clsx(
+              'px-4 py-2 rounded-full text-sm font-semibold transition-colors',
+              activeTab === tab
+                ? 'bg-primary text-white'
+                : 'bg-gray-100 text-gray-600 hover:bg-primary/10 hover:text-primary'
+            )}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab === 'regular'
+              ? 'Regular Order'
+              : tab === 'weekly'
+                ? 'Weekly Plan'
+                : tab === 'fortnight'
+                  ? 'Fortnight Plan'
+                  : 'Monthly Plan'}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {plansByActiveTab.map(renderPlanCard)}
+      </div>
+
+      <Card className="bg-primary-50 border-primary/20">
+        <div className="flex items-start space-x-3">
+          <Info className="text-primary mt-1" size={20} />
+          <div>
+            <h3 className="font-semibold text-text">How it works</h3>
+            <p className="text-sm text-gray-600 mt-1">
+              Select a plan to see its detailed terms and conditions. After
+              choosing a plan you&apos;ll pick delivery days, customise meals,
+              and review your schedule before finishing at checkout.
+            </p>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+
+  const renderScheduleStep = () => {
+    if (!selectedPlanDetails) return null;
+
+    const plan = selectedPlanDetails.plan;
+    const maxPerMeal =
+      plan.max_boxes_per_meal && plan.max_boxes_per_meal > 0
+        ? plan.max_boxes_per_meal * selectedPlanDetails.quantity
+        : null;
+
+    return (
+      <div className="space-y-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <button
+              onClick={handleChangePlan}
+              className="inline-flex items-center text-primary text-sm font-semibold hover:underline"
+            >
+              <ChevronLeft size={16} className="mr-1" />
+              Change plan
+            </button>
+            <h2 className="text-3xl font-heading font-bold text-text mt-2">
+              Build your {plan.name}
+            </h2>
+            <p className="text-gray-600">
+              Select delivery days and customise meals. Included boxes:{' '}
+              <span className="font-semibold text-text">{includedBoxes}</span>
+            </p>
+          </div>
+          <div className="bg-primary/10 px-5 py-3 rounded-lg text-primary font-semibold">
+            {formatCurrency(plan.price_per_plan || 0)} per cycle
+          </div>
+        </div>
+
+        <Card className="border border-gray-100">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-lg font-semibold text-text">
+                Select delivery days
+              </h3>
+              <p className="text-sm text-gray-500">
+                {plan.tab === 'regular'
+                  ? 'Choose your preferred delivery or pickup days.'
+                  : `This plan includes ${requiredDeliveries} delivery day${
+                      requiredDeliveries > 1 ? 's' : ''
+                    } each cycle.`}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {upcomingDates.map((option) => {
+              const isSelected = selectedDates.includes(option.date);
+              const isDisabled =
+                !isSelected &&
+                requiredDeliveries > 0 &&
+                selectedDates.length >= requiredDeliveries;
+
+              return (
+                <button
+                  key={option.date}
+                  onClick={() => handleToggleDate(option.date)}
+                  className={clsx(
+                    'px-4 py-2 rounded-full border transition-colors text-sm font-semibold',
+                    isSelected
+                      ? 'bg-primary text-white border-primary shadow'
+                      : 'border-gray-200 text-gray-600 hover:border-primary hover:text-primary',
+                    isDisabled && 'opacity-40 cursor-not-allowed'
+                  )}
+                  disabled={isDisabled}
+                >
+                  {option.label}
+                </button>
+              );
+            })}
+          </div>
+        </Card>
+
+        <div className="grid grid-cols-1 lg:grid-cols-[320px,1fr] gap-6 items-start">
+          <Card className="border border-gray-100">
+            <h3 className="text-lg font-semibold text-text mb-4">Summary</h3>
+            <div className="space-y-3 text-sm text-gray-600">
+              <div className="flex items-center justify-between">
+                <span>Selected deliveries</span>
+                <span className="font-semibold text-text">
+                  {selectedDates.length}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Total boxes selected</span>
+                <span className="font-semibold text-text">{selectedBoxes}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Included boxes</span>
+                <span className="font-semibold text-text">{includedBoxes}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Extra boxes</span>
+                <span
+                  className={clsx(
+                    'font-semibold',
+                    extraBoxes > 0 ? 'text-primary' : 'text-text'
+                  )}
+                >
+                  {extraBoxes}
+                </span>
+              </div>
+              {plan.tab === 'regular' && (
+                <div className="text-xs text-gray-500">
+                  Minimum boxes for {selectedPlanDetails.fulfilment}:
+                  <span className="ml-1 font-semibold text-text">
+                    {minBoxesRequired}
+                  </span>
+                </div>
+              )}
+              {maxPerMeal && (
+                <div className="text-xs text-gray-500">
+                  Maximum boxes per dish: {maxPerMeal}
+                </div>
+              )}
+            </div>
+          </Card>
+
+          <Card className="border border-gray-100">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-text">
+                {activeDate
+                  ? `Meals for ${new Date(activeDate).toLocaleDateString(
+                      'en-AU',
+                      {
+                        weekday: 'long',
+                        day: 'numeric',
+                        month: 'short',
+                      }
+                    )}`
+                  : 'Select a delivery day'}
+              </h3>
+              {activeDate && (
+                <span className="text-xs text-gray-500">
+                  Click a day to switch menus
+                </span>
+              )}
+            </div>
+
+            <div className="flex flex-wrap gap-2 mb-6">
+              {selectedDates.map((date) => (
+                <button
+                  key={date}
+                  onClick={() => {
+                    setActiveDate(date);
+                    fetchMenuForDate(date, selectedPlanDetails?.plan);
+                  }}
+                  className={clsx(
+                    'px-3 py-1 rounded-full text-xs font-semibold transition-colors',
+                    activeDate === date
+                      ? 'bg-primary text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-primary/10 hover:text-primary'
+                  )}
+                >
+                  {new Date(date).toLocaleDateString('en-AU', {
+                    weekday: 'short',
+                    day: 'numeric',
+                    month: 'short',
+                  })}
+                </button>
+              ))}
+            </div>
+
+            {!activeDate && (
+              <div className="py-12 text-center text-gray-500">
+                Select a delivery day to view menu options.
+              </div>
+            )}
+
+            {activeDate && menuLoadingState[activeDate] && (
+              <div className="py-12 text-center">
+                <LoadingSpinner message="Loading meals..." />
+              </div>
+            )}
+
+            {activeDate &&
+              !menuLoadingState[activeDate] &&
+              (menusByDate[activeDate]?.length || 0) === 0 && (
+                <div className="py-12 text-center text-gray-500">
+                  Menu not available for this date yet. Please choose another
+                  day.
+                </div>
+              )}
+
+            {activeDate &&
+              !menuLoadingState[activeDate] &&
+              (menusByDate[activeDate]?.length || 0) > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {menusByDate[activeDate]?.map((item) => {
+                    const itemId = item._id || item.id;
+                    const currentCount =
+                      selectedMeals[activeDate]?.[itemId] || 0;
+
+                    return (
+                      <div
+                        key={itemId}
+                        className="border border-gray-200 rounded-lg p-4 flex flex-col space-y-3"
+                      >
+                        <div>
+                          <h4 className="font-semibold text-text">
+                            {item.name}
+                          </h4>
+                          {item.description && (
+                            <p className="text-sm text-gray-500 mt-1">
+                              {item.description}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex items-center justify-between text-sm text-gray-500">
+                          <span>{formatCurrency(item.price)}</span>
+                          <span>
+                            Max{' '}
+                            {plan.max_boxes_per_meal
+                              ? plan.max_boxes_per_meal *
+                                selectedPlanDetails.quantity
+                              : '—'}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              handleAdjustMealQuantity(activeDate, item, -1)
+                            }
+                          >
+                            -
+                          </Button>
+                          <span className="text-xl font-semibold text-text">
+                            {currentCount}
+                          </span>
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={() =>
+                              handleAdjustMealQuantity(activeDate, item, 1)
+                            }
+                          >
+                            +
+                          </Button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+          </Card>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-gray-500 flex items-center space-x-2">
+            <Truck size={16} className="text-primary" />
+            <span>
+              Delivery fees are calculated per delivery day based on your
+              postcode during checkout.
+            </span>
+          </div>
+          <div className="space-x-3">
+            <Button variant="outline" onClick={handleChangePlan}>
+              Change Plan
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleProceedToReview}
+              disabled={!scheduleReady}
+            >
+              Review Selection
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderReviewStep = () => {
+    if (!selectedPlanDetails) return null;
+
+    const plan = selectedPlanDetails.plan;
+
+    return (
+      <div className="space-y-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <button
+              onClick={() => setCurrentStep('schedule')}
+              className="inline-flex items-center text-primary text-sm font-semibold hover:underline"
+            >
+              <ChevronLeft size={16} className="mr-1" />
+              Edit meals
+            </button>
+            <h2 className="text-3xl font-heading font-bold text-text mt-2">
+              Review your subscription
+            </h2>
+            <p className="text-gray-600">
+              Confirm your schedule, selected meals, and plan details.
+            </p>
+          </div>
+          <div className="text-right">
+            <div className="text-sm text-gray-500">Plan price</div>
+            <div className="text-3xl font-heading font-bold text-primary">
+              {formatCurrency(plan.price_per_plan || 0)}
+            </div>
+          </div>
+        </div>
+
+        <Card className="border border-gray-100">
+          <h3 className="text-lg font-semibold text-text mb-4">Plan summary</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm text-gray-600">
+            <div>
+              <div className="text-xs uppercase text-gray-400">Plan</div>
+              <div className="font-semibold text-text mt-1">{plan.name}</div>
+              <div className="text-xs text-gray-500">
+                Qty: {selectedPlanDetails.quantity}
+              </div>
+            </div>
+            <div>
+              <div className="text-xs uppercase text-gray-400">Fulfilment</div>
+              <div className="font-semibold text-text mt-1 capitalize">
+                {selectedPlanDetails.fulfilment}
+              </div>
+            </div>
+            <div>
+              <div className="text-xs uppercase text-gray-400">
+                Included boxes
+              </div>
+              <div className="font-semibold text-text mt-1">
+                {includedBoxes}
+              </div>
+            </div>
+            <div>
+              <div className="text-xs uppercase text-gray-400">Extra boxes</div>
+              <div
+                className={clsx(
+                  'font-semibold mt-1',
+                  extraBoxes > 0 ? 'text-primary' : 'text-text'
+                )}
+              >
+                {extraBoxes}
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="border border-gray-100">
+          <h3 className="text-lg font-semibold text-text mb-4">
+            Delivery schedule & meals
+          </h3>
+          <div className="space-y-4">
+            {selectedDates.map((date) => {
+              const selections = selectedMeals[date] || {};
+              const items: ScheduledItem[] = Object.entries(selections)
+                .map(([itemId, quantity]) => {
+                  const menu = menusByDate[date]?.find(
+                    (menuItem) => (menuItem._id || menuItem.id) === itemId
+                  );
+                  if (!menu) return null;
+                  return { item: menu, quantity };
+                })
+                .filter(Boolean) as ScheduledItem[];
+
+              return (
+                <div
+                  key={date}
+                  className="border border-gray-200 rounded-lg p-4 text-sm text-gray-600"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-2">
+                      <CalendarRange className="text-primary" size={18} />
+                      <span className="font-semibold text-text">
+                        {new Date(date).toLocaleDateString('en-AU', {
+                          weekday: 'long',
+                          day: 'numeric',
+                          month: 'short',
+                        })}
+                      </span>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {items.reduce((sum, entry) => sum + entry.quantity, 0)}{' '}
+                      boxes
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {items.map(({ item, quantity }) => (
+                      <div
+                        key={item._id || item.id}
+                        className="bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 flex items-center justify-between"
+                      >
+                        <span className="font-medium text-text">
+                          {item.name}
+                        </span>
+                        <span className="text-sm text-gray-500">
+                          x{quantity}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+
+        <Card className="border border-gray-100">
+          <div className="flex items-start space-x-3">
+            <Truck className="text-primary mt-1" size={18} />
+            <div className="text-sm text-gray-600">
+              <p>
+                Delivery charges are based on your postcode and multiplied by
+                the number of delivery days selected. Pickup orders will not
+                incur a delivery fee.
+              </p>
+              <p className="mt-2">
+                You&apos;ll confirm your address and review final pricing at
+                checkout.
+              </p>
+            </div>
+          </div>
+        </Card>
+
+        <div className="flex items-center justify-between">
+          <Button variant="outline" onClick={() => setCurrentStep('schedule')}>
+            <Edit2 size={18} className="mr-2" />
+            Edit meals
+          </Button>
+          <Button variant="primary" onClick={handleProceedToCheckout}>
+            Continue to Checkout
+          </Button>
+        </div>
+      </div>
+    );
+  };
+  if (isLoadingPlans) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <LoadingSpinner message="Loading meal subscriptions..." />
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-gray-50 py-12">
+      <div className="container-custom space-y-12">
+        <div className="flex items-center space-x-3 text-sm">
+          <span
+            className={clsx(
+              'px-3 py-1 rounded-full',
+              currentStep === 'plans'
+                ? 'bg-primary text-white'
+                : 'bg-white text-gray-500 border border-gray-200'
+            )}
+          >
+            1. Choose Plan
+          </span>
+          <span
+            className={clsx(
+              'px-3 py-1 rounded-full',
+              currentStep === 'schedule'
+                ? 'bg-primary text-white'
+                : 'bg-white text-gray-500 border border-gray-200'
+            )}
+          >
+            2. Meals & Schedule
+          </span>
+          <span
+            className={clsx(
+              'px-3 py-1 rounded-full',
+              currentStep === 'review'
+                ? 'bg-primary text-white'
+                : 'bg-white text-gray-500 border border-gray-200'
+            )}
+          >
+            3. Review
+          </span>
+        </div>
+
+        {currentStep === 'plans' && renderPlanSelectionStep()}
+        {currentStep === 'schedule' && renderScheduleStep()}
+        {currentStep === 'review' && renderReviewStep()}
+      </div>
+
+      <Modal
+        isOpen={!!modalPlan}
+        onClose={() => setModalPlan(null)}
+        title={modalPlan ? modalPlan.name : 'Plan Details'}
+        size="lg"
+      >
+        {modalPlan && (
+          <div className="space-y-6">
+            <div className="text-sm text-gray-600 space-y-2">
+              <p>{modalPlan.description}</p>
+              <ul className="list-disc list-inside space-y-1">
+                <li>
+                  {modalPlan.included_meals || 0} meals included (
+                  {modalPlan.deliveries_per_cycle || 0} delivery day
+                  {modalPlan.deliveries_per_cycle === 1 ? '' : 's'}).
+                </li>
+                <li>
+                  Base price:{' '}
+                  <span className="font-semibold text-text">
+                    {formatCurrency(modalPlan.price_per_plan || 0)}
+                  </span>
+                </li>
+                {modalPlan.price_per_box && (
+                  <li>
+                    Per meal after discount:{' '}
+                    <span className="font-semibold text-text">
+                      {formatCurrency(modalPlan.price_per_box)}
+                    </span>
+                  </li>
+                )}
+                {modalPlan.max_boxes_per_meal && (
+                  <li>
+                    {modalPlan.max_boxes_per_meal} boxes per dish per plan.
+                  </li>
+                )}
+              </ul>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {modalPlan.allow_multiple && (
+                <div>
+                  <label className="block text-sm font-medium text-text mb-1">
+                    Number of plans
+                  </label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={10}
+                    value={modalQuantity}
+                    onChange={(e) =>
+                      setModalQuantity(Math.max(1, Number(e.target.value)))
+                    }
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent"
+                  />
+                </div>
+              )}
+
+              {modalPlan.tab === 'regular' && (
+                <div>
+                  <label className="block text-sm font-medium text-text mb-1">
+                    Fulfilment method
+                  </label>
+                  <div className="flex space-x-3">
+                    <button
+                      onClick={() => setModalFulfilment('delivery')}
+                      className={clsx(
+                        'flex-1 px-3 py-2 rounded-lg border text-sm font-semibold transition-colors',
+                        modalFulfilment === 'delivery'
+                          ? 'bg-primary text-white border-primary'
+                          : 'border-gray-200 text-gray-600 hover:border-primary hover:text-primary'
+                      )}
+                    >
+                      Delivery
+                    </button>
+                    <button
+                      onClick={() => setModalFulfilment('pickup')}
+                      className={clsx(
+                        'flex-1 px-3 py-2 rounded-lg border text-sm font-semibold transition-colors',
+                        modalFulfilment === 'pickup'
+                          ? 'bg-primary text-white border-primary'
+                          : 'border-gray-200 text-gray-600 hover:border-primary hover:text-primary'
+                      )}
+                    >
+                      Pickup
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Minimum boxes: {modalPlan.min_boxes_delivery ?? 4} for
+                    delivery,
+                    {modalPlan.min_boxes_pickup ?? 1} for pickup.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-end space-x-3">
+              <Button variant="ghost" onClick={() => setModalPlan(null)}>
+                Cancel
+              </Button>
+              <Button variant="primary" onClick={handleConfirmPlan}>
+                Continue
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+    </div>
+  );
+};
+
+export default MealsSubscriptionPage;
 ```
 
 ---
@@ -10373,6 +14956,7 @@ import {
   Calendar,
 } from 'lucide-react';
 import { formatCurrency, formatDate } from '@utils/formatters';
+import type { Order } from '@models/order.types';
 
 const ProfilePage: React.FC = () => {
   const { user, updateProfile } = useAuth();
@@ -10392,6 +14976,8 @@ const ProfilePage: React.FC = () => {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isAddingAddress, setIsAddingAddress] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   // Profile form state
   const [profileForm, setProfileForm] = useState({
@@ -10826,9 +15412,10 @@ const ProfilePage: React.FC = () => {
                           variant="outline"
                           size="sm"
                           fullWidth
-                          onClick={() =>
-                            (window.location.href = `/orders/${order._id}`)
-                          }
+                          onClick={() => {
+                            setSelectedOrder(order as unknown as Order);
+                            setIsOrderModalOpen(true);
+                          }}
                         >
                           View Details
                         </Button>
@@ -10859,6 +15446,8 @@ const ProfilePage: React.FC = () => {
             required
           />
 
+          {/* Order Details Modal moved outside Add Address Modal */}
+
           <Input
             type="text"
             label="Street Address"
@@ -10869,7 +15458,7 @@ const ProfilePage: React.FC = () => {
             required
           />
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
               type="text"
               label="Suburb"
@@ -10954,1320 +15543,6 @@ export default ProfilePage;
 
 ---
 
-## 📄 src\pages\customer\WeeklySubscriptionPage.tsx
-
-_Path: `src\pages\customer\WeeklySubscriptionPage.tsx`_
-
-```tsx
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { menuAPI } from '@api/endpoints/menu';
-import { useToast } from '@components/common/Toast';
-import {
-  Calendar,
-  Package,
-  CheckCircle,
-  Info,
-  MapPin,
-  Store,
-  Leaf,
-  X,
-  Plus,
-  AlertCircle,
-  Truck,
-  Clock,
-  RefreshCcw,
-  Eye,
-  EyeOff,
-} from 'lucide-react';
-
-// ===========================
-// TYPE DEFINITIONS
-// ===========================
-
-interface MenuItem {
-  _id: string;
-  id?: string;
-  name: string;
-  description: string;
-  category: string;
-  price: number;
-  image_url?: string;
-  is_available: boolean;
-  is_available_for_weekly?: boolean;
-  is_vegetarian: boolean;
-  is_vegan: boolean;
-  is_halal?: boolean;
-  allergens?: string[];
-  spice_level?: string;
-  serving_size?: string;
-  max_boxes_per_menu?: number;
-}
-
-interface SubscriptionPlan {
-  id: string;
-  name: string;
-  shortName: string;
-  description: string;
-  mealsPerDelivery: number;
-  totalMeals: number;
-  duration: 'weekly' | 'fortnightly' | 'monthly';
-  deliveries: number;
-  pricePerMeal: number;
-  totalPrice: number;
-  regularPrice: number;
-  savings: number;
-  features: string[];
-  badge?: string;
-  popular?: boolean;
-}
-
-// ===========================
-// UTILITY FUNCTIONS
-// ===========================
-
-const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('en-AU', {
-    style: 'currency',
-    currency: 'AUD',
-  }).format(amount);
-};
-
-// ===========================
-// SUBSCRIPTION PLANS DATA
-// ===========================
-
-const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
-  {
-    id: 'weekly-10',
-    name: 'Weekly 10-Box Deal',
-    shortName: 'Weekly',
-    description: 'Perfect for singles or couples',
-    mealsPerDelivery: 10,
-    totalMeals: 10,
-    duration: 'weekly',
-    deliveries: 1,
-    pricePerMeal: 9.9,
-    totalPrice: 99.0,
-    regularPrice: 150.0,
-    savings: 51.0,
-    badge: 'POPULAR',
-    popular: true,
-    features: [
-      '10 meals per week',
-      'Free delivery within 6km',
-      'Flexible menu selection',
-      'Max 2 boxes per menu item',
-      'Cancel anytime',
-    ],
-  },
-  {
-    id: 'fortnight-20',
-    name: 'Fortnight 20-Box Deal',
-    shortName: 'Fortnightly',
-    description: 'Great value for small families',
-    mealsPerDelivery: 10,
-    totalMeals: 20,
-    duration: 'fortnightly',
-    deliveries: 2,
-    pricePerMeal: 9.9,
-    totalPrice: 198.0,
-    regularPrice: 300.0,
-    savings: 102.0,
-    badge: 'BEST VALUE',
-    popular: true,
-    features: [
-      '20 meals over 2 weeks',
-      '2 deliveries (10 meals each)',
-      'Free delivery on both days',
-      'Priority support',
-      'Mix & match menu',
-    ],
-  },
-  {
-    id: 'monthly-40',
-    name: 'Monthly 40-Box Deal',
-    shortName: 'Monthly',
-    description: 'Maximum savings for families',
-    mealsPerDelivery: 10,
-    totalMeals: 40,
-    duration: 'monthly',
-    deliveries: 4,
-    pricePerMeal: 9.9,
-    totalPrice: 396.0,
-    regularPrice: 600.0,
-    savings: 204.0,
-    badge: 'MAX SAVINGS',
-    popular: false,
-    features: [
-      '40 meals over 4 weeks',
-      '4 deliveries (10 meals each)',
-      'Free delivery all month',
-      'Premium menu access',
-      'Dedicated support',
-      'Exclusive recipes',
-    ],
-  },
-];
-
-// ===========================
-// SIMPLE COMPONENTS
-// ===========================
-
-const LoadingSpinner: React.FC<{ message?: string }> = ({ message }) => (
-  <div className="flex flex-col items-center justify-center py-12">
-    <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#FF6B35]"></div>
-    {message && <p className="mt-4 text-gray-600">{message}</p>}
-  </div>
-);
-
-interface ButtonProps {
-  children: React.ReactNode;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  variant?: 'primary' | 'outline' | 'ghost';
-  fullWidth?: boolean;
-  disabled?: boolean;
-  size?: 'sm' | 'md' | 'lg';
-  className?: string;
-  type?: 'button' | 'submit';
-}
-
-const Button: React.FC<ButtonProps> = ({
-  children,
-  onClick,
-  variant = 'primary',
-  fullWidth = false,
-  disabled = false,
-  size = 'md',
-  className = '',
-  type = 'button',
-}) => {
-  const baseClasses =
-    'font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
-
-  const variantClasses = {
-    primary:
-      'bg-[#FF6B35] text-white hover:bg-[#E55A2B] focus:ring-[#FF6B35] disabled:bg-gray-300 disabled:cursor-not-allowed shadow-md hover:shadow-lg',
-    outline:
-      'border-2 border-[#FF6B35] text-[#FF6B35] hover:bg-[#FF6B35] hover:text-white focus:ring-[#FF6B35] disabled:border-gray-300 disabled:text-gray-300 disabled:cursor-not-allowed',
-    ghost:
-      'text-[#FF6B35] hover:bg-[#FFF5F2] focus:ring-[#FF6B35] disabled:text-gray-300 disabled:cursor-not-allowed',
-  };
-
-  const sizeClasses = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-6 py-3 text-base',
-    lg: 'px-8 py-4 text-lg',
-  };
-
-  const widthClass = fullWidth ? 'w-full' : '';
-
-  return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${widthClass} ${className}`}
-    >
-      {children}
-    </button>
-  );
-};
-
-interface CardProps {
-  children: React.ReactNode;
-  className?: string;
-  padding?: 'none' | 'sm' | 'md' | 'lg';
-  onClick?: () => void;
-}
-
-const Card: React.FC<CardProps> = ({
-  children,
-  className = '',
-  padding = 'md',
-  onClick,
-}) => {
-  const paddingClasses = {
-    none: '',
-    sm: 'p-3',
-    md: 'p-6',
-    lg: 'p-8',
-  };
-
-  return (
-    <div
-      className={`bg-white rounded-xl shadow-md border border-gray-100 ${paddingClasses[padding]} ${className}`}
-      onClick={onClick}
-    >
-      {children}
-    </div>
-  );
-};
-
-// ===========================
-// PLAN CARD COMPONENT
-// ===========================
-
-interface PlanCardProps {
-  plan: SubscriptionPlan;
-  isSelected: boolean;
-  onSelect: (planId: string) => void;
-}
-
-const PlanCard: React.FC<PlanCardProps> = ({ plan, isSelected, onSelect }) => {
-  const savingsPercentage = Math.round(
-    (plan.savings / plan.regularPrice) * 100
-  );
-
-  return (
-    <Card
-      className={`cursor-pointer transition-all relative transform hover:scale-102 ${
-        isSelected
-          ? 'ring-4 ring-[#FF6B35] border-[#FF6B35] shadow-2xl scale-105'
-          : 'hover:shadow-xl border-gray-200'
-      }`}
-      onClick={() => onSelect(plan.id)}
-      padding="lg"
-    >
-      {plan.badge && (
-        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[#FF6B35] to-[#E55A2B] text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg uppercase tracking-wide">
-          {plan.badge}
-        </div>
-      )}
-
-      <div className="flex justify-end mb-3">
-        <div
-          className={`w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${
-            isSelected
-              ? 'border-[#FF6B35] bg-[#FF6B35] scale-110'
-              : 'border-gray-300 hover:border-[#FF6B35]'
-          }`}
-        >
-          {isSelected && <CheckCircle className="h-5 w-5 text-white" />}
-        </div>
-      </div>
-
-      <div className="flex justify-center mb-6">
-        <div
-          className={`w-24 h-24 rounded-full flex items-center justify-center transition-all ${
-            isSelected
-              ? 'bg-gradient-to-br from-[#FF6B35] to-[#E55A2B] shadow-lg'
-              : 'bg-[#FFF5F2]'
-          }`}
-        >
-          <Package
-            className={isSelected ? 'text-white' : 'text-[#FF6B35]'}
-            size={48}
-          />
-        </div>
-      </div>
-
-      <h3 className="font-['Playfair_Display'] text-2xl font-bold text-[#2E2E2E] text-center mb-2">
-        {plan.name}
-      </h3>
-      <p className="font-['Montserrat'] text-sm text-gray-600 text-center mb-6 min-h-[40px]">
-        {plan.description}
-      </p>
-
-      <div className="text-center mb-6 bg-gradient-to-br from-gray-50 to-[#FFF5F2] rounded-xl p-5 border border-gray-100">
-        <div className="flex items-center justify-center space-x-3 mb-2">
-          <span className="text-gray-400 line-through text-lg font-['Montserrat']">
-            {formatCurrency(plan.regularPrice)}
-          </span>
-          <span className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">
-            SAVE {savingsPercentage}%
-          </span>
-        </div>
-        <div className="font-['Playfair_Display'] text-5xl font-bold text-[#FF6B35] mb-2">
-          {formatCurrency(plan.totalPrice)}
-        </div>
-        <div className="text-sm text-gray-600 font-['Montserrat'] mb-1">
-          {formatCurrency(plan.pricePerMeal)} per meal
-        </div>
-        <div className="text-xs text-gray-500 font-['Montserrat'] mt-3 pt-3 border-t border-gray-200">
-          {plan.totalMeals} meals • {plan.deliveries}{' '}
-          {plan.deliveries === 1 ? 'delivery' : 'deliveries'}
-        </div>
-      </div>
-
-      <ul className="space-y-3 mb-6">
-        {plan.features.map((feature, index) => (
-          <li key={index} className="flex items-start space-x-3 text-sm">
-            <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-            <span className="text-gray-700 font-['Montserrat']">{feature}</span>
-          </li>
-        ))}
-      </ul>
-
-      <Button
-        variant={isSelected ? 'primary' : 'outline'}
-        fullWidth
-        size="lg"
-        onClick={(e) => {
-          e.stopPropagation();
-          onSelect(plan.id);
-        }}
-      >
-        {isSelected ? (
-          <span className="flex items-center justify-center space-x-2">
-            <CheckCircle size={20} />
-            <span>Selected</span>
-          </span>
-        ) : (
-          'Select Plan'
-        )}
-      </Button>
-    </Card>
-  );
-};
-
-// ===========================
-// MEAL CARD COMPONENT
-// ===========================
-
-interface MealCardProps {
-  meal: MenuItem;
-  isSelected: boolean;
-  onSelect: (mealId: string) => void;
-  disabled?: boolean;
-  maxAllowed?: number;
-  currentCount?: number;
-}
-
-const MealCard: React.FC<MealCardProps> = ({
-  meal,
-  isSelected,
-  onSelect,
-  disabled,
-  maxAllowed = 2,
-  currentCount = 0,
-}) => {
-  const mealId = meal._id || meal.id || '';
-
-  return (
-    <Card
-      className={`cursor-pointer transition-all relative overflow-hidden ${
-        disabled
-          ? 'opacity-50 cursor-not-allowed'
-          : isSelected
-            ? 'ring-4 ring-[#FF6B35] border-[#FF6B35] shadow-lg'
-            : 'hover:shadow-xl hover:scale-102 border-gray-200'
-      }`}
-      onClick={() => !disabled && onSelect(mealId)}
-      padding="none"
-    >
-      <div className="relative h-48 overflow-hidden bg-gray-100">
-        <img
-          src={
-            meal.image_url ||
-            'https://via.placeholder.com/400x300?text=No+Image'
-          }
-          alt={meal.name}
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src =
-              'https://via.placeholder.com/400x300?text=No+Image';
-          }}
-        />
-
-        {isSelected && currentCount > 0 && (
-          <div className="absolute top-3 left-3 bg-[#FF6B35] text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
-            {currentCount}x Selected
-          </div>
-        )}
-
-        <div className="absolute top-3 right-3 flex flex-col space-y-2">
-          {meal.is_vegetarian && (
-            <div className="bg-green-500 text-white p-2 rounded-full shadow-lg">
-              <Leaf size={16} />
-            </div>
-          )}
-          {meal.is_vegan && (
-            <div className="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-              VEGAN
-            </div>
-          )}
-          {meal.is_halal && (
-            <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-              HALAL
-            </div>
-          )}
-        </div>
-
-        {meal.spice_level && (
-          <div className="absolute bottom-3 left-3">
-            <div className="bg-white px-2 py-1 rounded-full shadow-md text-xs font-semibold">
-              {meal.spice_level === 'mild' && '🌶️ Mild'}
-              {meal.spice_level === 'medium' && '🌶️🌶️ Medium'}
-              {meal.spice_level === 'hot' && '🌶️🌶️🌶️ Hot'}
-            </div>
-          </div>
-        )}
-
-        {!meal.is_available && (
-          <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center">
-            <span className="bg-red-500 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg">
-              SOLD OUT
-            </span>
-          </div>
-        )}
-      </div>
-
-      <div className="p-5">
-        <span className="inline-block px-3 py-1 bg-[#FFF5F2] text-[#FF6B35] text-xs font-bold rounded-full mb-3 uppercase tracking-wide">
-          {meal.category}
-        </span>
-
-        <h3 className="font-['Playfair_Display'] font-bold text-[#2E2E2E] text-xl mb-2 line-clamp-1">
-          {meal.name}
-        </h3>
-
-        <p className="font-['Montserrat'] text-sm text-gray-600 line-clamp-2 mb-4 min-h-[40px]">
-          {meal.description}
-        </p>
-
-        {meal.allergens && meal.allergens.length > 0 && (
-          <div className="flex items-start space-x-2 mb-3 text-xs text-orange-700 bg-orange-50 p-2 rounded">
-            <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
-            <span>Contains: {meal.allergens.join(', ')}</span>
-          </div>
-        )}
-
-        {maxAllowed && (
-          <p className="text-xs text-gray-500 mb-3">
-            Max {maxAllowed} boxes per item
-          </p>
-        )}
-
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-[#FF6B35] font-['Playfair_Display'] font-bold text-2xl">
-              {formatCurrency(meal.price)}
-            </div>
-            {meal.serving_size && (
-              <div className="text-xs text-gray-500 font-['Montserrat'] mt-1">
-                {meal.serving_size}
-              </div>
-            )}
-          </div>
-          {isSelected && (
-            <span className="bg-[#FF6B35] text-white px-4 py-2 rounded-full text-xs font-bold shadow-md flex items-center space-x-1">
-              <CheckCircle size={14} />
-              <span>ADDED</span>
-            </span>
-          )}
-        </div>
-      </div>
-    </Card>
-  );
-};
-
-// ===========================
-// MAIN PAGE COMPONENT
-// ===========================
-
-const WeeklySubscriptionPage: React.FC = () => {
-  const navigate = useNavigate();
-  const { showToast } = useToast();
-
-  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
-  const [selectedMealCounts, setSelectedMealCounts] = useState<{
-    [key: string]: number;
-  }>({});
-  const [deliveryOption, setDeliveryOption] = useState<'delivery' | 'pickup'>(
-    'delivery'
-  );
-  const [isLoading, setIsLoading] = useState(true);
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [menuNotFound, setMenuNotFound] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
-
-  const selectedPlan = SUBSCRIPTION_PLANS.find((p) => p.id === selectedPlanId);
-
-  // Calculate total selected meals
-  const totalSelectedMeals = Object.values(selectedMealCounts).reduce(
-    (sum, count) => sum + count,
-    0
-  );
-
-  // Fetch menu items from backend - REMOVED showToast notifications
-  useEffect(() => {
-    const fetchMenuItems = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        setMenuNotFound(false);
-
-        // Try to fetch weekly menu first
-        try {
-          const response = await menuAPI.getWeeklyMenu();
-          const menuData = response.data.data;
-
-          if (menuData && menuData.items && menuData.items.length > 0) {
-            setMenuItems(menuData.items);
-          } else if (Array.isArray(menuData) && menuData.length > 0) {
-            setMenuItems(menuData);
-          } else {
-            // No items in weekly menu
-            setMenuNotFound(true);
-            console.log(
-              '📝 No weekly menu items found, fetching daily menu as fallback...'
-            );
-
-            // Try to fetch daily menu as fallback
-            try {
-              const dailyResponse = await menuAPI.getDailyMenu();
-              const dailyData = dailyResponse.data.data;
-
-              // Filter daily items that are available for weekly subscription
-              const weeklyAvailableItems = (
-                Array.isArray(dailyData) ? dailyData : []
-              ).filter((item: any) => item.is_available_for_weekly !== false);
-
-              if (weeklyAvailableItems.length > 0) {
-                setMenuItems(weeklyAvailableItems);
-                // REMOVED: showToast('Showing available items from daily menu', 'info');
-              } else {
-                setMenuItems([]);
-                setMenuNotFound(true);
-              }
-            } catch (dailyError) {
-              console.error(
-                'Failed to fetch daily menu as fallback:',
-                dailyError
-              );
-              setMenuItems([]);
-              setMenuNotFound(true);
-            }
-          }
-        } catch (weeklyError: any) {
-          // If 404 (no weekly menu scheduled), try to fetch daily menu as fallback
-          if (weeklyError.response?.status === 404) {
-            console.log(
-              '📝 No weekly menu scheduled, fetching daily menu as fallback...'
-            );
-            setMenuNotFound(true);
-
-            try {
-              const dailyResponse = await menuAPI.getDailyMenu();
-              const dailyData = dailyResponse.data.data;
-
-              // Filter daily items that are available for weekly subscription
-              const weeklyAvailableItems = (
-                Array.isArray(dailyData) ? dailyData : []
-              ).filter((item: any) => item.is_available_for_weekly !== false);
-
-              if (weeklyAvailableItems.length > 0) {
-                setMenuItems(weeklyAvailableItems);
-                // REMOVED: showToast('Showing available items from daily menu', 'info');
-                setMenuNotFound(false);
-              } else {
-                setMenuItems([]);
-                // REMOVED: showToast('No items available for weekly subscription at the moment', 'warning');
-              }
-            } catch (dailyError) {
-              console.error(
-                'Failed to fetch daily menu as fallback:',
-                dailyError
-              );
-              setMenuItems([]);
-            }
-          } else {
-            // Other error, re-throw
-            throw weeklyError;
-          }
-        }
-
-        setError(null);
-      } catch (err: any) {
-        const errorMessage =
-          err.response?.data?.message ||
-          'Failed to load menu items. Please try again.';
-        setError(errorMessage);
-        showToast(errorMessage, 'error');
-        console.error('Error loading menu:', err);
-        setMenuItems([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchMenuItems();
-  }, [retryCount]);
-
-  const handleRetry = () => {
-    setRetryCount((prev) => prev + 1);
-  };
-
-  const handlePlanSelect = (planId: string) => {
-    setSelectedPlanId(planId);
-    setSelectedMealCounts({});
-    showToast(
-      `${SUBSCRIPTION_PLANS.find((p) => p.id === planId)?.shortName} plan selected`,
-      'success'
-    );
-  };
-
-  const handleMealSelect = (mealId: string) => {
-    if (!selectedPlan) {
-      showToast('Please select a plan first', 'warning');
-      return;
-    }
-
-    const currentCount = selectedMealCounts[mealId] || 0;
-    const maxPerItem =
-      menuItems.find((m) => (m._id || m.id) === mealId)?.max_boxes_per_menu ||
-      2;
-
-    if (currentCount > 0) {
-      // Remove one instance
-      const newCount = currentCount - 1;
-      if (newCount === 0) {
-        const newCounts = { ...selectedMealCounts };
-        delete newCounts[mealId];
-        setSelectedMealCounts(newCounts);
-        showToast('Meal removed', 'info');
-      } else {
-        setSelectedMealCounts({ ...selectedMealCounts, [mealId]: newCount });
-      }
-    } else {
-      // Add meal
-      if (totalSelectedMeals >= selectedPlan.totalMeals) {
-        showToast(
-          `You can only select ${selectedPlan.totalMeals} meals for this plan`,
-          'warning'
-        );
-      } else {
-        setSelectedMealCounts({ ...selectedMealCounts, [mealId]: 1 });
-        showToast('Meal added', 'success');
-      }
-    }
-  };
-
-  const handleProceedToCheckout = () => {
-    if (!selectedPlan) {
-      showToast('Please select a subscription plan', 'error');
-      return;
-    }
-
-    if (totalSelectedMeals !== selectedPlan.totalMeals) {
-      showToast(
-        `Please select ${selectedPlan.totalMeals} meals to continue`,
-        'error'
-      );
-      return;
-    }
-
-    const selectedMeals: MenuItem[] = [];
-    Object.entries(selectedMealCounts).forEach(([mealId, count]) => {
-      const meal = menuItems.find((item) => (item._id || item.id) === mealId);
-      if (meal) {
-        for (let i = 0; i < count; i++) {
-          selectedMeals.push(meal);
-        }
-      }
-    });
-
-    navigate('/checkout', {
-      state: {
-        subscriptionDetails: {
-          plan: selectedPlan,
-          meals: selectedMeals,
-          deliveryOption,
-        },
-      },
-    });
-  };
-
-  const progress = selectedPlan
-    ? Math.round((totalSelectedMeals / selectedPlan.totalMeals) * 100)
-    : 0;
-
-  // Loading state
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F9F9F9]">
-        <LoadingSpinner message="Loading subscription plans..." />
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-[#F9F9F9]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* PAGE HEADER */}
-        <div className="text-center mb-12">
-          <h1 className="font-['Playfair_Display'] text-5xl md:text-6xl font-bold text-[#2E2E2E] mb-6">
-            Weekly Meal <span className="text-[#FF6B35]">Subscriptions</span>
-          </h1>
-          <p className="font-['Montserrat'] text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Subscribe to our meal plans and enjoy fresh, delicious meals
-            delivered regularly.
-            <br />
-            <span className="font-semibold text-[#FF6B35]">
-              Save up to 35%
-            </span>{' '}
-            with our flexible subscription packages!
-          </p>
-        </div>
-
-        {/* ALERT IF NO WEEKLY MENU */}
-        {menuNotFound && menuItems.length > 0 && (
-          <div className="max-w-4xl mx-auto mb-8">
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-              <div className="flex items-start space-x-3">
-                <Info
-                  size={20}
-                  className="text-amber-600 flex-shrink-0 mt-0.5"
-                />
-                <div>
-                  <p className="font-['Montserrat'] text-sm text-amber-900">
-                    <strong>Note:</strong> No weekly menu is currently
-                    scheduled. Showing items available for weekly subscription
-                    from our daily menu.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* STEP INDICATOR */}
-        <div className="max-w-4xl mx-auto mb-12">
-          <div className="flex items-center justify-center space-x-4">
-            {/* Step 1 */}
-            <div
-              className={`flex items-center space-x-3 ${selectedPlanId ? 'text-[#FF6B35]' : 'text-gray-400'}`}
-            >
-              <div
-                className={`w-12 h-12 rounded-full flex items-center justify-center font-['Playfair_Display'] font-bold text-xl transition-all ${
-                  selectedPlanId
-                    ? 'bg-[#FF6B35] text-white shadow-lg scale-110'
-                    : 'bg-gray-200'
-                }`}
-              >
-                1
-              </div>
-              <span className="font-['Montserrat'] font-semibold hidden sm:inline">
-                Choose Plan
-              </span>
-            </div>
-
-            <div
-              className={`w-20 h-1 rounded transition-all ${selectedPlanId ? 'bg-[#FF6B35]' : 'bg-gray-300'}`}
-            ></div>
-
-            {/* Step 2 */}
-            <div
-              className={`flex items-center space-x-3 ${selectedPlanId && totalSelectedMeals > 0 ? 'text-[#FF6B35]' : 'text-gray-400'}`}
-            >
-              <div
-                className={`w-12 h-12 rounded-full flex items-center justify-center font-['Playfair_Display'] font-bold text-xl transition-all ${
-                  selectedPlanId && totalSelectedMeals > 0
-                    ? 'bg-[#FF6B35] text-white shadow-lg scale-110'
-                    : 'bg-gray-200'
-                }`}
-              >
-                2
-              </div>
-              <span className="font-['Montserrat'] font-semibold hidden sm:inline">
-                Select Meals
-              </span>
-            </div>
-
-            <div
-              className={`w-20 h-1 rounded transition-all ${selectedPlan && totalSelectedMeals === selectedPlan.totalMeals ? 'bg-[#FF6B35]' : 'bg-gray-300'}`}
-            ></div>
-
-            {/* Step 3 */}
-            <div
-              className={`flex items-center space-x-3 ${selectedPlan && totalSelectedMeals === selectedPlan.totalMeals ? 'text-[#FF6B35]' : 'text-gray-400'}`}
-            >
-              <div
-                className={`w-12 h-12 rounded-full flex items-center justify-center font-['Playfair_Display'] font-bold text-xl transition-all ${
-                  selectedPlan && totalSelectedMeals === selectedPlan.totalMeals
-                    ? 'bg-[#FF6B35] text-white shadow-lg scale-110'
-                    : 'bg-gray-200'
-                }`}
-              >
-                3
-              </div>
-              <span className="font-['Montserrat'] font-semibold hidden sm:inline">
-                Checkout
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* DELIVERY OPTIONS */}
-        <div className="max-w-xl mx-auto mb-12">
-          <Card padding="sm" className="shadow-lg">
-            <div className="flex space-x-2">
-              <button
-                onClick={() => setDeliveryOption('delivery')}
-                className={`flex-1 flex items-center justify-center space-x-2 py-4 px-6 rounded-lg font-['Montserrat'] font-semibold transition-all ${
-                  deliveryOption === 'delivery'
-                    ? 'bg-gradient-to-r from-[#FF6B35] to-[#E55A2B] text-white shadow-lg scale-105'
-                    : 'text-gray-600 hover:bg-gray-50'
-                }`}
-              >
-                <Truck size={22} />
-                <span>Delivery</span>
-              </button>
-
-              <button
-                onClick={() => setDeliveryOption('pickup')}
-                className={`flex-1 flex items-center justify-center space-x-2 py-4 px-6 rounded-lg font-['Montserrat'] font-semibold transition-all ${
-                  deliveryOption === 'pickup'
-                    ? 'bg-gradient-to-r from-[#FF6B35] to-[#E55A2B] text-white shadow-lg scale-105'
-                    : 'text-gray-600 hover:bg-gray-50'
-                }`}
-              >
-                <Store size={22} />
-                <span>Pickup</span>
-              </button>
-            </div>
-          </Card>
-
-          {deliveryOption === 'delivery' && (
-            <p className="font-['Montserrat'] text-sm text-gray-600 text-center mt-4 flex items-center justify-center space-x-2">
-              <MapPin size={16} className="text-[#FF6B35]" />
-              <span>Free delivery within 6km of Guildford 2161</span>
-            </p>
-          )}
-        </div>
-
-        {/* MAIN CONTENT GRID */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* LEFT/CENTER COLUMN */}
-          <div className="lg:col-span-2 space-y-10">
-            {/* SUBSCRIPTION PLANS */}
-            <div>
-              <h2 className="font-['Playfair_Display'] text-3xl font-bold text-[#2E2E2E] mb-8">
-                Choose Your Subscription Plan
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {SUBSCRIPTION_PLANS.map((plan) => (
-                  <PlanCard
-                    key={plan.id}
-                    plan={plan}
-                    isSelected={selectedPlanId === plan.id}
-                    onSelect={handlePlanSelect}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* MEAL SELECTION */}
-            {selectedPlan && (
-              <div>
-                <div className="flex items-center justify-between mb-8">
-                  <div>
-                    <h2 className="font-['Playfair_Display'] text-3xl font-bold text-[#2E2E2E]">
-                      Select Your Meals
-                    </h2>
-                    <p className="font-['Montserrat'] text-gray-600 mt-2">
-                      Choose {selectedPlan.totalMeals} delicious meals from our
-                      weekly menu
-                    </p>
-                  </div>
-
-                  {totalSelectedMeals === selectedPlan.totalMeals && (
-                    <div className="flex items-center space-x-2 text-green-600 bg-green-50 px-4 py-2 rounded-full">
-                      <CheckCircle size={24} />
-                      <span className="font-['Montserrat'] font-semibold">
-                        Complete!
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Selection Progress */}
-                <Card
-                  padding="md"
-                  className="mb-8 bg-gradient-to-br from-white to-[#FFF5F2]"
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="font-['Montserrat'] text-sm font-semibold text-[#2E2E2E]">
-                      Meals Selected:{' '}
-                      <span className="text-[#FF6B35]">
-                        {totalSelectedMeals}
-                      </span>{' '}
-                      / {selectedPlan.totalMeals}
-                    </span>
-                    <span className="font-['Montserrat'] text-sm font-bold text-[#FF6B35]">
-                      {progress}%
-                    </span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden shadow-inner">
-                    <div
-                      className="bg-gradient-to-r from-[#FF6B35] to-[#E55A2B] h-4 rounded-full transition-all duration-500 ease-out relative overflow-hidden"
-                      style={{ width: `${progress}%` }}
-                    >
-                      <div className="absolute inset-0 bg-white opacity-20 animate-pulse"></div>
-                    </div>
-                  </div>
-                </Card>
-
-                {/* Meal Grid or Empty State */}
-                {menuItems.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {menuItems.map((meal) => {
-                      const mealId = meal._id || meal.id || '';
-                      const currentCount = selectedMealCounts[mealId] || 0;
-                      const maxAllowed = meal.max_boxes_per_menu || 2;
-                      const remainingTotal =
-                        selectedPlan.totalMeals - totalSelectedMeals;
-                      const canAddMore =
-                        currentCount < maxAllowed &&
-                        (currentCount > 0 || remainingTotal > 0);
-
-                      return (
-                        <MealCard
-                          key={mealId}
-                          meal={meal}
-                          isSelected={currentCount > 0}
-                          onSelect={handleMealSelect}
-                          disabled={
-                            !meal.is_available ||
-                            (!canAddMore && currentCount === 0)
-                          }
-                          maxAllowed={maxAllowed}
-                          currentCount={currentCount}
-                        />
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <Card padding="lg">
-                    <div className="text-center py-16">
-                      <Package className="mx-auto h-20 w-20 text-gray-300 mb-6" />
-                      <h3 className="font-['Playfair_Display'] text-2xl font-bold text-[#2E2E2E] mb-2">
-                        No Menu Available
-                      </h3>
-                      <p className="font-['Montserrat'] text-gray-600 mb-6">
-                        {error
-                          ? "We're having trouble loading the menu. Please try again later."
-                          : 'No meals are currently scheduled for weekly subscription.'}
-                      </p>
-                      <p className="font-['Montserrat'] text-sm text-gray-400 mb-8">
-                        Please contact us for custom meal arrangements or check
-                        back soon.
-                      </p>
-                      <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Button variant="outline" onClick={handleRetry}>
-                          <RefreshCcw size={18} className="mr-2" />
-                          Refresh Page
-                        </Button>
-                        <Button
-                          variant="primary"
-                          onClick={() => navigate('/contact')}
-                        >
-                          Contact Us
-                        </Button>
-                      </div>
-                    </div>
-                  </Card>
-                )}
-
-                {/* If there are some items but not enough for a full plan */}
-                {menuItems.length > 0 && menuItems.length < 10 && (
-                  <div className="mt-4">
-                    <Card padding="md" className="bg-amber-50 border-amber-200">
-                      <div className="flex items-start space-x-3">
-                        <Info
-                          size={20}
-                          className="text-amber-600 flex-shrink-0 mt-0.5"
-                        />
-                        <div>
-                          <p className="font-['Montserrat'] text-sm text-amber-900">
-                            <strong>Limited Menu Available</strong>
-                          </p>
-                          <p className="font-['Montserrat'] text-xs text-amber-700 mt-1">
-                            Only {menuItems.length} items are currently
-                            available. You may need to select items multiple
-                            times (up to {menuItems[0]?.max_boxes_per_menu || 2}{' '}
-                            boxes per item) or contact us for more options.
-                          </p>
-                        </div>
-                      </div>
-                    </Card>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* RIGHT COLUMN - ORDER SUMMARY */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24">
-              <Card padding="lg" className="shadow-xl">
-                <h3 className="font-['Playfair_Display'] text-2xl font-bold text-[#2E2E2E] mb-6 pb-4 border-b-2 border-gray-100">
-                  Order Summary
-                </h3>
-
-                {selectedPlan ? (
-                  <div className="space-y-6">
-                    {/* Selected Plan */}
-                    <div className="pb-6 border-b border-gray-200">
-                      <div className="flex items-start space-x-3 mb-4">
-                        <Calendar
-                          className="text-[#FF6B35] flex-shrink-0 mt-1"
-                          size={24}
-                        />
-                        <div>
-                          <span className="font-['Playfair_Display'] font-bold text-[#2E2E2E] text-lg block mb-2">
-                            {selectedPlan.name}
-                          </span>
-                          <span className="font-['Montserrat'] text-sm text-gray-600">
-                            {selectedPlan.description}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="font-['Montserrat'] text-xs text-gray-500 space-y-2 bg-gray-50 rounded-lg p-3">
-                        <p className="flex items-center space-x-2">
-                          <span className="w-1.5 h-1.5 bg-[#FF6B35] rounded-full"></span>
-                          <span>{selectedPlan.totalMeals} meals total</span>
-                        </p>
-                        <p className="flex items-center space-x-2">
-                          <span className="w-1.5 h-1.5 bg-[#FF6B35] rounded-full"></span>
-                          <span>
-                            {selectedPlan.deliveries}{' '}
-                            {selectedPlan.deliveries === 1
-                              ? 'delivery'
-                              : 'deliveries'}
-                          </span>
-                        </p>
-                        <p className="flex items-center space-x-2">
-                          <span className="w-1.5 h-1.5 bg-[#FF6B35] rounded-full"></span>
-                          <span>
-                            {selectedPlan.mealsPerDelivery} meals per delivery
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Selected Meals Summary */}
-                    {totalSelectedMeals > 0 && (
-                      <div className="pb-6 border-b border-gray-200">
-                        <h4 className="font-['Montserrat'] font-bold text-[#2E2E2E] mb-4 text-sm flex items-center justify-between">
-                          <span>Selected Meals ({totalSelectedMeals})</span>
-                          {totalSelectedMeals > 0 && (
-                            <button
-                              onClick={() => setSelectedMealCounts({})}
-                              className="text-red-500 hover:text-red-700 text-xs"
-                            >
-                              Clear All
-                            </button>
-                          )}
-                        </h4>
-                        <div className="space-y-2 max-h-60 overflow-y-auto custom-scrollbar">
-                          {Object.entries(selectedMealCounts).map(
-                            ([mealId, count]) => {
-                              const meal = menuItems.find(
-                                (m) => (m._id || m.id) === mealId
-                              );
-                              if (!meal) return null;
-                              return (
-                                <div
-                                  key={mealId}
-                                  className="flex items-center justify-between text-xs bg-gray-50 rounded-lg p-2 hover:bg-gray-100 transition-colors"
-                                >
-                                  <span className="font-['Montserrat'] text-gray-700 flex-1 mr-2">
-                                    {count}x {meal.name}
-                                  </span>
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleMealSelect(mealId);
-                                    }}
-                                    className="text-red-500 hover:text-red-700 flex-shrink-0 p-1 hover:bg-red-50 rounded"
-                                  >
-                                    <X size={14} />
-                                  </button>
-                                </div>
-                              );
-                            }
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Pricing Breakdown */}
-                    <div className="space-y-4">
-                      <div className="flex justify-between font-['Montserrat'] text-sm">
-                        <span className="text-gray-600">Regular Price:</span>
-                        <span className="line-through text-gray-400 font-medium">
-                          {formatCurrency(selectedPlan.regularPrice)}
-                        </span>
-                      </div>
-
-                      <div className="flex justify-between font-['Montserrat'] text-sm">
-                        <span className="text-green-600 font-semibold">
-                          You Save:
-                        </span>
-                        <span className="font-bold text-green-600">
-                          -{formatCurrency(selectedPlan.savings)}
-                        </span>
-                      </div>
-
-                      <div className="flex justify-between font-['Montserrat'] text-sm">
-                        <span className="text-gray-600">Delivery Fee:</span>
-                        <span className="font-bold text-green-600">FREE</span>
-                      </div>
-
-                      <div className="pt-4 border-t-2 border-[#FF6B35]">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="font-['Playfair_Display'] font-bold text-[#2E2E2E] text-xl">
-                            Total:
-                          </span>
-                          <span className="font-['Playfair_Display'] text-4xl font-bold text-[#FF6B35]">
-                            {formatCurrency(selectedPlan.totalPrice)}
-                          </span>
-                        </div>
-                        <div className="font-['Montserrat'] text-xs text-gray-500 text-right">
-                          {formatCurrency(selectedPlan.pricePerMeal)} per meal
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Delivery Option Display */}
-                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
-                      <div className="flex items-center space-x-3 font-['Montserrat'] text-sm text-blue-900">
-                        {deliveryOption === 'delivery' ? (
-                          <>
-                            <Truck size={20} className="text-blue-600" />
-                            <div>
-                              <div className="font-bold">Free Delivery</div>
-                              <div className="text-xs text-blue-700">
-                                Within 6km radius
-                              </div>
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <Store size={20} className="text-blue-600" />
-                            <div>
-                              <div className="font-bold">Store Pickup</div>
-                              <div className="text-xs text-blue-700">
-                                Guildford 2161
-                              </div>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Info Box */}
-                    <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg p-4 border border-amber-200">
-                      <div className="flex items-start space-x-3 font-['Montserrat'] text-xs text-amber-900">
-                        <Clock
-                          size={16}
-                          className="flex-shrink-0 mt-0.5 text-amber-600"
-                        />
-                        <p className="leading-relaxed">
-                          <strong className="block mb-1">
-                            Fresh Meals, On Time
-                          </strong>
-                          Meals are prepared fresh and delivered on your
-                          selected days. You can customize your delivery
-                          schedule at checkout.
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Checkout Button */}
-                    <Button
-                      variant="primary"
-                      fullWidth
-                      size="lg"
-                      onClick={handleProceedToCheckout}
-                      disabled={
-                        !selectedPlan ||
-                        totalSelectedMeals !== selectedPlan.totalMeals ||
-                        menuItems.length === 0
-                      }
-                      className="shadow-2xl hover:shadow-3xl transition-shadow font-['Montserrat']"
-                    >
-                      {menuItems.length === 0 ? (
-                        'No Menu Available'
-                      ) : totalSelectedMeals === selectedPlan.totalMeals ? (
-                        <span className="flex items-center justify-center space-x-2">
-                          <CheckCircle size={20} />
-                          <span>Proceed to Checkout</span>
-                        </span>
-                      ) : (
-                        `Select ${selectedPlan.totalMeals - totalSelectedMeals} More ${selectedPlan.totalMeals - totalSelectedMeals === 1 ? 'Meal' : 'Meals'}`
-                      )}
-                    </Button>
-
-                    {/* Security Note */}
-                    <p className="font-['Montserrat'] text-xs text-gray-500 text-center flex items-center justify-center space-x-2">
-                      <span>🔒</span>
-                      <span>Secure checkout • Cancel anytime</span>
-                    </p>
-                  </div>
-                ) : (
-                  // Empty State
-                  <div className="text-center py-16">
-                    <Package className="mx-auto h-20 w-20 text-gray-300 mb-6" />
-                    <h4 className="font-['Playfair_Display'] text-xl font-bold text-[#2E2E2E] mb-2">
-                      No Plan Selected
-                    </h4>
-                    <p className="font-['Montserrat'] text-sm text-gray-500 mb-6">
-                      Choose a subscription plan to see your order summary
-                    </p>
-                    <div className="text-left space-y-2">
-                      <p className="font-['Montserrat'] text-xs text-gray-600 flex items-center space-x-2">
-                        <CheckCircle size={14} className="text-green-500" />
-                        <span>Flexible meal selection</span>
-                      </p>
-                      <p className="font-['Montserrat'] text-xs text-gray-600 flex items-center space-x-2">
-                        <CheckCircle size={14} className="text-green-500" />
-                        <span>Free delivery included</span>
-                      </p>
-                      <p className="font-['Montserrat'] text-xs text-gray-600 flex items-center space-x-2">
-                        <CheckCircle size={14} className="text-green-500" />
-                        <span>Cancel anytime</span>
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </Card>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Custom Scrollbar Styles */}
-      <style>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #f1f1f1;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #FF6B35;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #E55A2B;
-        }
-      `}</style>
-    </div>
-  );
-};
-
-export default WeeklySubscriptionPage;
-```
-
----
-
 ## 📄 src\routes\AdminRoutes.tsx
 
 _Path: `src\routes\AdminRoutes.tsx`_
@@ -12292,9 +15567,29 @@ _Path: `src\routes\CustomerRoutes.tsx`_
 ```tsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import ProtectedRoute from '@components/auth/ProtectedRoute';
+import DailyMenuPage from '@pages/customer/DailyMenuPage';
+import MealsSubscriptionPage from '@pages/customer/MealsSubscriptionPage';
+import CateringPage from '@pages/customer/CateringPage';
+import CartPage from '@pages/customer/CartPage';
+import CheckoutPage from '@pages/customer/CheckoutPage';
+import ProfilePage from '@pages/customer/ProfilePage';
 
 const CustomerRoutes: React.FC = () => {
-  return <Routes>{/* Add routes here */}</Routes>;
+  return (
+    <Routes>
+      <Route path="/menu/daily" element={<DailyMenuPage />} />
+      <Route path="/menu/meals" element={<MealsSubscriptionPage />} />
+      <Route path="/catering" element={<CateringPage />} />
+
+      {/* Protected routes */}
+      <Route element={<ProtectedRoute />}>
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+      </Route>
+    </Routes>
+  );
 };
 
 export default CustomerRoutes;
@@ -12321,7 +15616,7 @@ import ContactPage from '@pages/public/ContactPage';
 
 // Customer Pages
 import DailyMenuPage from '@pages/customer/DailyMenuPage';
-import WeeklySubscriptionPage from '@pages/customer/WeeklySubscriptionPage';
+import MealsSubscriptionPage from '@pages/customer/MealsSubscriptionPage';
 import CateringPage from '@pages/customer/CateringPage';
 import CheckoutPage from '@pages/customer/CheckoutPage';
 import ProfilePage from '@pages/customer/ProfilePage';
@@ -12331,6 +15626,7 @@ import AdminDashboard from '@pages/admin/AdminDashboard';
 import OrderManagement from '@pages/admin/OrderManagement';
 import MenuManagement from '@pages/admin/MenuManagement';
 import SidelinesManagement from '@pages/admin/SidelinesManagement';
+import MealPlanManagement from '@pages/admin/MealPlanManagement';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -12344,7 +15640,7 @@ const AppRoutes: React.FC = () => {
 
         {/* ✅ Menu Pages - Accessible without login */}
         <Route path="/menu/daily" element={<DailyMenuPage />} />
-        <Route path="/menu/weekly" element={<WeeklySubscriptionPage />} />
+        <Route path="/menu/meals" element={<MealsSubscriptionPage />} />
         <Route path="/catering" element={<CateringPage />} />
 
         {/* ✅ Protected Customer Routes - Login Required */}
@@ -12360,6 +15656,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/admin/orders" element={<OrderManagement />} />
             <Route path="/admin/menu" element={<MenuManagement />} />
             <Route path="/admin/sidelines" element={<SidelinesManagement />} />
+            <Route path="/admin/meal-plans" element={<MealPlanManagement />} />
           </Route>
         </Route>
 
@@ -12404,7 +15701,7 @@ import {
   Address,
   CreateAddressPayload,
   DeliveryValidation,
-} from '@types/address.types';
+} from '@models/address.types';
 
 interface AddressState {
   addresses: Address[];
@@ -12641,18 +15938,22 @@ _Path: `src\store\adminStore.ts`_
 import { create } from 'zustand';
 import { adminAPI } from '@api/endpoints/admin';
 import { menuAPI } from '@api/endpoints/menu';
-import { Order } from '@types/order.types';
-import { MenuItem, Sideline } from '@types/menu.types';
+import { Order } from '@models/order.types';
+import { MenuItem, Sideline, MenuCategory } from '@models/menu.types';
+import { MealSubscriptionPlan, DeliveryZone } from '@models/subscription.types';
+import { DashboardStats } from '@models/admin.types';
 
 interface AdminState {
   // Orders
   allOrders: Order[];
-  orderStats: any | null;
+  orderStats: DashboardStats | null;
 
   // Menu
   managedMenuItems: MenuItem[];
   managedSidelines: Sideline[];
-  managedCategories: any[];
+  managedCategories: MenuCategory[];
+  mealPlans: MealSubscriptionPlan[];
+  deliveryZones: DeliveryZone[];
 
   // Loading
   isLoading: boolean;
@@ -12676,8 +15977,71 @@ interface AdminState {
   updateSideline: (sidelineId: string, data: FormData) => Promise<void>;
   deleteSideline: (sidelineId: string) => Promise<void>;
 
+  createCategory: (payload: CreateCategoryInput) => Promise<void>;
+  updateCategory: (
+    categoryId: string,
+    payload: UpdateCategoryInput
+  ) => Promise<void>;
+  deleteCategory: (categoryId: string) => Promise<void>;
+
+  fetchMealPlans: (tab?: string, includeInactive?: boolean) => Promise<void>;
+  createMealPlan: (payload: Partial<MealSubscriptionPlan>) => Promise<void>;
+  updateMealPlan: (
+    planId: string,
+    payload: Partial<MealSubscriptionPlan>
+  ) => Promise<void>;
+  deleteMealPlan: (planId: string) => Promise<void>;
+
+  fetchDeliveryZones: (includeInactive?: boolean) => Promise<void>;
+  createDeliveryZone: (payload: Partial<DeliveryZone>) => Promise<void>;
+  updateDeliveryZone: (
+    zoneId: string,
+    payload: Partial<DeliveryZone>
+  ) => Promise<void>;
+  deleteDeliveryZone: (zoneId: string, permanent?: boolean) => Promise<void>;
+
   clearError: () => void;
 }
+
+type CreateCategoryInput = {
+  name: string;
+  display_name: string;
+  description?: string;
+  is_active: boolean;
+  sort_order?: number;
+  imageFile?: File | null;
+};
+
+type UpdateCategoryInput = {
+  display_name?: string;
+  description?: string;
+  is_active?: boolean;
+  sort_order?: number;
+  imageFile?: File | null;
+};
+
+const createEmptyDashboardStats = (): DashboardStats => ({
+  total_orders: 0,
+  total_orders_growth_percent: 0,
+  pending_orders: 0,
+  pending_orders_weekly_change_percent: 0,
+  confirmed_orders: 0,
+  preparing_orders: 0,
+  out_for_delivery_orders: 0,
+  completed_orders: 0,
+  cancelled_orders: 0,
+  today_revenue: 0,
+  today_vs_yesterday_percent: 0,
+  weekly_revenue: 0,
+  weekly_growth_percent: 0,
+  monthly_revenue: 0,
+  monthly_growth_percent: 0,
+  total_revenue: 0,
+  total_revenue_growth_percent: 0,
+  weekly_revenue_breakdown: [],
+  active_subscriptions: 0,
+  upcoming_catering_events: 0,
+});
 
 export const useAdminStore = create<AdminState>((set, get) => ({
   allOrders: [],
@@ -12685,6 +16049,8 @@ export const useAdminStore = create<AdminState>((set, get) => ({
   managedMenuItems: [],
   managedSidelines: [],
   managedCategories: [],
+  mealPlans: [],
+  deliveryZones: [],
   isLoading: false,
   isUpdating: false,
   error: null,
@@ -12693,66 +16059,40 @@ export const useAdminStore = create<AdminState>((set, get) => ({
   fetchAllOrders: async (filters?: any) => {
     set({ isLoading: true, error: null });
     try {
-      console.log('📡 Fetching all orders...');
+      console.log('[ADMIN] Fetching all orders...');
       const response = await adminAPI.getAllOrders(filters);
 
-      const ordersData = response.data.data || response.data;
-      const orders = Array.isArray(ordersData) ? ordersData : [];
+      const payload = response.data?.data ?? response.data;
+      let orders: Order[] = [];
+      let totalOrders = 0;
 
-      console.log('✅ Orders loaded:', orders.length);
+      if (Array.isArray(payload)) {
+        orders = payload as Order[];
+        totalOrders = orders.length;
+      } else if (payload && typeof payload === 'object') {
+        const payloadObj = payload as any;
+        if (Array.isArray(payloadObj.orders)) {
+          orders = payloadObj.orders as Order[];
+          totalOrders =
+            typeof payloadObj.total === 'number'
+              ? payloadObj.total
+              : payloadObj.orders.length;
+        } else if (Array.isArray(payloadObj.data)) {
+          orders = payloadObj.data as Order[];
+          totalOrders = orders.length;
+        }
+      }
+
+      console.log('[ADMIN] Orders loaded:', orders.length, 'of', totalOrders);
 
       set({
         allOrders: orders,
         isLoading: false,
       });
     } catch (error: any) {
-      console.error('❌ Failed to fetch orders:', error);
+      console.error('[ADMIN] Failed to fetch orders:', error);
       set({
         error: error.response?.data?.message || 'Failed to fetch orders',
-        isLoading: false,
-      });
-    }
-  },
-
-  // ✅ Fetch dashboard stats with fallback
-  fetchDashboardStats: async () => {
-    set({ isLoading: true, error: null });
-    try {
-      console.log('📡 Fetching dashboard stats...');
-      const response = await adminAPI.getDashboardStats();
-
-      const statsData = response.data.data || response.data;
-
-      console.log('✅ Stats loaded:', statsData);
-
-      set({
-        orderStats: statsData || {
-          total_orders: 0,
-          pending_orders: 0,
-          completed_orders: 0,
-          cancelled_orders: 0,
-          today_revenue: 0,
-          weekly_revenue: 0,
-          monthly_revenue: 0,
-          total_revenue: 0,
-        },
-        isLoading: false,
-      });
-    } catch (error: any) {
-      console.error('❌ Failed to fetch dashboard stats:', error);
-
-      set({
-        orderStats: {
-          total_orders: 0,
-          pending_orders: 0,
-          completed_orders: 0,
-          cancelled_orders: 0,
-          today_revenue: 0,
-          weekly_revenue: 0,
-          monthly_revenue: 0,
-          total_revenue: 0,
-        },
-        error: error.response?.data?.message || 'Failed to fetch stats',
         isLoading: false,
       });
     }
@@ -12794,11 +16134,15 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       );
 
       // Use admin API that includes unavailable items
-      const response = await adminAPI.getAllMenuItems();
+      const response = await adminAPI.getAllMenuItems(1, 1000);
       console.log('📦 [ADMIN] Raw response:', response);
 
-      const menuData = response.data.data || response.data;
-      let items = Array.isArray(menuData) ? menuData : [];
+      const payload = response.data?.data ?? response.data;
+      let items: MenuItem[] = Array.isArray(payload)
+        ? (payload as any)
+        : Array.isArray((payload as any)?.items)
+          ? (payload as any).items
+          : [];
 
       // If admin endpoint doesn't exist or returns empty, fallback to regular endpoint
       if (items.length === 0) {
@@ -12863,10 +16207,14 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       console.log(
         '📡 [ADMIN] Fetching ALL sidelines (including unavailable)...'
       );
-      const response = await adminAPI.getAllSidelines();
+      const response = await adminAPI.getAllSidelines(1, 1000);
 
-      const sidelinesData = response.data.data || response.data;
-      let sidelines = Array.isArray(sidelinesData) ? sidelinesData : [];
+      const payload = response.data?.data ?? response.data;
+      let sidelines: Sideline[] = Array.isArray(payload)
+        ? (payload as any)
+        : Array.isArray((payload as any)?.items)
+          ? (payload as any).items
+          : [];
 
       // If admin endpoint doesn't exist or returns empty, fallback
       if (sidelines.length === 0) {
@@ -12909,13 +16257,17 @@ export const useAdminStore = create<AdminState>((set, get) => ({
   fetchManagedCategories: async () => {
     set({ isLoading: true, error: null });
     try {
-      console.log('📡 Fetching categories...');
-      const response = await menuAPI.getCategories();
+      console.log('📡 [ADMIN] Fetching categories...');
+      const response = await adminAPI.getAllCategories(1, 1000);
 
-      const categoriesData = response.data.data || response.data;
-      const categories = Array.isArray(categoriesData) ? categoriesData : [];
+      const payload = response.data?.data ?? response.data;
+      const categories: MenuCategory[] = Array.isArray(payload)
+        ? (payload as any)
+        : Array.isArray((payload as any)?.categories)
+          ? (payload as any).categories
+          : [];
 
-      console.log('✅ Categories loaded:', categories);
+      console.log('✅ Categories loaded:', categories.length);
 
       set({
         managedCategories: categories,
@@ -12924,6 +16276,7 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     } catch (error: any) {
       console.error('❌ Failed to fetch categories:', error);
       set({
+        managedCategories: [],
         error: error.response?.data?.message || 'Failed to fetch categories',
         isLoading: false,
       });
@@ -13083,6 +16436,292 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     }
   },
 
+  // ✅ Create category
+  createCategory: async (payload: CreateCategoryInput) => {
+    set({ isUpdating: true, error: null });
+    try {
+      const formData = new FormData();
+      formData.append('name', payload.name.trim());
+      formData.append('display_name', payload.display_name.trim());
+      if (payload.description)
+        formData.append('description', payload.description.trim());
+      formData.append('is_active', String(payload.is_active));
+      if (payload.sort_order !== undefined && payload.sort_order !== null) {
+        formData.append('sort_order', String(payload.sort_order));
+      }
+      if (payload.imageFile) {
+        formData.append('image', payload.imageFile);
+      }
+
+      await adminAPI.createCategory(formData);
+      await get().fetchManagedCategories();
+      set({ isUpdating: false });
+    } catch (error: any) {
+      console.error('❌ Failed to create category:', error);
+      set({
+        error: error.response?.data?.message || 'Failed to create category',
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
+  // ✅ Update category
+  updateCategory: async (categoryId: string, payload: UpdateCategoryInput) => {
+    set({ isUpdating: true, error: null });
+    try {
+      const formData = new FormData();
+      if (payload.display_name !== undefined) {
+        formData.append('display_name', payload.display_name.trim());
+      }
+      if (payload.description !== undefined) {
+        formData.append('description', payload.description.trim());
+      }
+      if (payload.is_active !== undefined) {
+        formData.append('is_active', String(payload.is_active));
+      }
+      if (payload.sort_order !== undefined && payload.sort_order !== null) {
+        formData.append('sort_order', String(payload.sort_order));
+      }
+      if (payload.imageFile) {
+        formData.append('image', payload.imageFile);
+      }
+
+      await adminAPI.updateCategory(categoryId, formData);
+      await get().fetchManagedCategories();
+      set({ isUpdating: false });
+    } catch (error: any) {
+      console.error('❌ Failed to update category:', error);
+      set({
+        error: error.response?.data?.message || 'Failed to update category',
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
+  // ✅ Delete category
+  deleteCategory: async (categoryId: string) => {
+    set({ isUpdating: true, error: null });
+    try {
+      await adminAPI.deleteCategory(categoryId);
+      set({
+        managedCategories: get().managedCategories.filter(
+          (category) => category._id !== categoryId
+        ),
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      console.error('❌ Failed to delete category:', error);
+      set({
+        error: error.response?.data?.message || 'Failed to delete category',
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
+  fetchMealPlans: async (tab?: string, includeInactive: boolean = true) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await adminAPI.getMealPlans(tab, includeInactive);
+      const plans = response.data.data || response.data;
+      set({
+        mealPlans: Array.isArray(plans) ? plans : [],
+        isLoading: false,
+      });
+    } catch (error: any) {
+      const message =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        'Failed to fetch meal plans';
+      set({
+        error: message,
+        isLoading: false,
+      });
+      throw error;
+    }
+  },
+
+  createMealPlan: async (payload: Partial<MealSubscriptionPlan>) => {
+    set({ isUpdating: true, error: null });
+    try {
+      const response = await adminAPI.createMealPlan(payload);
+      const plan = response.data.data || response.data;
+      if (plan) {
+        set({
+          mealPlans: [
+            plan,
+            ...get().mealPlans.filter((p) => p._id !== plan._id),
+          ],
+          isUpdating: false,
+        });
+      } else {
+        set({ isUpdating: false });
+      }
+    } catch (error: any) {
+      const message =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        'Failed to create meal plan';
+      set({
+        error: message,
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
+  updateMealPlan: async (
+    planId: string,
+    payload: Partial<MealSubscriptionPlan>
+  ) => {
+    set({ isUpdating: true, error: null });
+    try {
+      const response = await adminAPI.updateMealPlan(planId, payload);
+      const updated = response.data.data || response.data;
+      if (!updated) {
+        set({ isUpdating: false });
+        return;
+      }
+      set({
+        mealPlans: get().mealPlans.map((plan) =>
+          plan._id === planId ? updated : plan
+        ),
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      const message =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        'Failed to update meal plan';
+      set({
+        error: message,
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
+  deleteMealPlan: async (planId: string) => {
+    set({ isUpdating: true, error: null });
+    try {
+      await adminAPI.deleteMealPlan(planId);
+      set({
+        mealPlans: get().mealPlans.filter((plan) => plan._id !== planId),
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      set({
+        error: error.response?.data?.message || 'Failed to delete meal plan',
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
+  fetchDeliveryZones: async (includeInactive: boolean = true) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await adminAPI.getDeliveryZones(
+        includeInactive,
+        1,
+        1000
+      );
+      const payload = response.data?.data ?? response.data;
+      const zones: DeliveryZone[] = Array.isArray(payload)
+        ? (payload as any)
+        : Array.isArray((payload as any)?.zones)
+          ? (payload as any).zones
+          : [];
+      set({
+        deliveryZones: zones,
+        isLoading: false,
+      });
+    } catch (error: any) {
+      set({
+        error:
+          error.response?.data?.message || 'Failed to fetch delivery zones',
+        isLoading: false,
+      });
+      throw error;
+    }
+  },
+
+  createDeliveryZone: async (payload: Partial<DeliveryZone>) => {
+    set({ isUpdating: true, error: null });
+    try {
+      const response = await adminAPI.createDeliveryZone(payload);
+      const zone = response.data.data || response.data;
+      if (zone) {
+        set({
+          deliveryZones: [
+            zone,
+            ...get().deliveryZones.filter((z) => z._id !== zone._id),
+          ],
+          isUpdating: false,
+        });
+      } else {
+        set({ isUpdating: false });
+      }
+    } catch (error: any) {
+      set({
+        error:
+          error.response?.data?.message || 'Failed to create delivery zone',
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
+  updateDeliveryZone: async (
+    zoneId: string,
+    payload: Partial<DeliveryZone>
+  ) => {
+    set({ isUpdating: true, error: null });
+    try {
+      const response = await adminAPI.updateDeliveryZone(zoneId, payload);
+      const updated = response.data.data || response.data;
+      if (!updated) {
+        set({ isUpdating: false });
+        return;
+      }
+      set({
+        deliveryZones: get().deliveryZones.map((zone) =>
+          zone._id === zoneId ? updated : zone
+        ),
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      set({
+        error:
+          error.response?.data?.message || 'Failed to update delivery zone',
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
+  deleteDeliveryZone: async (zoneId: string, permanent: boolean = false) => {
+    set({ isUpdating: true, error: null });
+    try {
+      await adminAPI.deleteDeliveryZone(zoneId, permanent);
+      set({
+        deliveryZones: get().deliveryZones.filter(
+          (zone) => zone._id !== zoneId
+        ),
+        isUpdating: false,
+      });
+    } catch (error: any) {
+      set({
+        error:
+          error.response?.data?.message || 'Failed to delete delivery zone',
+        isUpdating: false,
+      });
+      throw error;
+    }
+  },
+
   clearError: () => set({ error: null }),
 }));
 ```
@@ -13096,7 +16735,12 @@ _Path: `src\store\authStore.ts`_
 ```typescript
 import { create } from 'zustand';
 import { authAPI } from '@api/endpoints/auth';
-import { User, LoginCredentials, RegisterData } from '../types/auth.types'; // ✅ Fixed: Use relative import
+import {
+  User,
+  LoginCredentials,
+  RegisterData,
+  AuthResponse,
+} from '../types/auth.types';
 
 interface AuthState {
   user: User | null;
@@ -13123,7 +16767,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       const response = await authAPI.login(credentials);
 
       // ✅ Unwrap response properly
-      const authData = response.data.data || response.data;
+      const rawData = response.data as AuthResponse & { data?: AuthResponse };
+      const authData = rawData.data ?? rawData;
       console.log('📦 Auth data:', authData);
 
       const { access_token, user } = authData;
@@ -13178,7 +16823,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       const response = await authAPI.register(data);
 
       // ✅ Unwrap response properly
-      const authData = response.data.data || response.data;
+      const rawData = response.data as AuthResponse & { data?: AuthResponse };
+      const authData = rawData.data ?? rawData;
       console.log('✅ Registration response:', authData);
 
       const { access_token, user } = authData;
@@ -13225,7 +16871,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       console.log('🔍 Checking authentication...');
       const response = await authAPI.getProfile();
-      const user = response.data.data || response.data;
+      const rawUser = response.data as User & { data?: User };
+      const user = rawUser.data ?? rawUser;
 
       console.log('✅ User authenticated:', user.email, 'Role:', user.role);
 
@@ -13250,7 +16897,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   updateProfile: async (data: Partial<User>) => {
     try {
       const response = await authAPI.updateProfile(data);
-      const updatedUser = response.data.data || response.data;
+      const rawUser = response.data as User & { data?: User };
+      const updatedUser = rawUser.data ?? rawUser;
       set({ user: updatedUser });
     } catch (error) {
       throw error;
@@ -13268,7 +16916,8 @@ _Path: `src\store\cartStore.ts`_
 ```typescript
 import { create } from 'zustand';
 import { cartAPI, CartSummary } from '@api/endpoints/cart';
-import { MenuItem, Sideline } from '@types/menu.types';
+import { MenuItem, Sideline } from '@models/menu.types';
+import { DAILY_DELIVERY_FEE } from '@utils/constants';
 
 // Define the structure for cart items stored locally
 interface LocalCartItem {
@@ -13296,7 +16945,7 @@ interface CartStore {
   error: string | null;
 
   // Order type and delivery option (local state)
-  orderType: 'daily_menu' | 'weekly_subscription' | 'special_catering' | null;
+  orderType: 'daily_menu' | 'meal_subscription' | 'special_catering' | null;
   deliveryOption: 'delivery' | 'pickup';
 
   // Actions
@@ -13317,7 +16966,7 @@ interface CartStore {
 
   // Local state setters
   setOrderType: (
-    type: 'daily_menu' | 'weekly_subscription' | 'special_catering'
+    type: 'daily_menu' | 'meal_subscription' | 'special_catering'
   ) => void;
   setDeliveryOption: (option: 'delivery' | 'pickup') => void;
   clearError: () => void;
@@ -13603,7 +17252,6 @@ export const useCartStore = create<CartStore>((set, get) => ({
     const items = get().localItems;
     const sidelines = get().localSidelines;
     const deliveryOption = get().deliveryOption;
-
     const subtotal =
       items.reduce(
         (sum, item) => sum + item.menu_item.price * item.quantity,
@@ -13614,8 +17262,7 @@ export const useCartStore = create<CartStore>((set, get) => ({
         0
       );
 
-    const delivery_fee =
-      deliveryOption === 'pickup' ? 0 : subtotal >= 50 ? 0 : 10;
+    const delivery_fee = deliveryOption === 'pickup' ? 0 : DAILY_DELIVERY_FEE;
     const total = subtotal + delivery_fee;
     const items_count =
       items.reduce((sum, item) => sum + item.quantity, 0) +
@@ -13648,7 +17295,7 @@ export const useCartStore = create<CartStore>((set, get) => ({
    * Set order type (local state)
    */
   setOrderType: (
-    type: 'daily_menu' | 'weekly_subscription' | 'special_catering'
+    type: 'daily_menu' | 'meal_subscription' | 'special_catering'
   ) => {
     set({ orderType: type });
   },
@@ -13683,7 +17330,7 @@ import {
   Sideline,
   MenuFilters,
   MenuCategory,
-} from '@types/menu.types';
+} from '@models/menu.types';
 
 // ✅ ============================================
 // NORMALIZATION FUNCTIONS
@@ -13799,7 +17446,7 @@ interface MenuState {
   setFilters: (filters: Partial<MenuFilters>) => void;
   clearFilters: () => void;
   getFilteredItems: (
-    orderType: 'daily_menu' | 'weekly_subscription' | 'special_catering'
+    orderType: 'daily_menu' | 'meal_subscription' | 'special_catering'
   ) => MenuItem[];
 }
 
@@ -14069,7 +17716,7 @@ export const useMenuStore = create<MenuState>((set, get) => ({
 
   // ✅ GET FILTERED ITEMS
   getFilteredItems: (
-    orderType: 'daily_menu' | 'weekly_subscription' | 'special_catering'
+    orderType: 'daily_menu' | 'meal_subscription' | 'special_catering'
   ) => {
     const { activeFilters, searchQuery } = get();
 
@@ -14079,7 +17726,7 @@ export const useMenuStore = create<MenuState>((set, get) => ({
       case 'daily_menu':
         items = get().dailyMenuItems;
         break;
-      case 'weekly_subscription':
+      case 'meal_subscription':
         items = get().weeklyMenuItems;
         break;
       case 'special_catering':
@@ -14148,8 +17795,8 @@ _Path: `src\store\orderStore.ts`_
 ```typescript
 import { create } from 'zustand';
 import { ordersAPI } from '@api/endpoints/orders';
-import { Order, CreateOrderPayload, OrderTracking } from '@types/order.types';
-import { PaginatedResponse } from '@types/common.types';
+import { Order, CreateOrderPayload, OrderTracking } from '@models/order.types';
+import { PaginatedResponse } from '@models/common.types';
 
 interface OrderState {
   // Current order being created
@@ -14217,17 +17864,31 @@ export const useOrderStore = create<OrderState>((set, get) => ({
     set({ isLoadingHistory: true, error: null });
     try {
       const response = await ordersAPI.getOrderHistory(page, 10);
-      const data: PaginatedResponse<Order> = response.data.data;
+      const payload = response?.data?.data || {};
+
+      // Backend returns { orders, total, page, page_size }
+      // Older FE expected PaginatedResponse with { items, total, page }
+      const rawOrders = payload.orders || payload.items || [];
+
+      // Normalize backend order shape to frontend Order type
+      const mapped: Order[] = rawOrders.map((o: any) => ({
+        ...o,
+        _id: o._id || o.id,
+        total: o.total ?? o.total_amount,
+        delivery_option: o.delivery_option ?? o.delivery_method,
+      }));
 
       set({
-        orderHistory: data.items,
-        orderHistoryTotal: data.total,
+        orderHistory: Array.isArray(mapped) ? mapped : [],
+        orderHistoryTotal:
+          payload.total ?? (Array.isArray(mapped) ? mapped.length : 0),
         orderHistoryPage: page,
         isLoadingHistory: false,
       });
     } catch (error: any) {
       set({
-        error: error.response?.data?.message || 'Failed to fetch order history',
+        error:
+          error?.response?.data?.message || 'Failed to fetch order history',
         isLoadingHistory: false,
       });
     }
@@ -14320,6 +17981,7 @@ _Path: `src\styles\globals.css`_
 @layer base {
   body {
     @apply bg-background text-text font-body antialiased;
+    overflow-x: hidden;
   }
 
   h1,
@@ -14358,7 +18020,7 @@ _Path: `src\styles\globals.css`_
 
   /* Container */
   .container-custom {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 }
 
@@ -14396,7 +18058,7 @@ _Path: `src\types\address.types.ts`_
 ```typescript
 export interface Address {
   _id: string;
-  user_id: string;
+  user_id?: string;
   label: string;
   street: string;
   suburb: string;
@@ -14405,6 +18067,8 @@ export interface Address {
   country: string;
   is_default: boolean;
   delivery_instructions?: string;
+  latitude?: number;
+  longitude?: number;
   created_at: string;
   updated_at: string;
 }
@@ -14418,6 +18082,8 @@ export interface CreateAddressPayload {
   country?: string;
   is_default?: boolean;
   delivery_instructions?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface DeliveryValidation {
@@ -14426,6 +18092,52 @@ export interface DeliveryValidation {
   delivery_fee: number;
   estimated_time_minutes: number;
   message?: string;
+}
+
+export interface DeliveryAvailability {
+  available: boolean;
+  distance_km?: number;
+  delivery_fee?: number;
+  suburb?: string;
+  postcode?: string;
+  message?: string;
+}
+```
+
+---
+
+## 📄 src\types\admin.types.ts
+
+_Path: `src\types\admin.types.ts`_
+
+```typescript
+export interface RevenueDaySummary {
+  label: string;
+  date: string;
+  total: number;
+}
+
+export interface DashboardStats {
+  total_orders: number;
+  total_orders_growth_percent: number;
+  pending_orders: number;
+  pending_orders_weekly_change_percent: number;
+  confirmed_orders: number;
+  preparing_orders: number;
+  out_for_delivery_orders: number;
+  completed_orders: number;
+  cancelled_orders: number;
+  today_revenue: number;
+  today_vs_yesterday_percent: number;
+  weekly_revenue: number;
+  weekly_growth_percent: number;
+  monthly_revenue: number;
+  monthly_growth_percent: number;
+  total_revenue: number;
+  total_revenue_growth_percent: number;
+  weekly_revenue_breakdown: RevenueDaySummary[];
+  active_subscriptions: number;
+  upcoming_catering_events: number;
 }
 ```
 
@@ -14439,12 +18151,14 @@ _Path: `src\types\auth.types.ts`_
 export interface User {
   id: string;
   email: string;
-  full_name: string;
   phone: string;
   role: 'customer' | 'admin';
   addresses: Address[];
   created_at: string;
   updated_at: string;
+  full_name?: string;
+  first_name?: string;
+  last_name?: string;
 }
 
 export interface Address {
@@ -14455,6 +18169,7 @@ export interface Address {
   postcode: string;
   state: string;
   is_default: boolean;
+  instructions?: string;
 }
 
 export interface LoginCredentials {
@@ -14462,13 +18177,14 @@ export interface LoginCredentials {
   password: string;
 }
 
-// ✅ FIXED: Make role optional with proper typing
 export interface RegisterData {
   email: string;
   password: string;
-  full_name: string;
   phone: string;
-  role?: 'customer' | 'admin'; // ✅ Optional with union type
+  full_name?: string;
+  first_name?: string;
+  last_name?: string;
+  role?: 'customer' | 'admin';
 }
 
 export interface AuthResponse {
@@ -14487,6 +18203,7 @@ _Path: `src\types\cart.types.ts`_
 ```typescript
 import { MenuItem, Sideline } from './menu.types';
 import { Address } from './auth.types';
+import { MealSubscriptionPlan } from './subscription.types';
 
 export interface CartItem {
   menu_item: MenuItem;
@@ -14502,7 +18219,7 @@ export interface CartSideline {
 export interface Cart {
   items: CartItem[];
   sidelines: CartSideline[];
-  order_type: 'daily_menu' | 'weekly_subscription' | 'special_catering';
+  order_type: 'daily_menu' | 'meal_subscription' | 'special_catering';
   delivery_option: 'pickup' | 'delivery';
   selected_address?: Address;
   delivery_date?: string;
@@ -14518,12 +18235,18 @@ export interface CartSummary {
   item_count: number;
 }
 
-export interface WeeklySubscriptionSelection {
-  plan_type: 'weekly' | 'fortnightly' | 'monthly';
-  meals_per_week: number;
-  selected_meals: { [key: string]: MenuItem[] }; // day => meals
-  start_date: string;
-  delivery_days: string[];
+export interface MealSubscriptionSelection {
+  plan: MealSubscriptionPlan;
+  planQuantity: number;
+  fulfilment: 'delivery' | 'pickup';
+  schedule: Array<{
+    date: string;
+    items: { item: MenuItem; quantity: number }[];
+  }>;
+  includedBoxes: number;
+  totalBoxes: number;
+  extraBoxes: number;
+  maxPerMeal?: number | null;
 }
 
 export interface CateringDetails {
@@ -14569,10 +18292,7 @@ export interface PaginatedResponse<T> {
   pages: number;
 }
 
-export type OrderType =
-  | 'daily_menu'
-  | 'weekly_subscription'
-  | 'special_catering';
+export type OrderType = 'daily_menu' | 'meal_subscription' | 'special_catering';
 export type DeliveryOption = 'pickup' | 'delivery';
 export type OrderStatus =
   | 'pending'
@@ -14581,7 +18301,12 @@ export type OrderStatus =
   | 'out_for_delivery'
   | 'delivered'
   | 'cancelled';
-export type PaymentStatus = 'pending' | 'completed' | 'failed' | 'refunded';
+export type PaymentStatus =
+  | 'pending'
+  | 'completed'
+  | 'failed'
+  | 'refunded'
+  | 'paid';
 export type PaymentMethod = 'card' | 'cash';
 export type UserRole = 'customer' | 'admin';
 ```
@@ -14644,6 +18369,8 @@ export interface MenuCategory {
   image_url?: string;
   is_active: boolean;
   sort_order: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface MenuFilters {
@@ -14651,7 +18378,7 @@ export interface MenuFilters {
   is_vegetarian?: boolean;
   is_vegan?: boolean;
   search?: string;
-  order_type?: 'daily_menu' | 'weekly_subscription' | 'special_catering';
+  order_type?: 'daily_menu' | 'meal_subscription' | 'special_catering';
 }
 ```
 
@@ -14665,25 +18392,43 @@ _Path: `src\types\order.types.ts`_
 import { CartItem, CartSideline } from './cart.types';
 import { Address } from './auth.types';
 
+export type OrderType = 'daily_menu' | 'meal_subscription' | 'special_catering';
+export type DeliveryOption = 'pickup' | 'delivery';
+export type OrderStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'preparing'
+  | 'out_for_delivery'
+  | 'delivered'
+  | 'cancelled';
+export type PaymentStatus =
+  | 'pending'
+  | 'completed'
+  | 'failed'
+  | 'refunded'
+  | 'paid';
+export type PaymentMethod = 'card' | 'cash';
+
+export interface OrderStatusHistoryEntry {
+  status: string;
+  timestamp: string;
+  note?: string;
+  updated_by?: string;
+}
+
 export interface Order {
   _id: string;
   user_id: string;
-  order_type: 'daily_menu' | 'weekly_subscription' | 'special_catering';
+  order_type: OrderType;
   items: CartItem[];
   sidelines: CartSideline[];
-  delivery_option: 'pickup' | 'delivery';
+  delivery_option: DeliveryOption;
   delivery_address?: Address;
   delivery_date: string;
   delivery_time_slot?: string;
-  status:
-    | 'pending'
-    | 'confirmed'
-    | 'preparing'
-    | 'out_for_delivery'
-    | 'delivered'
-    | 'cancelled';
-  payment_status: 'pending' | 'completed' | 'failed' | 'refunded';
-  payment_method: 'card' | 'cash';
+  status: OrderStatus;
+  payment_status: PaymentStatus;
+  payment_method: PaymentMethod;
   payment_intent_id?: string;
   subtotal: number;
   delivery_fee: number;
@@ -14691,23 +18436,32 @@ export interface Order {
   total: number;
   special_instructions?: string;
   cancellation_reason?: string;
+  notes?: string;
+  admin_notes?: string;
+  delivery_method?: DeliveryOption | string;
+  delivery_instructions?: string;
+  order_number?: string;
+  user_name?: string;
+  user_email?: string;
+  user_phone?: string;
   created_at: string;
   updated_at: string;
+  status_history?: OrderStatusHistoryEntry[];
 }
 
 export interface CreateOrderPayload {
-  order_type: 'daily_menu' | 'weekly_subscription' | 'special_catering';
+  order_type: OrderType;
   items: {
     menu_item_id: string;
     quantity: number;
     special_instructions?: string;
   }[];
   sidelines?: { sideline_id: string; quantity: number }[];
-  delivery_option: 'pickup' | 'delivery';
+  delivery_option: DeliveryOption;
   delivery_address_id?: string;
   delivery_date: string;
   delivery_time_slot?: string;
-  payment_method: 'card' | 'cash';
+  payment_method: PaymentMethod;
   special_instructions?: string;
 }
 
@@ -14719,11 +18473,73 @@ export interface OrderTracking {
     lat: number;
     lng: number;
   };
-  status_history: {
-    status: string;
-    timestamp: string;
-    note?: string;
-  }[];
+  status_history: OrderStatusHistoryEntry[];
+}
+```
+
+---
+
+## 📄 src\types\subscription.types.ts
+
+_Path: `src\types\subscription.types.ts`_
+
+```typescript
+import { MenuItem } from './menu.types';
+
+export interface MealSubscriptionPlan {
+  _id: string;
+  code: string;
+  name: string;
+  tab: string;
+  description?: string;
+  short_description?: string;
+  included_meals: number;
+  deliveries_per_cycle: number;
+  boxes_per_delivery: number;
+  max_boxes_per_meal?: number | null;
+  price_per_plan: number;
+  price_per_box?: number | null;
+  allow_multiple: boolean;
+  min_boxes_delivery?: number | null;
+  min_boxes_pickup?: number | null;
+  display_badge?: string;
+  display_order: number;
+  extra_box_price?: number | null;
+  highlight: boolean;
+  is_active: boolean;
+  metadata?: Record<string, unknown>;
+  available_delivery_days?: string[];
+  menu_item_ids_by_day?: Record<string, string[]>;
+  menu_items_by_day?: Record<string, MenuItem[]>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DeliveryZone {
+  _id: string;
+  postcode: string;
+  zone_label?: string | null;
+  suburbs: string[];
+  state: string;
+  distance_from_business?: number | null;
+  base_delivery_fee: number;
+  express_delivery_fee?: number | null;
+  max_delivery_days?: number | null;
+  notes?: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PlanSelectionInput {
+  plan_id: string;
+  quantity: number;
+}
+
+export interface DeliverySlotInput {
+  delivery_date: string;
+  menu_items: Record<string, number>;
+  notes?: string;
 }
 ```
 
@@ -14749,7 +18565,7 @@ export const BUSINESS_INFO = {
 
 export const ORDER_TYPES = {
   DAILY_MENU: 'daily_menu',
-  WEEKLY_SUBSCRIPTION: 'weekly_subscription',
+  MEAL_SUBSCRIPTION: 'meal_subscription',
   SPECIAL_CATERING: 'special_catering',
 } as const;
 
@@ -14807,6 +18623,7 @@ export const SUBSCRIPTION_PLANS = {
 export const TAX_RATE = 0.1; // 10% GST
 
 export const MIN_ORDER_VALUE = 15; // AUD
+export const DAILY_DELIVERY_FEE = 10; // AUD
 
 export const DELIVERY_FEE_PER_KM = 2.5; // AUD per km
 
@@ -15425,38 +19242,99 @@ export const isRequired = (value: any): boolean => {
 _Path: `src\App.tsx`_
 
 ```tsx
-import React, { useEffect } from 'react';
-import { BrowserRouter } from 'react-router-dom';
-import AppRoutes from './routes';
+import { useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
+import { ToastProvider } from '@components/common/Toast';
 import { useAuthStore } from '@store/authStore';
+import Layout from '@components/layout/Layout';
+import ProtectedRoute from '@components/auth/ProtectedRoute';
+import RoleGuard from '@components/auth/RoleGuard';
 import LoadingSpinner from '@components/common/LoadingSpinner';
-import { ToastProvider } from '@components/common/Toast'; // ✅ Import ToastProvider
 
-const App: React.FC = () => {
+// Public Pages
+import HomePage from '@pages/public/HomePage';
+import LoginPage from '@pages/public/LoginPage';
+import RegisterPage from '@pages/public/RegisterPage';
+import ContactPage from '@pages/public/ContactPage';
+
+// Customer Pages
+import DailyMenuPage from '@pages/customer/DailyMenuPage';
+import MealsSubscriptionPage from '@pages/customer/MealsSubscriptionPage';
+import CateringPage from '@pages/customer/CateringPage';
+import CartPage from '@pages/customer/CartPage';
+import CheckoutPage from '@pages/customer/CheckoutPage';
+import ProfilePage from '@pages/customer/ProfilePage';
+
+// Admin Pages
+import AdminDashboard from '@pages/admin/AdminDashboard';
+import MenuManagement from '@pages/admin/MenuManagement';
+import OrderManagement from '@pages/admin/OrderManagement';
+import SidelinesManagement from '@pages/admin/SidelinesManagement';
+import CategoryManagement from '@pages/admin/CategoryManagement';
+import MealPlanManagement from '@pages/admin/MealPlanManagement';
+
+function App() {
   const { checkAuth, isLoading } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
-  }, [checkAuth]);
+  }, []);
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <LoadingSpinner size="lg" />
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner size="lg" message="Loading..." />
       </div>
     );
   }
 
   return (
-    <BrowserRouter>
-      <ToastProvider>
-        {' '}
-        {/* ✅ Wrap with ToastProvider */}
-        <AppRoutes />
-      </ToastProvider>
-    </BrowserRouter>
+    <ToastProvider>
+      <Router>
+        <Routes>
+          {/* Layout wrapper for all pages */}
+          <Route path="/" element={<Layout />}>
+            {/* Public Routes */}
+            <Route index element={<HomePage />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="register" element={<RegisterPage />} />
+            <Route path="contact" element={<ContactPage />} />
+
+            {/* Menu Routes (Public) */}
+            <Route path="menu/daily" element={<DailyMenuPage />} />
+            <Route path="menu/meals" element={<MealsSubscriptionPage />} />
+            <Route path="catering" element={<CateringPage />} />
+
+            {/* Protected Customer Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="cart" element={<CartPage />} />
+              <Route path="checkout" element={<CheckoutPage />} />
+              <Route path="profile" element={<ProfilePage />} />
+            </Route>
+
+            {/* Admin Routes */}
+            <Route element={<RoleGuard requiredRole="admin" />}>
+              <Route path="admin" element={<AdminDashboard />} />
+              <Route path="admin/menu" element={<MenuManagement />} />
+              <Route path="admin/orders" element={<OrderManagement />} />
+              <Route path="admin/sidelines" element={<SidelinesManagement />} />
+              <Route path="admin/categories" element={<CategoryManagement />} />
+              <Route path="admin/meal-plans" element={<MealPlanManagement />} />
+            </Route>
+          </Route>
+
+          {/* Catch all - redirect to home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Router>
+    </ToastProvider>
   );
-};
+}
 
 export default App;
 ```

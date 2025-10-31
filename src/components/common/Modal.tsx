@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -40,7 +41,7 @@ const Modal: React.FC<ModalProps> = ({
     xl: 'max-w-4xl',
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop */}
       <div
@@ -61,9 +62,7 @@ const Modal: React.FC<ModalProps> = ({
           {(title || showCloseButton) && (
             <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-white">
               {title && (
-                <h2 className="text-2xl font-heading font-bold text-text">
-                  {title}
-                </h2>
+                <h2 className="text-2xl font-heading font-bold text-text">{title}</h2>
               )}
               {showCloseButton && (
                 <button
@@ -80,7 +79,8 @@ const Modal: React.FC<ModalProps> = ({
           <div className="p-6 overflow-y-auto flex-1">{children}</div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

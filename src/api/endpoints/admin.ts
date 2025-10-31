@@ -53,11 +53,13 @@ export const adminAPI = {
     }),
   deleteMenuItem: (itemId: string) =>
     apiClient.delete<ApiResponse<void>>(`/admin/menu-items/${itemId}`),
-  getAllMenuItems: (page: number = 1, pageSize: number = 1000, category?: string) => {
+  getAllMenuItems: (page: number = 1, pageSize: number = 200, category?: string) => {
+    const safePage = Math.max(1, page);
+    const safePageSize = Math.min(Math.max(1, pageSize), 200);
     const params = new URLSearchParams();
     params.append('include_unavailable', 'true');
-    params.append('page', String(page));
-    params.append('page_size', String(pageSize));
+    params.append('page', String(safePage));
+    params.append('page_size', String(safePageSize));
     if (category) params.append('category', category);
     return apiClient.get<ApiResponse<{ items: MenuItem[]; total: number; page: number; page_size: number; total_pages: number }>>(
       `/admin/menu-items?${params.toString()}`
@@ -81,11 +83,13 @@ export const adminAPI = {
     ),
   deleteSideline: (sidelineId: string) =>
     apiClient.delete<ApiResponse<void>>(`/admin/sidelines/${sidelineId}`),
-  getAllSidelines: (page: number = 1, pageSize: number = 1000) => {
+  getAllSidelines: (page: number = 1, pageSize: number = 200) => {
+    const safePage = Math.max(1, page);
+    const safePageSize = Math.min(Math.max(1, pageSize), 200);
     const params = new URLSearchParams();
     params.append('include_unavailable', 'true');
-    params.append('page', String(page));
-    params.append('page_size', String(pageSize));
+    params.append('page', String(safePage));
+    params.append('page_size', String(safePageSize));
     return apiClient.get<ApiResponse<{ items: Sideline[]; total: number; page: number; page_size: number; total_pages: number }>>(
       `/admin/sidelines?${params.toString()}`
     );
@@ -94,11 +98,13 @@ export const adminAPI = {
   /**
    * Categories (admin)
    */
-  getAllCategories: (page: number = 1, pageSize: number = 1000) => {
+  getAllCategories: (page: number = 1, pageSize: number = 100) => {
+    const safePage = Math.max(1, page);
+    const safePageSize = Math.min(Math.max(1, pageSize), 100);
     const params = new URLSearchParams();
     params.append('include_inactive', 'true');
-    params.append('page', String(page));
-    params.append('page_size', String(pageSize));
+    params.append('page', String(safePage));
+    params.append('page_size', String(safePageSize));
     return apiClient.get<ApiResponse<{ categories: MenuCategory[]; total: number; page: number; page_size: number; total_pages: number }>>(
       `/admin/categories?${params.toString()}`
     );

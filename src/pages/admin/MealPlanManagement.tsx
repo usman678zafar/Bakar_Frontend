@@ -6,6 +6,7 @@ import Input from '@components/common/Input';
 import Modal from '@components/common/Modal';
 import LoadingSpinner from '@components/common/LoadingSpinner';
 import { useToast } from '@components/common/Toast';
+import AdminSidebar from '@components/admin/AdminSidebar';
 import {
   MealSubscriptionPlan,
   DeliveryZone,
@@ -428,40 +429,43 @@ const MealPlanManagement: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-10">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-heading font-bold text-text">
-            Meal Plan & Delivery Configuration
-          </h1>
-          <p className="text-gray-600 mt-2">
-            Control customer-facing meal deals, delivery pricing, and regional coverage.
-          </p>
-        </div>
-        {(isLoading || isUpdating) && (
-          <LoadingSpinner size="md" message="Saving changes..." />
-        )}
-      </div>
-
-      {/* Meal Plans Section */}
-      <Card className="p-6 shadow-lg border border-gray-100">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-heading font-semibold text-text">
-              Meal Subscription Plans
-            </h2>
-            <p className="text-sm text-gray-500">
-              Create and manage weekly, fortnightly, monthly, and regular deals displayed to customers.
-            </p>
+    <div className="min-h-screen bg-[#F9F9F9]">
+      <AdminSidebar />
+      <div className="py-8 pr-4 sm:pr-6 lg:pr-8 pl-4 sm:pl-24 md:pl-32 lg:pl-72 transition-[padding-left] duration-300">
+        <div className="max-w-7xl mx-auto p-6 space-y-10">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-heading font-bold text-text">
+                Meal Plan & Delivery Configuration
+              </h1>
+              <p className="text-gray-600 mt-2">
+                Control customer-facing meal deals, delivery pricing, and regional coverage.
+              </p>
+            </div>
+            {(isLoading || isUpdating) && (
+              <LoadingSpinner size="md" message="Saving changes..." />
+            )}
           </div>
-          <Button variant="primary" onClick={() => handleOpenPlanModal()}>
-            Add Meal Plan
-          </Button>
-        </div>
 
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          {/* Meal Plans Section */}
+          <Card className="p-6 shadow-lg border border-gray-100">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-heading font-semibold text-text">
+                  Meal Subscription Plans
+                </h2>
+                <p className="text-sm text-gray-500">
+                  Create and manage weekly, fortnightly, monthly, and regular deals displayed to customers.
+                </p>
+              </div>
+              <Button variant="primary" onClick={() => handleOpenPlanModal()}>
+                Add Meal Plan
+              </Button>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   Plan
@@ -1049,6 +1053,8 @@ const MealPlanManagement: React.FC = () => {
           </Button>
         </div>
       </Modal>
+        </div>
+      </div>
     </div>
   );
 };

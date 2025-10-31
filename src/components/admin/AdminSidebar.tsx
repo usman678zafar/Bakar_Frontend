@@ -47,10 +47,10 @@ const AdminSidebar: React.FC = () => {
   const location = useLocation();
 
   return (
-    <aside className="hidden sm:block group fixed left-0 top-20 z-30 h-[calc(100vh-5rem)]">
-      <div className="h-full w-16 group-hover:w-64 transition-all duration-300 ease-in-out bg-white border-r border-gray-200 shadow-lg rounded-tr-2xl rounded-br-2xl overflow-hidden">
+    <aside className="hidden sm:block fixed left-0 top-20 z-30 h-[calc(100vh-5rem)]">
+      <div className="h-full w-64 bg-white border-r border-gray-200 shadow-lg rounded-tr-2xl rounded-br-2xl overflow-hidden transition-all duration-300 ease-in-out">
         <div className="flex flex-col h-full py-6">
-          <div className="px-4 pb-6 border-b border-gray-100 hidden group-hover:block">
+          <div className="px-4 pb-6 border-b border-gray-100">
             <p className="text-xs uppercase tracking-widest text-gray-400 font-semibold">
               Admin
             </p>
@@ -70,14 +70,14 @@ const AdminSidebar: React.FC = () => {
                   to={item.path}
                   title={item.label}
                   className={clsx(
-                    'flex items-center mx-2 px-4 py-3 rounded-xl transition-all duration-200',
+                    'flex items-center mx-2 px-4 py-3 rounded-xl transition-all duration-200 space-x-3',
                     isActive
                       ? 'bg-primary text-white shadow-md'
                       : 'text-gray-600 hover:bg-primary/10 hover:text-primary'
                   )}
                 >
                   <Icon size={20} />
-                  <span className="ml-3 text-sm font-semibold hidden group-hover:block">
+                  <span className="text-sm font-semibold">
                     {item.label}
                   </span>
                 </Link>
@@ -85,13 +85,13 @@ const AdminSidebar: React.FC = () => {
             })}
           </nav>
 
-          <div className="px-4 pt-4 mt-auto hidden group-hover:block">
+          <div className="px-4 pt-4 mt-auto">
             <p className="text-xs text-gray-400 uppercase font-semibold mb-2">
               Tips
             </p>
             <p className="text-xs text-gray-500 leading-relaxed">
-              Hover over the sidebar to reveal full navigation labels. Use the
-              categories section to organise menu items quickly.
+              Use the quick links to jump between orders, menu items, sidelines,
+              meal plans, and categories without leaving the dashboard flow.
             </p>
           </div>
         </div>

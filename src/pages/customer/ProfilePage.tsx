@@ -25,6 +25,7 @@ import {
   Calendar,
 } from 'lucide-react';
 import { formatCurrency, formatDate } from '@utils/formatters';
+import type { Order } from '@models/order.types';
 
 const ProfilePage: React.FC = () => {
   const { user, updateProfile } = useAuth();
@@ -44,6 +45,8 @@ const ProfilePage: React.FC = () => {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isAddingAddress, setIsAddingAddress] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   // Profile form state
   const [profileForm, setProfileForm] = useState({
@@ -478,9 +481,10 @@ const ProfilePage: React.FC = () => {
                           variant="outline"
                           size="sm"
                           fullWidth
-                          onClick={() =>
-                            (window.location.href = `/orders/${order._id}`)
-                          }
+                          onClick={() => {
+                            setSelectedOrder(order as unknown as Order)
+                            setIsOrderModalOpen(true)
+                          }}
                         >
                           View Details
                         </Button>
@@ -509,8 +513,7 @@ const ProfilePage: React.FC = () => {
               setAddressForm({ ...addressForm, label: e.target.value })
             }
             required
-          />
-
+      />
           <Input
             type="text"
             label="Street Address"
@@ -596,6 +599,105 @@ const ProfilePage: React.FC = () => {
             </Button>
           </div>
         </form>
+      </Modal>
+      {/* Order Details Modal */}
+      <Modal
+        isOpen={isOrderModalOpen}
+        onClose={() => {
+          setIsOrderModalOpen(false)
+          setSelectedOrder(null)
+        }}
+        title={
+          selectedOrder
+            ? `Order #${selectedOrder._id?.slice(-8)?.toUpperCase()}`
+            : 'Order Details'
+        }
+      >
+        {!selectedOrder ? (
+          <div className="py-6 text-center text-gray-600">
+            No order selected.
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Placed on</p>
+                <p className="font-medium">
+                  {formatDate(selectedOrder.created_at)}
+                </p>
+              </div>
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                  selectedOrder.status === 'delivered'
+                    ? 'bg-green-100 text-green-800'
+                    : selectedOrder.status === 'cancelled'
+                      ? 'bg-red-100 text-red-800'
+                      : 'bg-blue-100 text-blue-800'
+                }`}
+              >
+                {selectedOrder.status?.toUpperCase().replace('_', ' ')}
+              </span>
+            </div>
+
+            <div className="divide-y border rounded">
+              {[...(selectedOrder.items || []), ...(selectedOrder.sidelines || [])].map(
+                (item: any, index: number) => (
+                  <div
+                    key={`${item._id || item.menu_item?._id || index}-${index}`}
+                    className="flex items-center justify-between p-3 text-sm"
+                  >
+                    <div className="text-gray-700">
+                      {item.menu_item?.name || item.item_name || item.name || 'Item'}
+                      {item.category ? (
+                        <span className="text-gray-400"> • {item.category}</span>
+                      ) : null}
+                    </div>
+                    <div className="text-gray-600">
+                      x{item.quantity ?? 1}
+                    </div>
+                    <div className="font-medium">
+                      {formatCurrency(
+                        item.subtotal ??
+                          (item.price || item.menu_item?.price || 0) *
+                            (item.quantity ?? 1)
+                      )}
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
+
+            <div className="flex items-center justify-between pt-2 text-sm">
+              <span className="text-gray-600">Subtotal</span>
+              <span className="font-medium">
+                {formatCurrency(selectedOrder.subtotal || 0)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-600">Delivery</span>
+              <span className="font-medium">
+                {formatCurrency(selectedOrder.delivery_fee || 0)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-base">
+              <span className="font-semibold">Total</span>
+              <span className="font-semibold">
+                {formatCurrency(
+                  selectedOrder.total ?? (selectedOrder as any).total_amount ?? 0
+                )}
+              </span>
+            </div>
+
+            <div className="pt-2 text-xs text-gray-500">
+              Delivery method:{' '}
+              {String(
+                selectedOrder.delivery_option ||
+                  (selectedOrder as any).delivery_method ||
+                  'N/A'
+              )}
+            </div>
+          </div>
+        )}
       </Modal>
     </div>
   );

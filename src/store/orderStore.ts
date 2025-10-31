@@ -68,18 +68,30 @@ export const useOrderStore = create<OrderState>((set, get) => ({
     set({ isLoadingHistory: true, error: null })
     try {
       const response = await ordersAPI.getOrderHistory(page, 10)
-      const data: PaginatedResponse<Order> = response.data.data
-      
+      const payload = response?.data?.data || {}
+
+      // Backend returns { orders, total, page, page_size }
+      // Older FE expected PaginatedResponse with { items, total, page }
+      const rawOrders = payload.orders || payload.items || []
+
+      // Normalize backend order shape to frontend Order type
+      const mapped: Order[] = rawOrders.map((o: any) => ({
+        ...o,
+        _id: o._id || o.id,
+        total: o.total ?? o.total_amount,
+        delivery_option: o.delivery_option ?? o.delivery_method,
+      }))
+
       set({
-        orderHistory: data.items,
-        orderHistoryTotal: data.total,
+        orderHistory: Array.isArray(mapped) ? mapped : [],
+        orderHistoryTotal: payload.total ?? (Array.isArray(mapped) ? mapped.length : 0),
         orderHistoryPage: page,
-        isLoadingHistory: false
+        isLoadingHistory: false,
       })
     } catch (error: any) {
-      set({ 
-        error: error.response?.data?.message || 'Failed to fetch order history',
-        isLoadingHistory: false 
+      set({
+        error: error?.response?.data?.message || 'Failed to fetch order history',
+        isLoadingHistory: false,
       })
     }
   },

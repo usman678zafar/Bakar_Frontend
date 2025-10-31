@@ -161,6 +161,58 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     }
   },
 
+  // ✅ Fetch dashboard statistics and normalise backend payload
+  fetchDashboardStats: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      console.log('[ADMIN] Fetching dashboard stats...');
+      const response = await adminAPI.getDashboardStats();
+      const payload = response.data?.data ?? response.data ?? {};
+
+      const baseStats = createEmptyDashboardStats();
+      const merged: Partial<DashboardStats> =
+        payload && typeof payload === 'object' ? (payload as Partial<DashboardStats>) : {};
+
+      const weeklySource = (payload as any)?.weekly_revenue_breakdown;
+      const normalizedBreakdown = Array.isArray(weeklySource)
+        ? weeklySource.map((entry: any, index: number) => {
+            const fallbackLabel = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index] ?? '';
+            const rawTotal =
+              typeof entry?.total === 'number' ? entry.total : Number(entry?.total);
+            return {
+              label:
+                typeof entry?.label === 'string' && entry.label.trim().length > 0
+                  ? entry.label
+                  : fallbackLabel,
+              date: typeof entry?.date === 'string' ? entry.date : '',
+              total: Number.isFinite(rawTotal) ? Number(rawTotal.toFixed(2)) : 0,
+            };
+          })
+        : baseStats.weekly_revenue_breakdown;
+
+      const normalizedStats: DashboardStats = {
+        ...baseStats,
+        ...merged,
+        weekly_revenue_breakdown: normalizedBreakdown,
+      };
+
+      set({
+        orderStats: normalizedStats,
+        isLoading: false,
+      });
+    } catch (error: any) {
+      console.error('[ADMIN] Failed to fetch dashboard stats:', error);
+      set({
+        error:
+          error?.response?.data?.message ||
+          error?.message ||
+          'Failed to fetch dashboard stats',
+        isLoading: false,
+        orderStats: get().orderStats ?? createEmptyDashboardStats(),
+      });
+    }
+  },
+
   // ✅ Update order status
   updateOrderStatus: async (orderId: string, status: string) => {
     set({ isUpdating: true, error: null });
@@ -195,7 +247,7 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       console.log('📡 [ADMIN] Fetching ALL menu items (including unavailable)...');
       
       // Use admin API that includes unavailable items
-      const response = await adminAPI.getAllMenuItems(1, 1000);
+      const response = await adminAPI.getAllMenuItems(1, 200);
       console.log('📦 [ADMIN] Raw response:', response);
 
       const payload = response.data?.data ?? response.data;
@@ -256,7 +308,7 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       console.log('📡 [ADMIN] Fetching ALL sidelines (including unavailable)...');
-      const response = await adminAPI.getAllSidelines(1, 1000);
+      const response = await adminAPI.getAllSidelines(1, 200);
 
       const payload = response.data?.data ?? response.data;
       let sidelines: Sideline[] = Array.isArray(payload)
@@ -300,7 +352,7 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       console.log('📡 [ADMIN] Fetching categories...');
-      const response = await adminAPI.getAllCategories(1, 1000);
+      const response = await adminAPI.getAllCategories(1, 100);
 
       const payload = response.data?.data ?? response.data;
       const categories: MenuCategory[] = Array.isArray(payload)

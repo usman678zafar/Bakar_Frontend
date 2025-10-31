@@ -299,11 +299,6 @@ const AdminDashboard: React.FC = () => {
     },
   ];
 
-  const successRate =
-    stats.total_orders && stats.total_orders > 0
-      ? ((stats.completed_orders || 0) / stats.total_orders) * 100
-      : 0;
-
   const weeklyRevenueBreakdown =
     stats.weekly_revenue_breakdown && stats.weekly_revenue_breakdown.length
       ? stats.weekly_revenue_breakdown
@@ -325,7 +320,7 @@ const AdminDashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#F9F9F9]">
       <AdminSidebar />
-      <div className="py-8 px-4 sm:px-6 lg:px-8 pl-20 md:pl-28">
+      <div className="py-8 pr-4 sm:pr-6 lg:pr-8 pl-4 sm:pl-24 md:pl-32 lg:pl-72 transition-[padding-left] duration-300">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
@@ -405,7 +400,7 @@ const AdminDashboard: React.FC = () => {
             </div>
           </Card>
 
-          {/* Revenue and Operational Snapshot */}
+          {/* Revenue */}
           <div className="space-y-8">
             <Card>
               <h3 className="font-['Playfair_Display'] text-xl font-bold text-[#2E2E2E] mb-6">
@@ -481,53 +476,6 @@ const AdminDashboard: React.FC = () => {
               </div>
             </Card>
 
-            <Card>
-              <h3 className="font-['Playfair_Display'] text-xl font-bold text-[#2E2E2E] mb-6">
-                Operational Snapshot
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-primary-50 rounded-lg p-4">
-                  <p className="text-sm text-gray-600 mb-1">Active Subscriptions</p>
-                  <p className="font-heading text-3xl font-bold text-primary">
-                    {stats.active_subscriptions || 0}
-                  </p>
-                </div>
-                <div className="bg-orange-50 rounded-lg p-4">
-                  <p className="text-sm text-gray-600 mb-1">Upcoming Catering Events</p>
-                  <p className="font-heading text-3xl font-bold text-orange-600">
-                    {stats.upcoming_catering_events || 0}
-                  </p>
-                </div>
-                <div className="bg-emerald-50 rounded-lg p-4">
-                  <p className="text-sm text-gray-600 mb-1">Success Rate</p>
-                  <p className="font-heading text-3xl font-bold text-emerald-600">
-                    {successRate.toFixed(1)}%
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="flex flex-col bg-gray-50 p-4 rounded-lg border border-gray-100">
-                  <span className="text-sm text-gray-500">Completed Orders</span>
-                  <span className="text-2xl font-semibold text-green-600">
-                    {stats.completed_orders || 0}
-                  </span>
-                </div>
-                <div className="flex flex-col bg-gray-50 p-4 rounded-lg border border-gray-100">
-                  <span className="text-sm text-gray-500">Cancelled Orders</span>
-                  <span className="text-2xl font-semibold text-red-500">
-                    {stats.cancelled_orders || 0}
-                  </span>
-                </div>
-                <div className="flex flex-col bg-gray-50 p-4 rounded-lg border border-gray-100">
-                  <span className="text-sm text-gray-500">Pending Queue</span>
-                  <span className="text-2xl font-semibold text-blue-600">
-                    {stats.pending_orders || 0}
-                  </span>
-                </div>
-              </div>
-            </Card>
           </div>
         </div>
       </div>
