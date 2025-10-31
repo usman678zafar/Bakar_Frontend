@@ -195,11 +195,15 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       console.log('📡 [ADMIN] Fetching ALL menu items (including unavailable)...');
       
       // Use admin API that includes unavailable items
-      const response = await adminAPI.getAllMenuItems();
+      const response = await adminAPI.getAllMenuItems(1, 1000);
       console.log('📦 [ADMIN] Raw response:', response);
 
-      const menuData = response.data.data || response.data;
-      let items = Array.isArray(menuData) ? menuData : [];
+      const payload = response.data?.data ?? response.data;
+      let items: MenuItem[] = Array.isArray(payload)
+        ? (payload as any)
+        : Array.isArray((payload as any)?.items)
+        ? (payload as any).items
+        : [];
       
       // If admin endpoint doesn't exist or returns empty, fallback to regular endpoint
       if (items.length === 0) {
@@ -252,10 +256,14 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       console.log('📡 [ADMIN] Fetching ALL sidelines (including unavailable)...');
-      const response = await adminAPI.getAllSidelines();
+      const response = await adminAPI.getAllSidelines(1, 1000);
 
-      const sidelinesData = response.data.data || response.data;
-      let sidelines = Array.isArray(sidelinesData) ? sidelinesData : [];
+      const payload = response.data?.data ?? response.data;
+      let sidelines: Sideline[] = Array.isArray(payload)
+        ? (payload as any)
+        : Array.isArray((payload as any)?.items)
+        ? (payload as any).items
+        : [];
       
       // If admin endpoint doesn't exist or returns empty, fallback
       if (sidelines.length === 0) {
@@ -292,10 +300,14 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       console.log('📡 [ADMIN] Fetching categories...');
-      const response = await adminAPI.getAllCategories();
+      const response = await adminAPI.getAllCategories(1, 1000);
 
-      const categoriesData = response.data?.data || response.data;
-      const categories = Array.isArray(categoriesData) ? categoriesData : [];
+      const payload = response.data?.data ?? response.data;
+      const categories: MenuCategory[] = Array.isArray(payload)
+        ? (payload as any)
+        : Array.isArray((payload as any)?.categories)
+        ? (payload as any).categories
+        : [];
 
       console.log('✅ Categories loaded:', categories.length);
 
@@ -653,10 +665,15 @@ export const useAdminStore = create<AdminState>((set, get) => ({
   fetchDeliveryZones: async (includeInactive: boolean = true) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await adminAPI.getDeliveryZones(includeInactive);
-      const zones = response.data.data || response.data;
+      const response = await adminAPI.getDeliveryZones(includeInactive, 1, 1000);
+      const payload = response.data?.data ?? response.data;
+      const zones: DeliveryZone[] = Array.isArray(payload)
+        ? (payload as any)
+        : Array.isArray((payload as any)?.zones)
+        ? (payload as any).zones
+        : [];
       set({
-        deliveryZones: Array.isArray(zones) ? zones : [],
+        deliveryZones: zones,
         isLoading: false,
       });
     } catch (error: any) {

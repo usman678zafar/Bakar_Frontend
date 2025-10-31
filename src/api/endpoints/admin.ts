@@ -53,10 +53,16 @@ export const adminAPI = {
     }),
   deleteMenuItem: (itemId: string) =>
     apiClient.delete<ApiResponse<void>>(`/admin/menu-items/${itemId}`),
-  getAllMenuItems: () =>
-    apiClient.get<ApiResponse<MenuItem[]>>(
-      '/admin/menu-items?include_unavailable=true&include_all=true'
-    ),
+  getAllMenuItems: (page: number = 1, pageSize: number = 1000, category?: string) => {
+    const params = new URLSearchParams();
+    params.append('include_unavailable', 'true');
+    params.append('page', String(page));
+    params.append('page_size', String(pageSize));
+    if (category) params.append('category', category);
+    return apiClient.get<ApiResponse<{ items: MenuItem[]; total: number; page: number; page_size: number; total_pages: number }>>(
+      `/admin/menu-items?${params.toString()}`
+    );
+  },
 
   /**
    * Sidelines (admin)
@@ -75,18 +81,28 @@ export const adminAPI = {
     ),
   deleteSideline: (sidelineId: string) =>
     apiClient.delete<ApiResponse<void>>(`/admin/sidelines/${sidelineId}`),
-  getAllSidelines: () =>
-    apiClient.get<ApiResponse<Sideline[]>>(
-      '/admin/sidelines?include_unavailable=true&include_all=true'
-    ),
+  getAllSidelines: (page: number = 1, pageSize: number = 1000) => {
+    const params = new URLSearchParams();
+    params.append('include_unavailable', 'true');
+    params.append('page', String(page));
+    params.append('page_size', String(pageSize));
+    return apiClient.get<ApiResponse<{ items: Sideline[]; total: number; page: number; page_size: number; total_pages: number }>>(
+      `/admin/sidelines?${params.toString()}`
+    );
+  },
 
   /**
    * Categories (admin)
    */
-  getAllCategories: () =>
-    apiClient.get<ApiResponse<MenuCategory[]>>(
-      '/admin/categories?include_inactive=true'
-    ),
+  getAllCategories: (page: number = 1, pageSize: number = 1000) => {
+    const params = new URLSearchParams();
+    params.append('include_inactive', 'true');
+    params.append('page', String(page));
+    params.append('page_size', String(pageSize));
+    return apiClient.get<ApiResponse<{ categories: MenuCategory[]; total: number; page: number; page_size: number; total_pages: number }>>(
+      `/admin/categories?${params.toString()}`
+    );
+  },
   createCategory: (data: FormData) =>
     apiClient.post<ApiResponse<MenuCategory>>('/admin/categories', data, {
       headers: { 'Content-Type': 'multipart/form-data' },
@@ -130,10 +146,13 @@ export const adminAPI = {
   /**
    * Delivery zones (admin)
    */
-  getDeliveryZones: (includeInactive: boolean = true) => {
-    const suffix = includeInactive ? '' : '?include_inactive=false';
-    return apiClient.get<ApiResponse<DeliveryZone[]>>(
-      `/admin/delivery-zones${suffix}`
+  getDeliveryZones: (includeInactive: boolean = true, page: number = 1, pageSize: number = 1000) => {
+    const params = new URLSearchParams();
+    if (!includeInactive) params.append('include_inactive', 'false'); else params.append('include_inactive', 'true');
+    params.append('page', String(page));
+    params.append('page_size', String(pageSize));
+    return apiClient.get<ApiResponse<{ zones: DeliveryZone[]; total: number; page: number; page_size: number; total_pages: number }>>(
+      `/admin/delivery-zones?${params.toString()}`
     );
   },
   createDeliveryZone: (payload: Partial<DeliveryZone>) =>
