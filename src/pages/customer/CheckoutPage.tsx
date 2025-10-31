@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '@hooks/useCart';
 import { useAuthStore } from '@store/authStore';
+import { useAddressStore } from '@store/addressStore';
 import { useToast } from '@components/common/Toast';
 import { ordersAPI } from '@api';
 import { MealSubscriptionSelection } from '@models/cart.types';
 import { formatCurrency } from '@utils/formatters';
+import { Address } from '@models/address.types';
 import {
   MapPin,
   Calendar,
@@ -15,17 +17,27 @@ import {
   CheckCircle,
   CreditCard,
   Package,
-  Clock,
-  User,
   FileText,
   ShoppingCart,
-  Phone,
-  Mail,
 } from 'lucide-react';
 import Button from '@components/common/Button';
 import Card from '@components/common/Card';
 import Input from '@components/common/Input';
 import LoadingSpinner from '@components/common/LoadingSpinner';
+import Modal from '@components/common/Modal';
+
+const DEFAULT_COUNTRY = 'Australia';
+
+const getInitialAddressForm = () => ({
+  label: 'Home',
+  street: '',
+  suburb: '',
+  postcode: '',
+  state: 'NSW',
+  country: DEFAULT_COUNTRY,
+  is_default: false,
+  delivery_instructions: '',
+});
 
 interface CheckoutState {
   cateringDetails?: any;
@@ -50,6 +62,16 @@ const CheckoutPage: React.FC = () => {
     isLoading: cartLoading,
   } = useCart();
   const { showToast } = useToast();
+  const {
+    addresses,
+    fetchAddresses,
+    addAddress,
+    calculateDeliveryFee,
+    isLoading: addressStoreLoading,
+    isValidating: isCalculatingDeliveryFee,
+    error: addressStoreError,
+    clearError: clearAddressError,
+  } = useAddressStore();
 
   const state = (location.state as CheckoutState) || {};
   const { cateringDetails, subscriptionDetails } = state;
@@ -62,7 +84,7 @@ const CheckoutPage: React.FC = () => {
 
   // State
   const [isProcessing, setIsProcessing] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState<any>(null);
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [deliveryMethod, setDeliveryMethod] = useState<'delivery' | 'pickup'>(
     'delivery'
   );
@@ -70,42 +92,99 @@ const CheckoutPage: React.FC = () => {
   const [deliveryTime, setDeliveryTime] = useState('');
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'cash'>('card');
-  const [customerInfo, setCustomerInfo] = useState({
-    name: '',
-    email: '',
-    phone: '',
-  });
+  const [deliveryFee, setDeliveryFee] = useState(summary.delivery_fee || 0);
+  const [addressError, setAddressError] = useState<string | null>(null);
 
-  // New address form state
-  const [showNewAddressForm, setShowNewAddressForm] = useState(false);
-  const [newAddress, setNewAddress] = useState({
-    label: 'Home',
-    street: '',
-    suburb: '',
-    postcode: '',
-    state: 'NSW',
-    delivery_instructions: '',
-  });
+  // Address modal state
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+  const [isSavingAddress, setIsSavingAddress] = useState(false);
+  const [newAddress, setNewAddress] = useState(getInitialAddressForm);
 
-  // Initialize customer info from user data
+  const profileContact = useMemo(
+    () => ({
+      name:
+        user && user.first_name && user.last_name
+          ? `${user.first_name} ${user.last_name}`
+          : user?.full_name || user?.email?.split('@')[0] || '',
+      email: user?.email || '',
+      phone: user?.phone || '',
+    }),
+    [user]
+  );
+
+  // Fetch saved addresses on mount
   useEffect(() => {
-    if (user) {
-      setCustomerInfo({
-        name:
-          user.first_name && user.last_name
-            ? `${user.first_name} ${user.last_name}`
-            : user.full_name || user.email?.split('@')[0] || '',
-        email: user.email || '',
-        phone: user.phone || '',
+    if (isAuthenticated) {
+      fetchAddresses().catch((error: any) => {
+        console.error('Failed to fetch addresses:', error);
       });
-
-      // Set default address if available
-      if (user.addresses && user.addresses.length > 0) {
-        const defaultAddr = user.addresses.find((addr: any) => addr.is_default);
-        setSelectedAddress(defaultAddr || user.addresses[0]);
-      }
     }
-  }, [user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]);
+
+  const selectedAddressId = selectedAddress?._id ?? '';
+
+  useEffect(() => {
+    if (!addresses || addresses.length === 0) {
+      setSelectedAddress(null);
+      return;
+    }
+
+    if (
+      !selectedAddressId ||
+      !addresses.some((addr) => addr._id === selectedAddressId)
+    ) {
+      const nextAddress =
+        addresses.find((addr) => addr.is_default) || addresses[0];
+      setSelectedAddress(nextAddress);
+    }
+  }, [addresses, selectedAddressId]);
+
+  useEffect(() => {
+    if (
+      deliveryMethod === 'delivery' &&
+      !addressStoreLoading &&
+      addresses.length === 0
+    ) {
+      setIsAddressModalOpen(true);
+    }
+  }, [deliveryMethod, addressStoreLoading, addresses.length]);
+
+  useEffect(() => {
+    const evaluateDeliveryFee = async () => {
+      if (deliveryMethod !== 'delivery') {
+        setAddressError(null);
+        setDeliveryFee(0);
+        return;
+      }
+
+      if (!selectedAddressId) {
+        setAddressError(null);
+        setDeliveryFee(0);
+        return;
+      }
+
+      clearAddressError();
+      setAddressError(null);
+
+      try {
+        const result = await calculateDeliveryFee(selectedAddressId);
+        if (result && typeof result.fee === 'number') {
+          setDeliveryFee(result.fee);
+        }
+      } catch (error: any) {
+        console.error('Delivery fee calculation failed:', error);
+        const message =
+          error?.response?.data?.message ||
+          error?.message ||
+          'Delivery service is not available for this address.';
+        setAddressError(message);
+        setDeliveryFee(0);
+      }
+    };
+
+    evaluateDeliveryFee();
+  }, [selectedAddressId, deliveryMethod, calculateDeliveryFee, clearAddressError]);
 
   useEffect(() => {
     // Check authentication
@@ -157,6 +236,43 @@ const CheckoutPage: React.FC = () => {
     !cateringDetails &&
     !subscriptionDetails;
 
+  const handleSaveAddress = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const trimmedPayload = {
+      label: newAddress.label.trim() || 'Home',
+      street: newAddress.street.trim(),
+      suburb: newAddress.suburb.trim(),
+      postcode: newAddress.postcode.trim(),
+      state: newAddress.state.trim() || 'NSW',
+      country: newAddress.country || DEFAULT_COUNTRY,
+      is_default: newAddress.is_default || addresses.length === 0,
+      delivery_instructions: newAddress.delivery_instructions?.trim() || undefined,
+    };
+
+    if (!trimmedPayload.street || !trimmedPayload.suburb || !trimmedPayload.postcode) {
+      showToast('Please complete the required address fields.', 'error');
+      return;
+    }
+
+    setIsSavingAddress(true);
+    try {
+      const createdAddress = await addAddress(trimmedPayload);
+      setIsAddressModalOpen(false);
+      setNewAddress(getInitialAddressForm());
+      setSelectedAddress(createdAddress);
+      showToast('Address saved successfully', 'success');
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Failed to save address';
+      showToast(message, 'error');
+    } finally {
+      setIsSavingAddress(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -167,19 +283,18 @@ const CheckoutPage: React.FC = () => {
       return;
     }
 
-    if (subscriptionDetails) {
-      if (
-        subscriptionDetails.fulfilment === 'delivery' &&
-        !selectedAddress
-      ) {
-        showToast('Please select a delivery address', 'error');
+      if (subscriptionDetails) {
+        if (
+          subscriptionDetails.fulfilment === 'delivery' &&
+          !selectedAddress
+        ) {
+          showToast('Please select a delivery address', 'error');
         return;
       }
     } else {
       if (
         deliveryMethod === 'delivery' &&
-        !selectedAddress &&
-        !showNewAddressForm
+        !selectedAddress
       ) {
         showToast('Please select or add a delivery address', 'error');
         return;
@@ -191,8 +306,13 @@ const CheckoutPage: React.FC = () => {
       }
     }
 
-    if (!customerInfo.name || !customerInfo.email || !customerInfo.phone) {
-      showToast('Please fill in all contact information', 'error');
+    if (
+      addressError &&
+      ((subscriptionDetails &&
+        subscriptionDetails.fulfilment === 'delivery') ||
+        (!subscriptionDetails && deliveryMethod === 'delivery'))
+    ) {
+      showToast(addressError, 'error');
       return;
     }
 
@@ -200,6 +320,24 @@ const CheckoutPage: React.FC = () => {
 
     try {
       let orderPayload: any = {};
+      const normalizedSelectedAddress = selectedAddress
+        ? {
+            _id: selectedAddress._id,
+            label: selectedAddress.label,
+            street: selectedAddress.street,
+            suburb: selectedAddress.suburb,
+            postcode: selectedAddress.postcode,
+            state: selectedAddress.state,
+            country: selectedAddress.country,
+            latitude: selectedAddress.latitude,
+            longitude: selectedAddress.longitude,
+            delivery_instructions: selectedAddress.delivery_instructions,
+            is_default: selectedAddress.is_default,
+          }
+        : null;
+      const deliveryAddressId = selectedAddressId;
+      const backendDeliveryMethod =
+        deliveryMethod === 'delivery' ? 'standard' : 'pickup';
 
       if (cateringDetails) {
         // Catering order
@@ -211,7 +349,7 @@ const CheckoutPage: React.FC = () => {
           venue_address: cateringDetails.eventDetails.venue_address,
           selected_items: cateringDetails.selectedItems,
           special_requests: specialInstructions,
-          contact_info: customerInfo,
+          contact_info: profileContact,
         };
       } else if (subscriptionDetails) {
         const plan = subscriptionDetails.plan;
@@ -251,7 +389,7 @@ const CheckoutPage: React.FC = () => {
             }) || [],
           delivery_address_id:
             subscriptionDetails.fulfilment === 'delivery'
-              ? selectedAddress?._id || selectedAddress?.id
+              ? deliveryAddressId
               : undefined,
           fulfilment_method: subscriptionDetails.fulfilment,
           is_express: false,
@@ -277,18 +415,17 @@ const CheckoutPage: React.FC = () => {
                 quantity: s.quantity || 1,
               };
             }) || [],
-          delivery_method: deliveryMethod,
+          delivery_method: backendDeliveryMethod,
           delivery_address:
-            deliveryMethod === 'delivery'
-              ? showNewAddressForm
-                ? newAddress
-                : selectedAddress
+            backendDeliveryMethod === 'standard'
+              ? normalizedSelectedAddress
               : null,
+          delivery_address_id:
+            backendDeliveryMethod === 'standard' ? deliveryAddressId : undefined,
           delivery_date: deliveryDate,
           delivery_time: deliveryTime,
           delivery_instructions: specialInstructions,
           notes: '',
-          contact_info: customerInfo,
         };
       }
 
@@ -326,6 +463,13 @@ const CheckoutPage: React.FC = () => {
       setIsProcessing(false);
     }
   };
+
+  const subtotalAmount = summary.subtotal;
+  const taxAmount =
+    summary.tax !== undefined ? summary.tax : subtotalAmount * 0.1;
+  const effectiveDeliveryFee =
+    deliveryMethod === 'delivery' ? deliveryFee : 0;
+  const totalAmount = subtotalAmount + taxAmount + effectiveDeliveryFee;
 
   // Show loading while cart data is loading
   if (cartLoading) {
@@ -380,51 +524,6 @@ const CheckoutPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column - Checkout Form */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Contact Information */}
-              <Card padding="lg">
-                <h2 className="font-heading text-2xl font-bold text-text mb-4 flex items-center space-x-2">
-                  <User size={24} className="text-primary" />
-                  <span>Contact Information</span>
-                </h2>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    type="text"
-                    label="Full Name"
-                    value={customerInfo.name}
-                    onChange={(e) =>
-                      setCustomerInfo({ ...customerInfo, name: e.target.value })
-                    }
-                    required
-                  />
-                  <Input
-                    type="email"
-                    label="Email"
-                    value={customerInfo.email}
-                    onChange={(e) =>
-                      setCustomerInfo({
-                        ...customerInfo,
-                        email: e.target.value,
-                      })
-                    }
-                    required
-                  />
-                  <Input
-                    type="tel"
-                    label="Phone"
-                    value={customerInfo.phone}
-                    onChange={(e) =>
-                      setCustomerInfo({
-                        ...customerInfo,
-                        phone: e.target.value,
-                      })
-                    }
-                    placeholder="04XX XXX XXX"
-                    required
-                  />
-                </div>
-              </Card>
-
               {/* Delivery Method */}
               <Card padding="lg">
                 <h2 className="font-heading text-2xl font-bold text-text mb-4 flex items-center space-x-2">
@@ -452,15 +551,26 @@ const CheckoutPage: React.FC = () => {
                     />
                     <p className="font-semibold text-text">Delivery</p>
                     <p className="text-sm text-gray-600">
-                      {summary.delivery_fee === 0
-                        ? 'FREE'
-                        : formatCurrency(summary.delivery_fee)}
+                      {deliveryMethod === 'delivery' ? (
+                        isCalculatingDeliveryFee ? (
+                          'Calculating...'
+                        ) : effectiveDeliveryFee === 0 ? (
+                          'FREE'
+                        ) : (
+                          formatCurrency(effectiveDeliveryFee)
+                        )
+                      ) : (
+                        formatCurrency(effectiveDeliveryFee)
+                      )}
                     </p>
                   </button>
 
                   <button
                     type="button"
-                    onClick={() => setDeliveryMethod('pickup')}
+                    onClick={() => {
+                      setDeliveryMethod('pickup');
+                      setIsAddressModalOpen(false);
+                    }}
                     className={`p-4 border-2 rounded-lg transition-all ${
                       deliveryMethod === 'pickup'
                         ? 'border-primary bg-primary-50'
@@ -484,21 +594,41 @@ const CheckoutPage: React.FC = () => {
               {/* Delivery Address - only show if delivery selected */}
               {deliveryMethod === 'delivery' && (
                 <Card padding="lg">
-                  <h2 className="font-heading text-2xl font-bold text-text mb-4 flex items-center space-x-2">
-                    <MapPin size={24} className="text-primary" />
-                    <span>Delivery Address</span>
-                  </h2>
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center space-x-2">
+                      <MapPin size={24} className="text-primary" />
+                      <h2 className="font-heading text-2xl font-bold text-text">
+                        Delivery Address
+                      </h2>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                    onClick={() => {
+                      const initialForm = getInitialAddressForm();
+                      initialForm.is_default = addresses.length === 0;
+                      setNewAddress(initialForm);
+                      setIsAddressModalOpen(true);
+                    }}
+                    >
+                      Add Address
+                    </Button>
+                  </div>
 
-                  {user?.addresses &&
-                  user.addresses.length > 0 &&
-                  !showNewAddressForm ? (
+                  {addressStoreLoading ? (
+                    <div className="py-6">
+                      <LoadingSpinner message="Loading saved addresses..." />
+                    </div>
+                  ) : addresses.length > 0 ? (
                     <div className="space-y-3">
-                      {user.addresses.map((addr: any) => (
+                      {addresses.map((addr) => (
                         <label
-                          key={addr._id || addr.id || Math.random()}
+                          key={addr._id}
                           className={`flex items-start space-x-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                            selectedAddress?.id === addr.id ||
-                            selectedAddress?._id === addr._id
+                            (selectedAddressId &&
+                              selectedAddressId === addr._id) ||
+                            (!selectedAddressId && addr.is_default)
                               ? 'border-primary bg-primary-50'
                               : 'border-gray-200 hover:border-primary'
                           }`}
@@ -506,10 +636,7 @@ const CheckoutPage: React.FC = () => {
                           <input
                             type="radio"
                             name="address"
-                            checked={
-                              selectedAddress?.id === addr.id ||
-                              selectedAddress?._id === addr._id
-                            }
+                            checked={selectedAddressId === addr._id}
                             onChange={() => setSelectedAddress(addr)}
                             className="mt-1"
                           />
@@ -529,65 +656,38 @@ const CheckoutPage: React.FC = () => {
                           </div>
                         </label>
                       ))}
-                      <Button
-                        type="button"
-                        variant="outline"
-                        fullWidth
-                        onClick={() => setShowNewAddressForm(true)}
-                      >
-                        Add New Address
-                      </Button>
                     </div>
                   ) : (
-                    <div className="space-y-4">
-                      <Input
-                        type="text"
-                        label="Street Address"
-                        value={newAddress.street}
-                        onChange={(e) =>
-                          setNewAddress({
-                            ...newAddress,
-                            street: e.target.value,
-                          })
-                        }
-                        required={deliveryMethod === 'delivery'}
-                      />
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <Input
-                          type="text"
-                          label="Suburb"
-                          value={newAddress.suburb}
-                          onChange={(e) =>
-                            setNewAddress({
-                              ...newAddress,
-                              suburb: e.target.value,
-                            })
-                          }
-                          required={deliveryMethod === 'delivery'}
-                        />
-                        <Input
-                          type="text"
-                          label="Postcode"
-                          value={newAddress.postcode}
-                          onChange={(e) =>
-                            setNewAddress({
-                              ...newAddress,
-                              postcode: e.target.value,
-                            })
-                          }
-                          maxLength={4}
-                          required={deliveryMethod === 'delivery'}
-                        />
-                      </div>
-                      {user?.addresses && user.addresses.length > 0 && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          onClick={() => setShowNewAddressForm(false)}
-                        >
-                          Use Existing Address
-                        </Button>
-                      )}
+                    <div className="text-center py-8">
+                      <p className="text-gray-600 mb-3">
+                        You have not saved any delivery addresses yet.
+                      </p>
+                      <Button
+                        type="button"
+                        variant="primary"
+                        onClick={() => {
+                          const initialForm = getInitialAddressForm();
+                          initialForm.is_default = true;
+                          setNewAddress(initialForm);
+                          setIsAddressModalOpen(true);
+                        }}
+                      >
+                        Add Your First Address
+                      </Button>
+                    </div>
+                  )}
+
+                  {(addressError || addressStoreError) && (
+                    <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+                      {addressError || addressStoreError || 'Delivery service is not available for this address.'}
+                    </div>
+                  )}
+
+                  {deliveryMethod === 'delivery' && addresses.length > 0 && !addressError && (
+                    <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700">
+                      {isCalculatingDeliveryFee
+                        ? 'Calculating delivery fee for the selected address...'
+                        : `Calculated delivery fee: ${formatCurrency(effectiveDeliveryFee)}`}
                     </div>
                   )}
                 </Card>
@@ -769,23 +869,23 @@ const CheckoutPage: React.FC = () => {
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Subtotal:</span>
                     <span className="font-semibold">
-                      {formatCurrency(summary.subtotal)}
+                      {formatCurrency(subtotalAmount)}
                     </span>
                   </div>
 
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Delivery Fee:</span>
                     <span className="font-semibold">
-                      {deliveryMethod === 'pickup' || summary.delivery_fee === 0
+                      {deliveryMethod === 'pickup' || effectiveDeliveryFee === 0
                         ? 'FREE'
-                        : formatCurrency(summary.delivery_fee)}
+                        : formatCurrency(effectiveDeliveryFee)}
                     </span>
                   </div>
 
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Tax (GST 10%):</span>
                     <span className="font-semibold">
-                      {formatCurrency(summary.tax)}
+                      {formatCurrency(taxAmount)}
                     </span>
                   </div>
 
@@ -795,7 +895,7 @@ const CheckoutPage: React.FC = () => {
                         Total:
                       </span>
                       <span className="font-heading text-3xl font-bold text-primary">
-                        {formatCurrency(summary.total)}
+                        {formatCurrency(totalAmount)}
                       </span>
                     </div>
                   </div>
@@ -826,6 +926,148 @@ const CheckoutPage: React.FC = () => {
             </div>
           </div>
         </form>
+        <Modal
+          isOpen={isAddressModalOpen}
+          onClose={() => {
+            if (!isSavingAddress) {
+              setIsAddressModalOpen(false);
+            }
+          }}
+          title="Add New Address"
+          size="md"
+        >
+          <form onSubmit={handleSaveAddress} className="space-y-4">
+            <Input
+              type="text"
+              label="Label"
+              value={newAddress.label}
+              onChange={(e) =>
+                setNewAddress((prev) => ({ ...prev, label: e.target.value }))
+              }
+              placeholder="Home, Work, etc."
+              required
+            />
+
+            <Input
+              type="text"
+              label="Street Address"
+              value={newAddress.street}
+              onChange={(e) =>
+                setNewAddress((prev) => ({ ...prev, street: e.target.value }))
+              }
+              placeholder="45 Railway Terrace"
+              required
+            />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                type="text"
+                label="Suburb"
+                value={newAddress.suburb}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({ ...prev, suburb: e.target.value }))
+                }
+                placeholder="Guildford"
+                required
+              />
+              <Input
+                type="text"
+                label="Postcode"
+                value={newAddress.postcode}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({ ...prev, postcode: e.target.value }))
+                }
+                placeholder="2161"
+                maxLength={4}
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                type="text"
+                label="State"
+                value={newAddress.state}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({ ...prev, state: e.target.value }))
+                }
+                placeholder="NSW"
+                required
+              />
+              <Input
+                type="text"
+                label="Country"
+                value={newAddress.country}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({ ...prev, country: e.target.value }))
+                }
+                placeholder="Australia"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Delivery Instructions (Optional)
+              </label>
+              <textarea
+                value={newAddress.delivery_instructions}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({
+                    ...prev,
+                    delivery_instructions: e.target.value,
+                  }))
+                }
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                rows={3}
+                placeholder="Gate is on Palmer St; buzz 45 then wait."
+              />
+            </div>
+
+            <label className="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={newAddress.is_default}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({
+                    ...prev,
+                    is_default: e.target.checked,
+                  }))
+                }
+                className="rounded border-gray-300 text-primary focus:ring-primary"
+                disabled={addresses.length === 0 && newAddress.is_default}
+              />
+              <span className="text-sm text-gray-700">
+                Set as default delivery address
+              </span>
+            </label>
+
+            <div className="flex space-x-3 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  if (!isSavingAddress) {
+                    setIsAddressModalOpen(false);
+                  }
+                }}
+                disabled={isSavingAddress}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                className="flex-1"
+                disabled={isSavingAddress}
+                isLoading={isSavingAddress}
+              >
+                Save Address
+              </Button>
+            </div>
+          </form>
+        </Modal>
       </div>
     </div>
   );

@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { MenuItem } from '@models/menu.types';
 import { formatCurrency } from '@utils/formatters';
 import { getImageUrl, handleImageError } from '@utils/images';
 import Button from '@components/common/Button';
 import Card from '@components/common/Card';
 import LoadingSpinner from '@components/common/LoadingSpinner';
+import Pagination from '@components/common/Pagination';
 import {
   Edit2,
   Trash2,
@@ -27,9 +28,29 @@ export const MenuItemsList: React.FC<MenuItemsListProps> = ({
   onDelete,
   isLoading,
 }) => {
+  const ITEMS_PER_PAGE = 9;
   const [imageLoadStates, setImageLoadStates] = useState<{
     [key: string]: boolean;
   }>({});
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalItems = items.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / ITEMS_PER_PAGE));
+
+  const paginatedItems = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return items.slice(start, start + ITEMS_PER_PAGE);
+  }, [items, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [totalItems]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const handleImageLoad = (itemId: string) => {
     setImageLoadStates((prev) => ({ ...prev, [itemId]: true }));
@@ -57,8 +78,9 @@ export const MenuItemsList: React.FC<MenuItemsListProps> = ({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {items.map((item) => {
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {paginatedItems.map((item) => {
         const imageUrl = getImageUrl(item.image_url);
         const isImageLoaded = imageLoadStates[item._id] || false;
 
@@ -217,8 +239,18 @@ export const MenuItemsList: React.FC<MenuItemsListProps> = ({
             </div>
           </Card>
         );
-      })}
-    </div>
+        })}
+      </div>
+
+      <Pagination
+        currentPage={currentPage}
+        totalItems={totalItems}
+        pageSize={ITEMS_PER_PAGE}
+        onPageChange={setCurrentPage}
+        showSummary
+        className="mt-6"
+      />
+    </>
   );
 };
 

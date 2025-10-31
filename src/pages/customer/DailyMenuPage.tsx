@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useMenuStore } from '@store/menuStore';
-import { useAuthStore } from '@store/authStore';
 import MenuItemCard from '@components/menu/MenuItemCard';
 import FilterBar from '@components/menu/FilterBar';
 import LoadingSpinner from '@components/common/LoadingSpinner';
 import Card from '@components/common/Card';
-import Button from '@components/common/Button';
 import { Package, RefreshCcw, AlertCircle } from 'lucide-react';
-import { useToast } from '@components/common/Toast';
+import Pagination from '@components/common/Pagination';
 
 const DailyMenuPage: React.FC = () => {
-  const { isAuthenticated } = useAuthStore();
   const {
     dailyMenuItems,
     categories,
@@ -23,9 +20,9 @@ const DailyMenuPage: React.FC = () => {
     clearFilters,
     getFilteredItems,
   } = useMenuStore();
-  const { showToast } = useToast();
 
-  const [retryCount, setRetryCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 12;
 
   // Fetch data on mount
   useEffect(() => {
@@ -43,12 +40,35 @@ const DailyMenuPage: React.FC = () => {
 
   // Retry loading
   const handleRetry = () => {
-    setRetryCount((prev) => prev + 1);
     loadMenuData();
   };
 
   // Get filtered items
   const filteredItems = getFilteredItems('daily_menu');
+  const totalItems = filteredItems.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / ITEMS_PER_PAGE));
+
+  // Reset pagination when filters or data change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [
+    dailyMenuItems.length,
+    activeFilters.category,
+    activeFilters.is_vegetarian,
+    activeFilters.is_vegan,
+    activeFilters.order_type,
+  ]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
+  const paginatedItems = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredItems.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredItems, currentPage]);
 
   // Loading state
   if (isLoading && dailyMenuItems.length === 0) {
@@ -116,7 +136,7 @@ const DailyMenuPage: React.FC = () => {
           {/* Menu Items Grid - Adjusted for full width */}
           {filteredItems.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredItems.map((item) => (
+              {paginatedItems.map((item) => (
                 <MenuItemCard
                   key={item._id || item.id}
                   item={item}
@@ -158,6 +178,17 @@ const DailyMenuPage: React.FC = () => {
                 )}
               </div>
             </Card>
+          )}
+
+          {filteredItems.length > 0 && (
+            <Pagination
+              currentPage={currentPage}
+              totalItems={totalItems}
+              pageSize={ITEMS_PER_PAGE}
+              onPageChange={setCurrentPage}
+              showSummary
+              className="pt-4"
+            />
           )}
         </div>
       </div>

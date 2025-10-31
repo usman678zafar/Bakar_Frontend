@@ -1,6 +1,6 @@
 export interface Address {
   _id: string
-  user_id: string
+  user_id?: string
   label: string
   street: string
   suburb: string
@@ -9,6 +9,8 @@ export interface Address {
   country: string
   is_default: boolean
   delivery_instructions?: string
+  latitude?: number
+  longitude?: number
   created_at: string
   updated_at: string
 }
@@ -22,6 +24,8 @@ export interface CreateAddressPayload {
   country?: string
   is_default?: boolean
   delivery_instructions?: string
+  latitude?: number
+  longitude?: number
 }
 
 export interface DeliveryValidation {
