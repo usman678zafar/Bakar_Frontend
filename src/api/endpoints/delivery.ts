@@ -1,5 +1,5 @@
 import apiClient from '../client'
-import { Address, CreateAddressPayload, DeliveryValidation } from '@models/address.types'
+import { Address, CreateAddressPayload, DeliveryAvailability, DeliveryValidation } from '@models/address.types'
 import { DeliveryZone } from '@models/subscription.types'
 import { ApiResponse } from '@models/common.types'
 
@@ -51,6 +51,15 @@ export const deliveryAPI = {
    */
   calculateDeliveryFee: (addressId: string) => 
     apiClient.post<ApiResponse<{ fee: number; distance_km: number }>>('/delivery/calculate', { address_id: addressId }),
+
+  /**
+   * Check delivery availability for an address
+   */
+  checkAvailability: (address: string, orderType: 'daily' | 'weekly' | 'catering') =>
+    apiClient.post<ApiResponse<DeliveryAvailability>>('/delivery/check-availability', {
+      address,
+      order_type: orderType,
+    }),
 
   /**
    * Get configured delivery zones with pricing

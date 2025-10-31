@@ -122,49 +122,40 @@ export const useAdminStore = create<AdminState>((set, get) => ({
   fetchAllOrders: async (filters?: any) => {
     set({ isLoading: true, error: null });
     try {
-      console.log('📡 Fetching all orders...');
+      console.log('[ADMIN] Fetching all orders...');
       const response = await adminAPI.getAllOrders(filters);
 
-      const ordersData = response.data.data || response.data;
-      const orders = Array.isArray(ordersData) ? ordersData : [];
+      const payload = response.data?.data ?? response.data;
+      let orders: Order[] = [];
+      let totalOrders = 0;
 
-      console.log('✅ Orders loaded:', orders.length);
+      if (Array.isArray(payload)) {
+        orders = payload as Order[];
+        totalOrders = orders.length;
+      } else if (payload && typeof payload === 'object') {
+        const payloadObj = payload as any;
+        if (Array.isArray(payloadObj.orders)) {
+          orders = payloadObj.orders as Order[];
+          totalOrders =
+            typeof payloadObj.total === 'number'
+              ? payloadObj.total
+              : payloadObj.orders.length;
+        } else if (Array.isArray(payloadObj.data)) {
+          orders = payloadObj.data as Order[];
+          totalOrders = orders.length;
+        }
+      }
+
+      console.log('[ADMIN] Orders loaded:', orders.length, 'of', totalOrders);
 
       set({
         allOrders: orders,
         isLoading: false,
       });
     } catch (error: any) {
-      console.error('❌ Failed to fetch orders:', error);
+      console.error('[ADMIN] Failed to fetch orders:', error);
       set({
         error: error.response?.data?.message || 'Failed to fetch orders',
-        isLoading: false,
-      });
-    }
-  },
-
-  // ✅ Fetch dashboard stats with fallback
-  fetchDashboardStats: async () => {
-    set({ isLoading: true, error: null });
-    try {
-      console.log('📡 Fetching dashboard stats...');
-      const response = await adminAPI.getDashboardStats();
-
-      const statsData =
-        (response.data?.data as DashboardStats) || createEmptyDashboardStats();
-
-      console.log('✅ Stats loaded:', statsData);
-
-      set({
-        orderStats: statsData,
-        isLoading: false,
-      });
-    } catch (error: any) {
-      console.error('❌ Failed to fetch dashboard stats:', error);
-
-      set({
-        orderStats: createEmptyDashboardStats(),
-        error: error.response?.data?.message || 'Failed to fetch stats',
         isLoading: false,
       });
     }

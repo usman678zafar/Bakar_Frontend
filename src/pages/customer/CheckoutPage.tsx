@@ -1,13 +1,15 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '@hooks/useCart';
 import { useAuthStore } from '@store/authStore';
 import { useAddressStore } from '@store/addressStore';
 import { useToast } from '@components/common/Toast';
 import { ordersAPI } from '@api';
+import { deliveryAPI } from '@api/endpoints/delivery';
 import { MealSubscriptionSelection } from '@models/cart.types';
 import { formatCurrency } from '@utils/formatters';
-import { Address } from '@models/address.types';
+import { Address, DeliveryAvailability } from '@models/address.types';
+import { DAILY_DELIVERY_FEE } from '@utils/constants';
 import {
   MapPin,
   Calendar,
@@ -92,25 +94,15 @@ const CheckoutPage: React.FC = () => {
   const [deliveryTime, setDeliveryTime] = useState('');
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'cash'>('card');
-  const [deliveryFee, setDeliveryFee] = useState(summary.delivery_fee || 0);
+  const [deliveryFee, setDeliveryFee] = useState(
+    summary.delivery_fee ?? DAILY_DELIVERY_FEE
+  );
   const [addressError, setAddressError] = useState<string | null>(null);
 
   // Address modal state
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const [isSavingAddress, setIsSavingAddress] = useState(false);
   const [newAddress, setNewAddress] = useState(getInitialAddressForm);
-
-  const profileContact = useMemo(
-    () => ({
-      name:
-        user && user.first_name && user.last_name
-          ? `${user.first_name} ${user.last_name}`
-          : user?.full_name || user?.email?.split('@')[0] || '',
-      email: user?.email || '',
-      phone: user?.phone || '',
-    }),
-    [user]
-  );
 
   // Fetch saved addresses on mount
   useEffect(() => {
@@ -158,7 +150,7 @@ const CheckoutPage: React.FC = () => {
         return;
       }
 
-      if (!selectedAddressId) {
+      if (!selectedAddressId || !selectedAddress) {
         setAddressError(null);
         setDeliveryFee(0);
         return;
@@ -166,6 +158,53 @@ const CheckoutPage: React.FC = () => {
 
       clearAddressError();
       setAddressError(null);
+
+      const isDailyOrder = !subscriptionDetails && !cateringDetails;
+
+      if (isDailyOrder) {
+        try {
+          const formattedAddress = [
+            selectedAddress.street,
+            selectedAddress.suburb,
+            selectedAddress.state,
+            selectedAddress.postcode,
+            selectedAddress.country || DEFAULT_COUNTRY,
+          ]
+            .filter(Boolean)
+            .join(', ');
+
+          const availabilityResponse = await deliveryAPI.checkAvailability(
+            formattedAddress,
+            'daily'
+          );
+          const availability = availabilityResponse.data.data as DeliveryAvailability | undefined;
+
+          if (availability?.available) {
+            const fee =
+              availability.delivery_fee !== undefined
+                ? availability.delivery_fee
+                : DAILY_DELIVERY_FEE;
+            setDeliveryFee(fee);
+          } else {
+            const message =
+              availability?.message ||
+              availabilityResponse.data.message ||
+              'Delivery service is not available for this address.';
+            setAddressError(message);
+            setDeliveryFee(0);
+          }
+        } catch (error: any) {
+          console.error('Delivery availability check failed:', error);
+          const message =
+            error?.response?.data?.message ||
+            error?.response?.data?.detail ||
+            error?.message ||
+            'Delivery service is not available for this address.';
+          setAddressError(message);
+          setDeliveryFee(0);
+        }
+        return;
+      }
 
       try {
         const result = await calculateDeliveryFee(selectedAddressId);
@@ -176,6 +215,7 @@ const CheckoutPage: React.FC = () => {
         console.error('Delivery fee calculation failed:', error);
         const message =
           error?.response?.data?.message ||
+          error?.response?.data?.detail ||
           error?.message ||
           'Delivery service is not available for this address.';
         setAddressError(message);
@@ -184,7 +224,15 @@ const CheckoutPage: React.FC = () => {
     };
 
     evaluateDeliveryFee();
-  }, [selectedAddressId, deliveryMethod, calculateDeliveryFee, clearAddressError]);
+  }, [
+    selectedAddressId,
+    selectedAddress,
+    deliveryMethod,
+    calculateDeliveryFee,
+    clearAddressError,
+    subscriptionDetails,
+    cateringDetails,
+  ]);
 
   useEffect(() => {
     // Check authentication
@@ -265,6 +313,7 @@ const CheckoutPage: React.FC = () => {
     } catch (error: any) {
       const message =
         error?.response?.data?.message ||
+        error?.response?.data?.detail ||
         error?.message ||
         'Failed to save address';
       showToast(message, 'error');
@@ -320,21 +369,6 @@ const CheckoutPage: React.FC = () => {
 
     try {
       let orderPayload: any = {};
-      const normalizedSelectedAddress = selectedAddress
-        ? {
-            _id: selectedAddress._id,
-            label: selectedAddress.label,
-            street: selectedAddress.street,
-            suburb: selectedAddress.suburb,
-            postcode: selectedAddress.postcode,
-            state: selectedAddress.state,
-            country: selectedAddress.country,
-            latitude: selectedAddress.latitude,
-            longitude: selectedAddress.longitude,
-            delivery_instructions: selectedAddress.delivery_instructions,
-            is_default: selectedAddress.is_default,
-          }
-        : null;
       const deliveryAddressId = selectedAddressId;
       const backendDeliveryMethod =
         deliveryMethod === 'delivery' ? 'standard' : 'pickup';
@@ -349,7 +383,6 @@ const CheckoutPage: React.FC = () => {
           venue_address: cateringDetails.eventDetails.venue_address,
           selected_items: cateringDetails.selectedItems,
           special_requests: specialInstructions,
-          contact_info: profileContact,
         };
       } else if (subscriptionDetails) {
         const plan = subscriptionDetails.plan;
@@ -416,14 +449,8 @@ const CheckoutPage: React.FC = () => {
               };
             }) || [],
           delivery_method: backendDeliveryMethod,
-          delivery_address:
-            backendDeliveryMethod === 'standard'
-              ? normalizedSelectedAddress
-              : null,
           delivery_address_id:
             backendDeliveryMethod === 'standard' ? deliveryAddressId : undefined,
-          delivery_date: deliveryDate,
-          delivery_time: deliveryTime,
           delivery_instructions: specialInstructions,
           notes: '',
         };
@@ -456,6 +483,7 @@ const CheckoutPage: React.FC = () => {
       console.error('Checkout error:', error);
       showToast(
         error.response?.data?.message ||
+          error.response?.data?.detail ||
           'Failed to place order. Please try again.',
         'error'
       );

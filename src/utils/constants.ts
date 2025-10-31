@@ -71,6 +71,7 @@ export const SUBSCRIPTION_PLANS = {
 export const TAX_RATE = 0.10 // 10% GST
 
 export const MIN_ORDER_VALUE = 15 // AUD
+export const DAILY_DELIVERY_FEE = 10 // AUD
 
 export const DELIVERY_FEE_PER_KM = 2.5 // AUD per km
 

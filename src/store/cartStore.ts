@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { cartAPI, CartSummary } from '@api/endpoints/cart';
 import { MenuItem, Sideline } from '@models/menu.types';
+import { DAILY_DELIVERY_FEE } from '@utils/constants';
 
 // Define the structure for cart items stored locally
 interface LocalCartItem {
@@ -297,11 +298,10 @@ export const useCartStore = create<CartStore>((set, get) => ({
     const items = get().localItems;
     const sidelines = get().localSidelines;
     const deliveryOption = get().deliveryOption;
-    
     const subtotal = items.reduce((sum, item) => sum + (item.menu_item.price * item.quantity), 0) +
                     sidelines.reduce((sum, item) => sum + (item.sideline.price * item.quantity), 0);
     
-    const delivery_fee = deliveryOption === 'pickup' ? 0 : subtotal >= 50 ? 0 : 10;
+    const delivery_fee = deliveryOption === 'pickup' ? 0 : DAILY_DELIVERY_FEE;
     const total = subtotal + delivery_fee;
     const items_count = items.reduce((sum, item) => sum + item.quantity, 0) +
                        sidelines.reduce((sum, item) => sum + item.quantity, 0);

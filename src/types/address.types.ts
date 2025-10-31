@@ -35,3 +35,12 @@ export interface DeliveryValidation {
   estimated_time_minutes: number
   message?: string
 }
+
+export interface DeliveryAvailability {
+  available: boolean
+  distance_km?: number
+  delivery_fee?: number
+  suburb?: string
+  postcode?: string
+  message?: string
+}
