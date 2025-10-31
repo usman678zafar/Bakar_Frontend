@@ -30,6 +30,8 @@ const MenuManagement: React.FC = () => {
     fetchManagedCategories,
     deleteMenuItem,
     isLoading,
+    error,
+    clearError,
   } = useAdminStore();
 
   const [showAddModal, setShowAddModal] = useState(false);
@@ -42,6 +44,16 @@ const MenuManagement: React.FC = () => {
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (!error) return;
+    const normalizedMessage =
+      error === 'Invalid input data'
+        ? 'Failed to load menu data from the server. Please refresh to try again.'
+        : error;
+    showToast(normalizedMessage, 'error');
+    clearError();
+  }, [error, clearError, showToast]);
 
   const loadData = async () => {
     try {
